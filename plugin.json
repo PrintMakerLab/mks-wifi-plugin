@@ -1,0 +1,15 @@
+{
+    "name": "MKS Plugin Connection",
+    "author": "makerbase",
+    "version": "1.0.0",
+    "description": "connect with TFT35 WIFI on Cura 4.0",
+    "api": 5,
+    "supported_sdk_versions": [
+        "5.0.0",
+        "6.0.0",
+        "6.1.0",
+        "6.2.0",
+        "7.0.0"
+    ],
+    "i18n-catalog": "cura"
+}
