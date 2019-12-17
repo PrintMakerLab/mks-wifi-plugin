@@ -8,7 +8,8 @@ But with fixed *plugin.json* and *MachineConfig.py* file.
 
 Installation
 ----
-* Marketplace (maybe in future):
+* Marketplace:
+  The plugin is available through the Cura Marketplace as the MKS Wifi Plugin
 * Manually:
   - Download or clone the repository
   - Open Cura configuration folder. It can be found via Help -> Show Configuration Folder inside Cura.
