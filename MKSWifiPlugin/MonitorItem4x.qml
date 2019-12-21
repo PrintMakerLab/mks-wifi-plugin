@@ -151,12 +151,27 @@ Component
                         {
                             return catalog.i18nc("@label", "Resume");
                         }else{
-                            return catalog.i18nc("@label", "Pause");
+                            return catalog.i18nc("@label", "Pause/Resume");
                         }
+                        // return catalog.i18nc("@label", Cura.MachineManager.printerOutputDevices[0].printer_state());
                     }
+                    // visible: manager.printer_state() == 'paused'
                     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                     onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
                 }
+                
+                // Button
+                // {
+                //     id: pauseButton
+                //     height: UM.Theme.getSize("save_button_save_to_button").height
+                //     text: 
+                //     {
+                //         return catalog.i18nc("@label", "Pause");
+                //     }
+                //     visible: manager.printer_state() != 'paused'
+                //     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
+                //     onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
+                // }
 
                 Button
                 {

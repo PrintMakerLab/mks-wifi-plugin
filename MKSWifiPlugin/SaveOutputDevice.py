@@ -22,6 +22,7 @@ class SaveOutputDevice(OutputDevice):
         super().__init__("save_with_screenshot")
         self.setName("save_with_screenshot")
         self.setPriority(2)
+        self._preferences = Application.getInstance().getPreferences()
         self.setShortDescription(catalog.i18nc("@action:button", "Save as TFT file"))
         self.setDescription(catalog.i18nc("@properties:tooltip", "Save as TFT file"))
         self.setIconName("save")
@@ -47,7 +48,7 @@ class SaveOutputDevice(OutputDevice):
         filters = []
         mime_types = []
         selected_filter = None
-        last_used_type = Preferences.getInstance().getValue("local_file/last_used_type")
+        last_used_type = self._preferences.getValue("local_file/last_used_type")
 
         if not file_handler:
             file_handler = Application.getInstance().getMeshFileHandler()
@@ -78,17 +79,17 @@ class SaveOutputDevice(OutputDevice):
         if file_name is not None:
             dialog.selectFile(file_name)
 
-        stored_directory = Preferences.getInstance().getValue("local_file/dialog_save_path")
+        stored_directory = self._preferences.getValue("local_file/dialog_save_path")
         dialog.setDirectory(stored_directory)
 
         if not dialog.exec_():
             raise OutputDeviceError.UserCanceledError()
 
         save_path = dialog.directory().absolutePath()
-        Preferences.getInstance().setValue("local_file/dialog_save_path", save_path)
+        self._preferences.setValue("local_file/dialog_save_path", save_path)
 
         selected_type = file_types[filters.index(dialog.selectedNameFilter())]
-        Preferences.getInstance().setValue("local_file/last_used_type", selected_type["mime_type"])
+        self._preferences.setValue("local_file/last_used_type", selected_type["mime_type"])
 
         # Get file name from file dialog
         file_name = dialog.selectedFiles()[0]
@@ -116,7 +117,7 @@ class SaveOutputDevice(OutputDevice):
             message.show()
             save_file = open(file_name, "w")
             if image:
-                save_file.write(utils.add_screenshot(image, 100, 100, ";simage:"))
+                save_file.write(utils.add_screenshot(image, 50, 50, ";simage:"))
                 save_file.write(utils.add_screenshot(image, 200, 200, ";;gimage:"))
                 save_file.write("\r")
             for line in _gcode:
