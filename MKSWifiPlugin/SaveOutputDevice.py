@@ -3,6 +3,7 @@ from UM.OutputDevice.OutputDevice import OutputDevice
 from UM.Logger import Logger
 from UM.Preferences import Preferences
 from UM.OutputDevice import OutputDeviceError
+from cura.CuraApplication import CuraApplication
 
 from PyQt5.QtWidgets import QFileDialog
 from UM.Message import Message
@@ -23,8 +24,13 @@ class SaveOutputDevice(OutputDevice):
         self.setName("save_with_screenshot")
         self.setPriority(2)
         self._preferences = Application.getInstance().getPreferences()
-        self.setShortDescription(catalog.i18nc("@action:button", "Save as TFT file"))
-        self.setDescription(catalog.i18nc("@properties:tooltip", "Save as TFT file"))
+        name1 = "Save as TFT file"
+        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+            name1 = "保存为TFT文件"
+        else:
+            name1 = "Save as TFT file"
+        self.setShortDescription(catalog.i18nc("@action:button", name1))
+        self.setDescription(catalog.i18nc("@properties:tooltip", name1))
         self.setIconName("save")
         self._writing = False
 
@@ -117,7 +123,7 @@ class SaveOutputDevice(OutputDevice):
             message.show()
             save_file = open(file_name, "w")
             if image:
-                save_file.write(utils.add_screenshot(image, 50, 50, ";simage:"))
+                save_file.write(utils.add_screenshot(image, 100, 100, ";simage:"))
                 save_file.write(utils.add_screenshot(image, 200, 200, ";;gimage:"))
                 save_file.write("\r")
             for line in _gcode:

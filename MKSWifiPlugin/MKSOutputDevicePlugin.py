@@ -8,15 +8,21 @@ from UM.Logger import Logger
 from UM.Preferences import Preferences
 from PyQt5.QtCore import QUrl
 
-from PyQt5.QtCore import QObject, pyqtSlot
+from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
 from PyQt5.QtGui import QDesktopServices
 from queue import Queue
 from threading import Event, Thread
+
+from UM.Message import Message
+from UM.i18n import i18nCatalog
+i18n_catalog = i18nCatalog("cura")
 
 import time
 import json
 import re
 import os
+
+from cura.CuraApplication import CuraApplication
 
 @signalemitter
 class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
@@ -26,6 +32,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         self._browser = None
         self._printers = {}
         self._discovered_devices = {}
+
+        self._error_message = None
 
         self._old_printers = []
 
@@ -44,6 +52,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         self._service_changed_request_thread = Thread(target=self._handleOnServiceChangedRequests,
                                                       daemon=True)
         self._service_changed_request_thread.start()
+
+        self._changestage = False
 
     addPrinterSignal = Signal()
     removePrinterSignal = Signal()
@@ -107,6 +117,19 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def getPrinters(self):
         return self._printers
 
+    def disConnections(self,key):
+        Logger.log("d", "disConnections change %s" % key)
+        # for keys in self._printers:
+        #     if self._printers[key].isConnected():
+        #         Logger.log("d", "Closing connection [%s]..." % key)
+        if key in self._printers:
+            self._printers[key].disconnect()
+                # self._printers[key].connectionStateChanged.disconnect(self._onPrinterConnectionStateChanged)
+            self.getOutputDeviceManager().removeOutputDevice(key)
+        preferences = Application.getInstance().getPreferences()
+        preferences.addPreference("mkswifi/stopupdate", "True")
+
+
     def reCheckConnections(self):
         active_machine = Application.getInstance().getGlobalContainerStack()
         Logger.log("d", "GlobalContainerStack change %s" % active_machine.getMetaDataEntry("mks_network_key"))
@@ -146,15 +169,57 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 printer.connectionStateChanged.disconnect(self._onPrinterConnectionStateChanged)
                 Logger.log("d", "removePrinter, disconnecting [%s]..." % name)
         self.printerListChanged.emit()
+    
+    def printertrytoconnect(self):
+        Logger.log("d", "mks printertrytoconnect")
+        self._changestage = True
 
     def _onPrinterConnectionStateChanged(self, key):
         if key not in self._printers:
             return
-        Logger.log("d", "mks add output device %s" % self._printers[key].isConnected())
+        # Logger.log("d", "mks add output device %s" % self._printers[key].isConnected())
         if self._printers[key].isConnected():
+            # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
+            if self._error_message:
+                self._error_message.hide()
+            name = "Printer connect success"
+            if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+                name = "打印机连接成功"
+            else:
+                name = "Printer connect success"
+            self._error_message = Message(name)
+            self._error_message.show()
             self.getOutputDeviceManager().addOutputDevice(self._printers[key])
-        # else:
+            # preferences = Application.getInstance().getPreferences()
+            # if preferences.getValue("mkswifi/changestage"):
+            #     preferences.addPreference("mkswifi/changestage", "False")     
+            #     CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+        else:
             # self.getOutputDeviceManager().removeOutputDevice(key)
+            global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
+            if global_container_stack:
+                meta_data = global_container_stack.getMetaData()
+                if "mks_network_key" in meta_data:
+                    localkey = global_container_stack.getMetaDataEntry("mks_network_key")
+                    # global_container_stack.setMetaDataEntry("mks_network_key", key)
+                    # global_container_stack.removeMetaDataEntry(
+                    # "network_authentication_id")
+                    # global_container_stack.removeMetaDataEntry(
+                    # "network_authentication_key")
+                    # Logger.log("d", "mks localkey--------ok--------- %s" % localkey)
+                    # Logger.log("d", "mks key--------ok--------- %s" % key)
+                    if localkey != key and key in self._printers:
+                        # self.getOutputDeviceManager().connect()          
+                        self.getOutputDeviceManager().removeOutputDevice(key)
+        # else:
+        #     if self._error_message:
+        #         self._error_message.hide()
+        #     self._error_message = Message(i18n_catalog.i18nc("@info:status", "Printer connect failed"))
+        #     self._error_message.show()
+        # else:
+        #     Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
+        #     self._printers[key].disconnect()
+            # self._printers[key].connectionStateChanged.disconnect(self._onPrinterConnectionStateChanged)
 
     def _onServiceChanged(self, zeroconf, service_type, name, state_change):
         if state_change == ServiceStateChange.Added:

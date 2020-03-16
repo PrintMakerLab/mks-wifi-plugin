@@ -13,6 +13,11 @@ Cura.MachineAction
     property var selectedPrinter: null
     property bool completeProperties: true
 
+    property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
+    property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
+
+    property var currentLanguage: UM.Preferences.getValue("general/language")
+
     Connections
     {
         target: dialog ? dialog : null
@@ -35,6 +40,20 @@ Cura.MachineAction
             if(manager.getStoredKey() != printerKey)
             {
                 manager.setKey(printerKey);
+                completed();
+            }
+             manager.changestage();
+        }
+    }
+
+    function unconnectToPrinter()
+    {
+        if(base.selectedPrinter && base.completeProperties)
+        {
+            var printerKey = base.selectedPrinter.getKey()
+            if(manager.getStoredKey() == printerKey)
+            {
+                manager.disConnection(printerKey);
                 completed();
             }
         }
@@ -200,7 +219,7 @@ Cura.MachineAction
             {
                 width: Math.round(parent.width * 0.5)
                 visible: base.selectedPrinter ? true : false
-                spacing: UM.Theme.getSize("default_margin").height
+                // spacing: UM.Theme.getSize("default_margin").height
                 Label
                 {
                     width: parent.width
@@ -299,13 +318,44 @@ Cura.MachineAction
                     visible: base.selectedPrinter != null && !base.completeProperties
                     text: catalog.i18nc("@label", "The printer at this address has not yet responded." )
                 }
-
-                Button
-                {
-                    text: catalog.i18nc("@action:button", "Connect")
-                    enabled: (base.selectedPrinter && base.completeProperties) ? true : false
-                    onClicked: connectToPrinter()
+                Row{
+                    spacing: 10
+                    Button
+                    {
+                        id: connectbtn
+                        text: catalog.i18nc("@action:button", "Connect")
+                        enabled: {
+                            if (base.selectedPrinter && base.completeProperties) {
+                                if (connectedDevice != null) {
+                                    if (connectedDevice.address  != base.selectedPrinter.ipAddress) {
+                                        return true
+                                    }else{
+                                        return false
+                                    }
+                                }                                
+                            }
+                            return true                    
+                        }
+                        onClicked: connectToPrinter()
+                    }
+                    Button
+                    {
+                        id: unconnectbtn
+                        text: currentLanguage == "zh_CN" ? "¶Ï¿ª" : "UNConnect"
+                        enabled: {
+                            if (base.selectedPrinter && base.completeProperties) {
+                                if (connectedDevice != null) {
+                                    if (connectedDevice.address == base.selectedPrinter.ipAddress) {
+                                        return true
+                                    }
+                                }                                
+                            }
+                            return false
+                        }
+                        onClicked: unconnectToPrinter()
+                    }
                 }
+
             }
         }
     }
