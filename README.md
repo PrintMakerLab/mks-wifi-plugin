@@ -16,4 +16,4 @@ Using the plugin with cura, you can connect to the mks robin wifi and mks tft wi
   - Copy folder into [Cura configuration folder]/plugins/
   - Restart Cura.
   
- ** Notes: The mks wifi plugin is only available on the Cura 3.6 or higher version. **
+ ** Notes: The mks wifi plugin V4.4 is only available on the Cura 3.6 or higher version. **
