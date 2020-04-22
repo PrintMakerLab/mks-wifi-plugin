@@ -3,6 +3,7 @@
 MKS wifi plugin for Cura developed by Makerbase, and it is migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software")  after V4.4 version.
 
 Using the plugin with cura, you can connect to the mks robin wifi and mks tft wifi. Thus, you can control your 3d printer wirelessly. What is more, transferring gcode files to a printer can usually reach 100kbyte/s.
+The plugin also support previewing gcode file  when using MKS Robin TFT35 or MKS TFT35 LCD.
 
 
 ## Installation ##
