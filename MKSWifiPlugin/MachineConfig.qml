@@ -341,7 +341,7 @@ Cura.MachineAction
                     Button
                     {
                         id: unconnectbtn
-                        text: currentLanguage == "zh_CN" ? "¶Ï¿ª" : "UNConnect"
+                        text: currentLanguage == "zh_CN" ? "æ–­å¼€" : "UNConnect"
                         enabled: {
                             if (base.selectedPrinter && base.completeProperties) {
                                 if (connectedDevice != null) {

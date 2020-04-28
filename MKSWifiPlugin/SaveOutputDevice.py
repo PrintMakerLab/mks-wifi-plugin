@@ -27,7 +27,7 @@ class SaveOutputDevice(OutputDevice):
         self._preferences = Application.getInstance().getPreferences()
         name1 = "Save as TFT file"
         if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-            name1 = "保存为TFT文件"
+            name1 = "淇濆瓨涓篢FT鏂囦欢"
         else:
             name1 = "Save as TFT file"
         self.setShortDescription(catalog.i18nc("@action:button", name1))

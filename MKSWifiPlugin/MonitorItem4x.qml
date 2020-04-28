@@ -156,9 +156,9 @@ Component
                     text: 
                     {
                         if (activePrintJob.state == "printing") {
-                             return currentLanguage == "zh_CN" ? "ÔİÍ£´òÓ¡" : "Pause"
+                             return currentLanguage == "zh_CN" ? "æš‚åœæ‰“å°" : "Pause"
                         }else {
-                             return currentLanguage == "zh_CN" ? "»Ö¸´´òÓ¡" : "Resume"
+                             return currentLanguage == "zh_CN" ? "æ¢å¤æ‰“å°" : "Resume"
                         }
                         // if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'paused')
                         // {
@@ -190,7 +190,7 @@ Component
                 {
                     id: removeButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "ÖÕÖ¹´òÓ¡":"Abort Print"
+                    text: currentLanguage == "zh_CN" ? "ç»ˆæ­¢æ‰“å°":"Abort Print"
                     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
                 }
@@ -222,7 +222,7 @@ Component
                     }
                     id: rediscoverButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "SD ÎÄ¼ş":"SD File"
+                    text: currentLanguage == "zh_CN" ? "SD æ–‡ä»¶":"SD File"
                     onClicked: sdDialog.showDialog()
                 }
 
@@ -254,7 +254,7 @@ Component
                     id: uploadbutton
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // text: catalog.i18nc("@info:status", "Sending data to printer");
-                    text: currentLanguage == "zh_CN" ? "·¢ËÍ´òÓ¡ÎÄ¼ş":"Sending Print Job";
+                    text: currentLanguage == "zh_CN" ? "å‘é€æ‰“å°æ–‡ä»¶":"Sending Print Job";
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
                 }
             }
@@ -296,7 +296,7 @@ Component
             //     // {
             //     //     id: homebutton
             //     //     height: UM.Theme.getSize("save_button_save_to_button").height
-            //     //     text: currentLanguage == "zh_CN" ? "ÀäÈ´":"Cool Down"
+            //     //     text: currentLanguage == "zh_CN" ? "å†·å´":"Cool Down"
             //     //     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
             //     // }
             //     Button
@@ -304,7 +304,7 @@ Component
             //         id: uploadbutton
             //         height: UM.Theme.getSize("save_button_save_to_button").height
             //         // text: catalog.i18nc("@info:status", "Sending data to printer");
-            //         text: currentLanguage == "zh_CN" ? "·¢ËÍ´òÓ¡ÎÄ¼ş":"Sending Print Job";
+            //         text: currentLanguage == "zh_CN" ? "å‘é€æ‰“å°æ–‡ä»¶":"Sending Print Job";
             //         onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
             //     }
             // }
@@ -351,14 +351,14 @@ Component
                     id: homebutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // text: catalog.i18nc("@label", "Fan ON");
-                    text: currentLanguage == "zh_CN" ? "´ò¿ª·çÉÈ" : "Open Fan"
+                    text: currentLanguage == "zh_CN" ? "æ‰“å¼€é£æ‰‡" : "Open Fan"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
                 }
                 Button
                 {
                     id: uploadbutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "¹Ø±Õ·çÉÈ" : "Close Fan"
+                    text: currentLanguage == "zh_CN" ? "å…³é—­é£æ‰‡" : "Close Fan"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
                 }
                 Button
@@ -388,7 +388,7 @@ Component
                     }
                     id: uploadbutton3
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "½âËøµç»ú" : "Unlock Motor"
+                    text: currentLanguage == "zh_CN" ? "è§£é”ç”µæœº" : "Unlock Motor"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()                    
                 }
                 Button
@@ -418,7 +418,7 @@ Component
                     }
                     id: homebutton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "ÀäÈ´":"Cool Down"
+                    text: currentLanguage == "zh_CN" ? "å†·å´":"Cool Down"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 }
             }
@@ -430,7 +430,7 @@ Component
                     id: editbutton
                     height: 20
                     width: 20
-                    // text: currentLanguage == "zh_CN" ? "±à¼­" : "edit";
+                    // text: currentLanguage == "zh_CN" ? "ç¼–è¾‘" : "edit";
                     // iconName: "list-activate";
                     iconSource: UM.Theme.getIcon("settings")
                     // color: UM.Theme.getColor("setting_control_button")

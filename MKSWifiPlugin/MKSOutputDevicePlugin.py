@@ -185,7 +185,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 self._error_message.hide()
             name = "Printer connect success"
             if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-                name = "´òÓ¡»úÁ¬½Ó³É¹¦"
+                name = "æ‰“å°æœºè¿æ¥æˆåŠŸ"
             else:
                 name = "Printer connect success"
             self._error_message = Message(name)

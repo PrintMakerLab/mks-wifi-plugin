@@ -64,10 +64,9 @@ class MachineConfig(MachineAction):
         # Time to wait after a zeroconf service change before allowing a zeroconf reset
         self._zeroconf_change_grace_period = 0.25
 
-        # Init a timer
         self.timer = QTimer(self)
         self.timer.start(10000) # 5s
-        self.timer.timeout.connect(self.restartDiscovery) #After reaching the set time, execute the slot function code
+        self.timer.timeout.connect(self.restartDiscovery)
 
     printersChanged = pyqtSignal()
     printersTryToConnect = pyqtSignal()
