@@ -1,3 +1,4 @@
+# coding=utf-8
 from UM.i18n import i18nCatalog
 from UM.Logger import Logger
 from UM.Settings.DefinitionContainer import DefinitionContainer

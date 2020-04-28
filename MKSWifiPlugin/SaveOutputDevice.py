@@ -1,3 +1,4 @@
+# coding=utf-8
 from UM.Application import Application
 from UM.OutputDevice.OutputDevice import OutputDevice
 from UM.Logger import Logger
