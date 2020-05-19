@@ -9,6 +9,7 @@ import MKSPlugin 1.0 as MKSPlugin
 import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
+import "."
 
 Component
 {
@@ -16,6 +17,13 @@ Component
 
     Item
     {
+        property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
+        property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
+        property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
+        // property var printerModel: null
+        // property var activePrintJob: printerModel != null ? printerModel.activePrintJob : null
+        // property var connectedPrinter: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
+        property var currentLanguage: UM.Preferences.getValue("general/language")
         // MKSPlugin.NetworkMJPGImage
         // {
         //     id: cameraImage
@@ -95,7 +103,7 @@ Component
             anchors.left: parent.left
             anchors.right: sidebar.left
         }
-        Column
+        Row
         {
             id: printaction
             width: UM.Theme.getSize("print_setup_widget").width
@@ -147,12 +155,17 @@ Component
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     text: 
                     {
-                        if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'paused')
-                        {
-                            return catalog.i18nc("@label", "Resume");
-                        }else{
-                            return catalog.i18nc("@label", "Pause/Resume");
+                        if (activePrintJob.state == "printing") {
+                             return currentLanguage == "zh_CN" ? "暂停打印" : "Pause"
+                        }else {
+                             return currentLanguage == "zh_CN" ? "恢复打印" : "Resume"
                         }
+                        // if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'paused')
+                        // {
+                        //     return catalog.i18nc("@label", "Resume");
+                        // }else{
+                        //     return catalog.i18nc("@label", "Pause")+'/'+catalog.i18nc("@label", "Resume");
+                        // }
                         // return catalog.i18nc("@label", Cura.MachineManager.printerOutputDevices[0].printer_state());
                     }
                     // visible: manager.printer_state() == 'paused'
@@ -177,19 +190,124 @@ Component
                 {
                     id: removeButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@label", "Abort")
+                    text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
                     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
                 }
 
                 Button
                 {
+                    enabled:
+                    {
+                        if (printerModel == null)
+                        {
+                            return false; //Can't control the printer if not connected
+                        }
+
+                        if (!connectedDevice.acceptsCommands)
+                        {
+                            return false; //Not allowed to do anything.
+                        }
+
+                        if(activePrintJob == null)
+                        {
+                            return true
+                        }
+
+                        if (activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                        {
+                            return false; //Printer is in a state where it can't react to manual control
+                        }
+                        return true;
+                    }
                     id: rediscoverButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@label", "SD")
+                    text: currentLanguage == "zh_CN" ? "SD 文件":"SD File"
                     onClicked: sdDialog.showDialog()
                 }
+
+                Button
+                {
+                    enabled:
+                    {
+                        if (printerModel == null)
+                        {
+                            return false; //Can't control the printer if not connected
+                        }
+
+                        if (!connectedDevice.acceptsCommands)
+                        {
+                            return false; //Not allowed to do anything.
+                        }
+
+                        if(activePrintJob == null)
+                        {
+                            return true
+                        }
+
+                        if (activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                        {
+                            return false; //Printer is in a state where it can't react to manual control
+                        }
+                        return true;
+                    }
+                    id: uploadbutton
+                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    // text: catalog.i18nc("@info:status", "Sending data to printer");
+                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Sending Print Job";
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+                }
             }
+            // Row
+            // {
+            //      enabled:
+            //     {
+            //         if (printerModel == null)
+            //         {
+            //             return false; //Can't control the printer if not connected
+            //         }
+
+            //         if (!connectedDevice.acceptsCommands)
+            //         {
+            //             return false; //Not allowed to do anything.
+            //         }
+
+            //         if(activePrintJob == null)
+            //         {
+            //             return true
+            //         }
+
+            //         if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+            //         {
+            //             return false; //Printer is in a state where it can't react to manual control
+            //         }
+            //         return true;
+            //     }
+            //     spacing: UM.Theme.getSize("default_lining").width
+            //     anchors
+            //     {
+            //         leftMargin: UM.Theme.getSize("default_margin").width
+            //         rightMargin: UM.Theme.getSize("default_margin").width
+            //         right: parent.right
+            //         bottom: parent.bottom
+            //         // bottomMargin: UM.Theme.getSize("default_margin").height
+            //     }
+            //     // Button
+            //     // {
+            //     //     id: homebutton
+            //     //     height: UM.Theme.getSize("save_button_save_to_button").height
+            //     //     text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
+            //     //     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+            //     // }
+            //     Button
+            //     {
+            //         id: uploadbutton
+            //         height: UM.Theme.getSize("save_button_save_to_button").height
+            //         // text: catalog.i18nc("@info:status", "Sending data to printer");
+            //         text: currentLanguage == "zh_CN" ? "发送打印文件":"Sending Print Job";
+            //         onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+            //     }
+            // }
             Row
             {
                 spacing: UM.Theme.getSize("default_lining").width
@@ -198,26 +316,325 @@ Component
                     leftMargin: UM.Theme.getSize("default_margin").width
                     rightMargin: UM.Theme.getSize("default_margin").width
                     right: parent.right
-                    bottom: parent.bottom
+                    // bottomMargin: UM.Theme.getSize("default_margin").height
+                }
+                Label
+                {
+                id: versionTitle
+                text: catalog.i18nc("@title:window", "MKS CURA-Plugin V4.4")
+                wrapMode: Text.WordWrap
+                font: UM.Theme.getFont("large_bold")
+                }
+                // Button
+                // {
+                //     id: uploadbutton6
+                //     height: UM.Theme.getSize("save_button_save_to_button").height
+                //     text: catalog.i18nc("@info:status", "open");
+                //     onClicked: connectActionDialog2.show()
+                // }
+            }
+
+             Row
+            {
+                x:10
+                y:450
+                spacing: 10
+                anchors
+                {
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                    horizontalCenter: parent.horizontalCenter
                     // bottomMargin: UM.Theme.getSize("default_margin").height
                 }
                 Button
                 {
-                    id: homebutton
+                    id: homebutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: "Cool Down";
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+                    // text: catalog.i18nc("@label", "Fan ON");
+                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Open Fan"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
                 }
                 Button
                 {
-                    id: uploadbutton
+                    id: uploadbutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@info:status", "Sending data to printer");
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Close Fan"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+                }
+                Button
+                {
+                    enabled:
+                    {
+                        if (printerModel == null)
+                        {
+                            return false; //Can't control the printer if not connected
+                        }
+
+                        if (!connectedDevice.acceptsCommands)
+                        {
+                            return false; //Not allowed to do anything.
+                        }
+
+                        if(activePrintJob == null)
+                        {
+                            return true
+                        }
+
+                        if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                        {
+                            return false; //Printer is in a state where it can't react to manual control
+                        }
+                        return true;
+                    }
+                    id: uploadbutton3
+                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()                    
+                }
+                Button
+                {
+                    enabled:
+                    {
+                        if (printerModel == null)
+                        {
+                            return false; //Can't control the printer if not connected
+                        }
+
+                        if (!connectedDevice.acceptsCommands)
+                        {
+                            return false; //Not allowed to do anything.
+                        }
+
+                        if(activePrintJob == null)
+                        {
+                            return true
+                        }
+
+                        if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                        {
+                            return false; //Printer is in a state where it can't react to manual control
+                        }
+                        return true;
+                    }
+                    id: homebutton
+                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 }
             }
 
+                Button
+                {
+                    x:0
+                    y:10
+                    id: editbutton
+                    height: 20
+                    width: 20
+                    // text: currentLanguage == "zh_CN" ? "编辑" : "edit";
+                    // iconName: "list-activate";
+                    iconSource: UM.Theme.getIcon("settings")
+                    // color: UM.Theme.getColor("setting_control_button")
+                    // onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+                    // onClicked: {
+                    //     Cura.Actions.configureMachines.trigger()
+                    // }
+                    onClicked: {
+                        // Cura.MachineAction.base.show()
+                        Cura.Actions.configureMachines.trigger()
+                    }
+                    // iconName: "configure"
+                   
+                    // background: {
+                    //     color: "white"
+                    // }
+
+                }
+            
+
+            Column
+            {
+                 enabled:
+                {
+                    if (printerModel == null)
+                    {
+                        return false; //Can't control the printer if not connected
+                    }
+
+                    if (!connectedDevice.acceptsCommands)
+                    {
+                        return false; //Not allowed to do anything.
+                    }
+
+                    if(activePrintJob == null)
+                    {
+                        return true
+                    }
+
+                    if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                    {
+                        return false; //Printer is in a state where it can't react to manual control
+                    }
+                    return true;
+                }
+
+                // enabled:
+                // {
+                //     // if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'printing')
+                //     // {
+                //     //     return false
+                //     // }else {
+                //     //     return true
+                //     // }      
+                //     // if (connectedPrinter != null && connectedPrinter.acceptsCommands) {
+                //     //     return false
+                //     // }else {
+                //     //     return true
+                //     // }
+                //     // if (Cura.MachineManager.printerOutputDevices[0].isprinterprinting() == "true") {
+                //     //     return true
+                //     // }else {
+                //     //     return false
+                //     // }
+                //     if (connectedPrinter.jobState == "printing") {
+                //         return false
+                //     }else {
+                //         return true
+                //     }
+                // }
+                x:270
+                y:220
+                spacing: UM.Theme.getSize("default_lining").height
+                anchors
+                {
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                }
+
+                Label
+                    {
+                        text: catalog.i18nc("@label", "E0")
+                        color: UM.Theme.getColor("setting_control_text")
+                        font: UM.Theme.getFont("default")
+                        width: UM.Theme.getSize("section").height
+                        height: UM.Theme.getSize("setting_control").height
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                Button
+                    {
+                        iconSource: UM.Theme.getIcon("arrow_top");
+                        style: UM.Theme.styles.monitor_button_style
+                        width: height
+                        height: UM.Theme.getSize("setting_control").height
+
+                        onClicked:
+                        {
+                            Cura.MachineManager.printerOutputDevices[0].e0up()
+                        }
+                    }
+                Button
+                    {
+                        iconSource: UM.Theme.getIcon("arrow_bottom");
+                        style: UM.Theme.styles.monitor_button_style
+                        width: height
+                        height: UM.Theme.getSize("setting_control").height
+
+                        onClicked:
+                        {
+                            Cura.MachineManager.printerOutputDevices[0].e0down()
+                        }
+                    }
+                }
+
+            Column
+            {
+                 enabled:
+                {
+                    if (printerModel == null)
+                    {
+                        return false; //Can't control the printer if not connected
+                    }
+
+                    if (!connectedDevice.acceptsCommands)
+                    {
+                        return false; //Not allowed to do anything.
+                    }
+
+                    if(activePrintJob == null)
+                    {
+                        return true
+                    }
+
+                    if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
+                    {
+                        return false; //Printer is in a state where it can't react to manual control
+                    }
+                    return true;
+                }
+                visible:Cura.MachineManager.printerOutputDevices[0].printer_E_num() == 2 ? true : false
+                // visible: false
+                x:300
+                y:220
+                spacing: UM.Theme.getSize("default_lining").height
+                anchors
+                {
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                }
+
+                Label
+                    {
+                        text: catalog.i18nc("@label", "E1")
+                        color: UM.Theme.getColor("setting_control_text")
+                        font: UM.Theme.getFont("default")
+                        width: UM.Theme.getSize("section").height
+                        height: UM.Theme.getSize("setting_control").height
+                        verticalAlignment: Text.AlignVCenter
+                        horizontalAlignment: Text.AlignHCenter
+                    }
+
+                Button
+                    {
+                        iconSource: UM.Theme.getIcon("arrow_top");
+                        style: UM.Theme.styles.monitor_button_style
+                        width: height
+                        height: UM.Theme.getSize("setting_control").height
+
+                        onClicked:
+                        {
+                            Cura.MachineManager.printerOutputDevices[0].e1up()
+                        }
+                    }
+                Button
+                    {
+                        iconSource: UM.Theme.getIcon("arrow_bottom");
+                        style: UM.Theme.styles.monitor_button_style
+                        width: height
+                        height: UM.Theme.getSize("setting_control").height
+
+                        onClicked:
+                        {
+                            Cura.MachineManager.printerOutputDevices[0].e1down()
+                        }
+                    }
+                }
+
         }
+
+        // UM.Dialog {
+        //     id: connectActionDialog2;
+        //     rightButtons: Button {
+        //         iconName: "dialog-close";
+        //         onClicked: connectActionDialog.reject();
+        //         text: catalog.i18nc("@action:button", "Close");
+        //     }
+
+        //     Loader {
+        //         anchors.fill: parent;
+        //         source: "MachineConfig.qml";
+        //     }
+        // }
 
         UM.Dialog{
             id: sdDialog
@@ -305,6 +722,15 @@ Component
                         sdDialog.hide()
                         Cura.MachineManager.printerOutputDevices[0].printSDFiles(listview.model[listview.currentIndex])
                     }
+                }
+            },
+            Button {
+                id: btnRefresh
+                text: catalog.i18nc("@action:button", "Refresh")
+                onClicked:
+                {
+                    Cura.MachineManager.printerOutputDevices[0].getSDFiles
+                    
                 }
             }
         ]
