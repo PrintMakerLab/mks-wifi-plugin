@@ -21,7 +21,7 @@ from PyQt5.QtWidgets import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QLab
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 
 from PyQt5.QtNetwork import QHttpMultiPart, QHttpPart, QNetworkRequest, QNetworkAccessManager, QNetworkReply, QTcpSocket
-from PyQt5.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, Qt, QObject
+from PyQt5.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, Qt, QObject, QByteArray
 from queue import Queue
 
 from . import utils
@@ -561,23 +561,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._progress_message.actionTriggered.connect(self._cancelSendGcode)
                 self._progress_message.optionToggled.connect(self._onOptionStateChanged)
                 self._progress_message.show()
-                self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
-                self._post_part = QHttpPart()
+
+                data = QByteArray()
+                data.append(single_string_file_data.encode())
+
+                # self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
+                # self._post_part = QHttpPart()
                 # file_name = file_name.encode(sys.getfilesystemencoding())
                 # Logger.log("e", "sys.getfilesystemencoding(): %s" % str(sys.getfilesystemencoding()))
                 # Logger.log("d", "file_namefile_name222: %s" % str(file_name.encode("utf-8")))
                 # Logger.log("d", "QUrl.toPercentEncoding(): %s" % str(QUrl.toPercentEncoding(file_name)))
-                self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
-                                        "form-data; name=\"file\"; filename=\"%s\"" % file_name)
-                self._post_part.setBody(single_string_file_data.encode())
-                self._post_multi_part.append(self._post_part)
+                # self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
+                #                         "form-data; name=\"file\"; filename=\"%s\"" % file_name)
+                # self._post_part.setBody(single_string_file_data.encode())
+                # self._post_multi_part.append(self._post_part)
                 post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
                 # post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, QUrl.toPercentEncoding(file_name))))
                 # post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, "%E5%87%A0%E4%BD%95%E4%BD%93.gcode")))
                 post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
                 # post_request.setRawHeader(b'Content-Type', b'application/x-www-form-urlencoded')
                 post_request.setRawHeader(b'Connection', b'keep-alive')
-                self._post_reply = self._manager.post(post_request, self._post_multi_part)
+                self._post_reply = self._manager.post(post_request, data)
                 self._post_reply.uploadProgress.connect(self._onUploadProgress)
                 self._post_reply.sslErrors.connect(self._onUploadError)
                 self._gcode = None
@@ -923,17 +927,20 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     QCoreApplication.processEvents()
                     last_process_events = time.time()
 
-            self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
-            self._post_part = QHttpPart()
+            data = QByteArray()
+            data.append(single_string_file_data.encode())
+
+            # self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
+            # self._post_part = QHttpPart()
             # self._post_part.setHeader(QNetworkRequest.ContentTypeHeader, b'application/octet-stream')
-            self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
-                                      "form-data; name=\"file\"; filename=\"%s\"" % file_name)
-            self._post_part.setBody(single_string_file_data.encode())
-            self._post_multi_part.append(self._post_part)
+            # self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
+            #                           "form-data; name=\"file\"; filename=\"%s\"" % file_name)
+            # self._post_part.setBody(single_string_file_data.encode())
+            # self._post_multi_part.append(self._post_part)
             post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
             post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
             post_request.setRawHeader(b'Connection', b'keep-alive')
-            self._post_reply = self._manager.post(post_request, self._post_multi_part)
+            self._post_reply = self._manager.post(post_request, data)
             self._post_reply.uploadProgress.connect(self._onUploadProgress)
             self._post_reply.sslErrors.connect(self._onUploadError)
             # Logger.log("d", "http://%s:80/upload?X-Filename=%s" % (self._address, file_name))
