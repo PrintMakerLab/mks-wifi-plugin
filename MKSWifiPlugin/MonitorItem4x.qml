@@ -137,7 +137,7 @@ Component
                 // {
                 //     id: addButton
                 //     height: UM.Theme.getSize("save_button_save_to_button").height
-                //     text: catalog.i18nc("@action:button", "Print");
+                //     text: catalog.i18nc("@action:button", "Напечатать");
                 //     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 // }
 
@@ -149,9 +149,9 @@ Component
                     {
                         if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'paused')
                         {
-                            return catalog.i18nc("@label", "Resume");
+                            return catalog.i18nc("@label", "ПРОДОЛЖИТЬ");
                         }else{
-                            return catalog.i18nc("@label", "Pause/Resume");
+                            return catalog.i18nc("@label", "ПАУЗА/ПРОДОЛЖИТЬ");
                         }
                         // return catalog.i18nc("@label", Cura.MachineManager.printerOutputDevices[0].printer_state());
                     }
@@ -166,7 +166,7 @@ Component
                 //     height: UM.Theme.getSize("save_button_save_to_button").height
                 //     text: 
                 //     {
-                //         return catalog.i18nc("@label", "Pause");
+                //         return catalog.i18nc("@label", "ПАУЗА");
                 //     }
                 //     visible: manager.printer_state() != 'paused'
                 //     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
@@ -177,7 +177,7 @@ Component
                 {
                     id: removeButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@label", "Abort")
+                    text: catalog.i18nc("@label", "ОСТАНОВИТЬ")
                     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
                 }
@@ -186,7 +186,7 @@ Component
                 {
                     id: rediscoverButton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@label", "SD")
+                    text: catalog.i18nc("@label", "ФАЙЛЫ")
                     onClicked: sdDialog.showDialog()
                 }
             }
@@ -205,14 +205,14 @@ Component
                 {
                     id: homebutton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: "Cool Down";
+                    text: "ОТКЛЮЧИТЬ НАГРЕВ";
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 }
                 Button
                 {
                     id: uploadbutton
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: catalog.i18nc("@info:status", "Sending data to printer");
+                    text: catalog.i18nc("@info:status", "ОТПРАВИТЬ ФАЙЛ");
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
                 }
             }
@@ -282,7 +282,7 @@ Component
             }
             rightButtons: [
             Button {
-                text: catalog.i18nc("@label","Delete")
+                text: catalog.i18nc("@label","Удалить")
                 onClicked:
                 {
                     // sdDialog.reject()
@@ -296,7 +296,7 @@ Component
             },
             Button {
                 id: btnOk
-                text: catalog.i18nc("@action:button", "Print")
+                text: catalog.i18nc("@action:button", "Печатать")
                 onClicked:
                 {
                     // sdDialog.accept()

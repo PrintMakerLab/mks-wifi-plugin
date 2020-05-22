@@ -61,8 +61,8 @@ Item {
             height: UM.Theme.getSize("save_button_save_to_button").height;
             onClicked: Cura.MachineManager.printerOutputDevices[0].requestAuthentication();
             style: UM.Theme.styles.print_setup_action_button;
-            text: catalog.i18nc("@action:button", "Request Access");
-            tooltip: catalog.i18nc("@info:tooltip", "Send access request to the printer");
+            text: catalog.i18nc("@action:button", "Запрос доступа");
+            tooltip: catalog.i18nc("@info:tooltip", "Отправить запрос на принтер");
             visible: printerConnected && !printerAcceptsCommands && !authenticationRequested;
         }
 
@@ -70,10 +70,12 @@ Item {
             height: UM.Theme.getSize("save_button_save_to_button").height;
             onClicked: connectActionDialog.show();
             style: UM.Theme.styles.print_setup_action_button;
-            text: catalog.i18nc("@action:button", "Connect");
-            tooltip: catalog.i18nc("@info:tooltip", "Connect to a printer");
+            text: catalog.i18nc("@action:button", "Подключить");
+            tooltip: catalog.i18nc("@info:tooltip", "Подключить к принтеру");
             visible: !printerConnected;
+
         }
+
     }
 
     UM.Dialog {
@@ -81,7 +83,7 @@ Item {
         rightButtons: Button {
             iconName: "dialog-close";
             onClicked: connectActionDialog.reject();
-            text: catalog.i18nc("@action:button", "Close");
+            text: catalog.i18nc("@action:button", "Закрыть");
         }
 
         Loader {

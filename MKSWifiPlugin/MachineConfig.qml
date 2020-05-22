@@ -52,7 +52,7 @@ Cura.MachineAction
         {
             id: pageTitle
             width: parent.width
-            text: catalog.i18nc("@title:window", "Connect to Networked Printer")
+            text: catalog.i18nc("@title:window", "Подключение к сетевому принтеру")
             wrapMode: Text.WordWrap
             font.pointSize: 18
         }
@@ -62,7 +62,7 @@ Cura.MachineAction
             id: pageDescription
             width: parent.width
             wrapMode: Text.WordWrap
-            text: catalog.i18nc("@label", "To print directly to your printer over the network, please make sure your printer is connected to the network using a network cable or by connecting your printer to your WIFI network. If you don't connect Cura with your printer, you can still use a USB drive to transfer g-code files to your printer.\n\nSelect your printer from the list below:")
+            text: catalog.i18nc("@label", "Для управления принтером убедитесь, что принтер подключен к сети с помощью кабеля или с помощью подключения по WIFI. Если вы не подключите принтер к Cura, то все равно сможете использовать SD карту для передачи файлов с g-кодом на принтер.\n\nВыберите принтер из списка ниже:")
         }
 
         Row
@@ -72,7 +72,7 @@ Cura.MachineAction
             Button
             {
                 id: addButton
-                text: catalog.i18nc("@action:button", "Add");
+                text: catalog.i18nc("@action:button", "Добавить");
                 onClicked:
                 {
                     manualPrinterDialog.showDialog("", "");
@@ -82,7 +82,7 @@ Cura.MachineAction
             Button
             {
                 id: editButton
-                text: catalog.i18nc("@action:button", "Edit")
+                text: catalog.i18nc("@action:button", "Редактировать")
                 enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                 onClicked:
                 {
@@ -93,7 +93,7 @@ Cura.MachineAction
             Button
             {
                 id: removeButton
-                text: catalog.i18nc("@action:button", "Remove")
+                text: catalog.i18nc("@action:button", "Удалить")
                 enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                 onClicked: manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress)
             }
@@ -101,7 +101,7 @@ Cura.MachineAction
             Button
             {
                 id: rediscoverButton
-                text: catalog.i18nc("@action:button", "Refresh")
+                text: catalog.i18nc("@action:button", "Обновить")
                 onClicked: manager.restartDiscovery()
             }
         }
@@ -191,7 +191,7 @@ Cura.MachineAction
                     anchors.left: parent.left
                     anchors.right: parent.right
                     wrapMode: Text.WordWrap
-                    text: catalog.i18nc("@label", "If your printer is not listed, read the <a href='%1'>network printing troubleshooting guide</a>").arg("https://ultimaker.com/en/troubleshooting");
+                    text: catalog.i18nc("@label", "Если ваш принтер не отобразился, то посетите <a href='%1'>эту страницу</a>").arg("https://ultimaker.com/en/troubleshooting");
                     onLinkActivated: Qt.openUrlExternally(link)
                 }
 
@@ -218,7 +218,7 @@ Cura.MachineAction
                     {
                         width: Math.round(parent.width * 0.5)
                         wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Type")
+                        text: catalog.i18nc("@label", "Тип")
                     }
                     Label
                     {
@@ -249,7 +249,7 @@ Cura.MachineAction
                     {
                         width: Math.round(parent.width * 0.5)
                         wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Firmware version")
+                        text: catalog.i18nc("@label", "Версия прошивки")
                     }
                     Label
                     {
@@ -261,7 +261,7 @@ Cura.MachineAction
                     {
                         width: Math.round(parent.width * 0.5)
                         wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Address")
+                        text: catalog.i18nc("@label", "IP адрес")
                     }
                     Label
                     {
@@ -297,12 +297,12 @@ Cura.MachineAction
                     width: parent.width
                     wrapMode: Text.WordWrap
                     visible: base.selectedPrinter != null && !base.completeProperties
-                    text: catalog.i18nc("@label", "The printer at this address has not yet responded." )
+                    text: catalog.i18nc("@label", "Принтер с этим IP адресом еще неответил." )
                 }
 
                 Button
                 {
-                    text: catalog.i18nc("@action:button", "Connect")
+                    text: catalog.i18nc("@action:button", "Подключить")
                     enabled: (base.selectedPrinter && base.completeProperties) ? true : false
                     onClicked: connectToPrinter()
                 }
@@ -316,7 +316,7 @@ Cura.MachineAction
         property string printerKey
         property alias addressText: addressField.text
 
-        title: catalog.i18nc("@title:window", "Printer Address")
+        title: catalog.i18nc("@title:window", "Добавление нового принтера")
 
         minimumWidth: 400 * screenScaleFactor
         minimumHeight: 130 * screenScaleFactor
@@ -346,7 +346,7 @@ Cura.MachineAction
 
             Label
             {
-                text: catalog.i18nc("@alabel","Enter the IP address or hostname of your printer on the network.")
+                text: catalog.i18nc("@alabel","Введите IP адрес вашего принтера, чтобы добавить его: ")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
@@ -367,7 +367,7 @@ Cura.MachineAction
 
         rightButtons: [
             Button {
-                text: catalog.i18nc("@action:button","Cancel")
+                text: catalog.i18nc("@action:button","Отмена")
                 onClicked:
                 {
                     manualPrinterDialog.reject()
@@ -376,7 +376,7 @@ Cura.MachineAction
             },
             Button {
                 id: btnOk
-                text: catalog.i18nc("@action:button", "OK")
+                text: catalog.i18nc("@action:button", "Ок")
                 onClicked:
                 {
                     manualPrinterDialog.accept()
