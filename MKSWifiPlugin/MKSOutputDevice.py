@@ -75,6 +75,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.setName(instance_id)
         self.setShortDescription(i18n_catalog.i18nc("@action:button", "Print over TFT"))
         self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Print over TFT"))
+
+        print_over_tft = "Print over TFT"
+        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "ru_RU":
+            print_over_tft = "Печать через TFT"
+        else:
+            print_over_tft = "Print over TFT"
+        self.setShortDescription(i18n_catalog.i18nc("@action:button", print_over_tft))
+        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", print_over_tft))
+
         self.setIconName("print")
         self.setConnectionText(i18n_catalog.i18nc("@info:status", "Connected to TFT on {0}").format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(self._onGlobalContainerChanged)
@@ -149,8 +158,17 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._socket = QTcpSocket()
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        self.setShortDescription(i18n_catalog.i18nc("@action:button", "Print over " + global_container_stack.getName()))
-        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Print over " + global_container_stack.getName()))
+        self.setShortDescription(i18n_catalog.i18nc("@action:button", "PRINT OVER " + global_container_stack.getName()))
+        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "PRINT OVER " + global_container_stack.getName()))
+
+        print_over = "PRINT OVER "
+        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "ru_RU":
+            print_over = "НАПЕЧАТАТЬ НА"
+        else:
+            print_over = "PRINT OVER "
+        self.setShortDescription(i18n_catalog.i18nc("@action:button", print_over + global_container_stack.getName()))
+        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", print_over + global_container_stack.getName()))
+
         Logger.log("d", "MKS socket connecting ")
         # self._socket.waitForConnected(2000)
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
@@ -237,7 +255,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/autoprint", "True")
         preferences.addPreference("mkswifi/savepath", "")
-        filename,_ = QFileDialog.getOpenFileName(None, "choose file", preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
+        filename,_ = QFileDialog.getOpenFileName(None, "Choose file", preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
+
+        choose_file = "Choose file"
+        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "ru_RU":
+            print_over = "Выберите файл"
+        else:
+            print_over = "Choose file"
+        filename,_ = QFileDialog.getOpenFileName(None, choose_file, preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
+
         preferences.setValue("mkswifi/savepath", filename)
         self._uploadpath = filename
         if ".g" in filename.lower():
@@ -297,7 +323,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def closeMDialog(self):
         if self._mdialog:
             self._mdialog.close()
-    
+
     def renameupload(self, filename):
         if self._mfilename and ".g" in self._mfilename.text().lower():
             filename = filename[:filename.rfind("/")]+"/"+self._mfilename.text()
@@ -353,9 +379,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return
             self._mdialog.close()
             self.uploadfunc(filename)
-        
-        
-    
+
+
+
     def uploadfunc(self, filename):
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/autoprint", "True")
@@ -399,7 +425,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._update_timer.start()
             self._progress_message.hide()
             Logger.log("e", "An exception occurred in network connection: %s" % str(e))
-            
+
 
     @pyqtProperty("QVariantList")
     def getSDFiles(self):
@@ -738,7 +764,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._sendCommand("M24")
         else:
             self._sendCommand("M25")
-        
+
 
     @pyqtSlot()
     def resumePrint(self):
@@ -769,7 +795,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # if time.time() - self.last_update_time > 10 or time.time() - self.last_update_time<-10:
                 #     Logger.log("d", "mks time:"+str(self.last_update_time)+str(time.time()))
                 #     self._sendCommand("M20")
-                #     self.last_update_time = time.time() 
+                #     self.last_update_time = time.time()
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
@@ -917,7 +943,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = False
         self._progress_message.hide()
         self._post_reply.abort()
-    
+
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
         # self.__additional_components_view = CuraApplication.getInstance().createQmlComponent(self._monitor_view_qml_path, {"mkscontroller": self})
