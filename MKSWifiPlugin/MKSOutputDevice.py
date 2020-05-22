@@ -297,7 +297,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def closeMDialog(self):
         if self._mdialog:
             self._mdialog.close()
-    
+
     def renameupload(self, filename):
         if self._mfilename and ".g" in self._mfilename.text().lower():
             filename = filename[:filename.rfind("/")]+"/"+self._mfilename.text()
@@ -353,9 +353,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return
             self._mdialog.close()
             self.uploadfunc(filename)
-        
-        
-    
+
+
+
     def uploadfunc(self, filename):
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/autoprint", "True")
@@ -370,7 +370,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             file_name = filename[filename.rfind("/")+1:]
             self._last_file_name = file_name
             self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла"), 0, False, -1,
-                                        i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "поставить на печать")
+                                        i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "Поставить на печать")
                                         , option_state=preferences.getValue("mkswifi/autoprint"))
             self._progress_message.addAction(i18n_catalog.i18nc("@action:button", "ОТМЕНА"), None, "")
             self._progress_message.actionTriggered.connect(self._cancelSendGcode)
@@ -399,7 +399,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._update_timer.start()
             self._progress_message.hide()
             Logger.log("e", "An exception occurred in network connection: %s" % str(e))
-            
+
 
     @pyqtProperty("QVariantList")
     def getSDFiles(self):
@@ -599,7 +599,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             preferences.addPreference("mkswifi/savepath", "")
             # CuraApplication.getInstance().showPrintMonitor.emit(True)
             self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла"), 0, False, -1,
-                                         i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "поставить на печать")
+                                         i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "Поставить на печать")
                                          , option_state=preferences.getValue("mkswifi/autoprint"))
             self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "ОТМЕНА"), None, "")
             self._progress_message.actionTriggered.connect(self._cancelSendGcode)
@@ -738,7 +738,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._sendCommand("M24")
         else:
             self._sendCommand("M25")
-        
+
 
     @pyqtSlot()
     def resumePrint(self):
@@ -769,7 +769,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # if time.time() - self.last_update_time > 10 or time.time() - self.last_update_time<-10:
                 #     Logger.log("d", "mks time:"+str(self.last_update_time)+str(time.time()))
                 #     self._sendCommand("M20")
-                #     self.last_update_time = time.time() 
+                #     self.last_update_time = time.time()
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
@@ -917,7 +917,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = False
         self._progress_message.hide()
         self._post_reply.abort()
-    
+
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
         # self.__additional_components_view = CuraApplication.getInstance().createQmlComponent(self._monitor_view_qml_path, {"mkscontroller": self})
