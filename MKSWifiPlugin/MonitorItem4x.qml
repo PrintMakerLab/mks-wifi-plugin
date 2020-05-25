@@ -227,7 +227,7 @@ Component
                 listview.model = Cura.MachineManager.printerOutputDevices[0].getSDFiles
                 sdDialog.show();
             }
-            title: catalog.i18nc("@title:window", "Open file(s)")
+            title: catalog.i18nc("@title:window", "Файлы на SD карте")
             Column{
                 spacing: UM.Theme.getSize("default_margin").height
                 ScrollView{
