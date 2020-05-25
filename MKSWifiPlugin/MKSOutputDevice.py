@@ -1,3 +1,4 @@
+# coding=utf-8
 from UM.i18n import i18nCatalog
 from UM.Application import Application
 from UM.Logger import Logger
@@ -20,10 +21,12 @@ from PyQt5.QtWidgets import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QLab
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 
 from PyQt5.QtNetwork import QHttpMultiPart, QHttpPart, QNetworkRequest, QNetworkAccessManager, QNetworkReply, QTcpSocket
-from PyQt5.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, Qt
+from PyQt5.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, Qt, QObject, QByteArray
 from queue import Queue
 
 from . import utils
+
+import UM
 
 import json
 import os.path
@@ -31,6 +34,7 @@ import time
 import base64
 import sys
 from enum import IntEnum
+from UM.Preferences import Preferences
 
 from typing import cast, Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
 if TYPE_CHECKING:
@@ -65,16 +69,19 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._target_bed_temperature = 0
         self._num_extruders = 1
         self._hotend_temperatures = [0] * self._num_extruders
-        self._target_hotend_temperatures = [0] * self._num_extruders
+        self._target_hotend_temperatures = [0] * self._num_extruders      
 
-        self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem4x.qml")
-        # self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem.qml")
+        self._application = CuraApplication.getInstance()
+        if self._application.getVersion().split(".")[0] == "4":
+            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem4x.qml")
+        else:
+            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem.qml")
 
         self.setPriority(3)  # Make sure the output device gets selected above local file output and Octoprint XD
         self._active_machine = CuraApplication.getInstance().getMachineManager().activeMachine
         self.setName(instance_id)
-        self.setShortDescription(i18n_catalog.i18nc("@action:button", "Печать через TFT"))
-        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Печать через TFT"))
+        self.setShortDescription(i18n_catalog.i18nc("@action:button", "Print over TFT"))
+        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Print over TFT"))
         self.setIconName("print")
         self.setConnectionText(i18n_catalog.i18nc("@info:status", "Connected to TFT on {0}").format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(self._onGlobalContainerChanged)
@@ -122,6 +129,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._connection_message = None
         self.__additional_components_view = None
 
+        self._ischanging = False
+
         self._update_timer = QTimer()
         self._update_timer.setInterval(2000)  # TODO; Add preference for update interval
         self._update_timer.setSingleShot(False)
@@ -140,22 +149,38 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         # Application.getInstance().getOutputDeviceManager().outputDevicesChanged.connect(self._onOutputDevicesChanged)
         CuraApplication.getInstance().getCuraSceneController().activeBuildPlateChanged.connect(self.CreateMKSController)
 
+
     def _onOutputDevicesChanged(self):
         Logger.log("d", "MKS _onOutputDevicesChanged")
 
     def connect(self):
         if self._socket is not None:
             self._socket.close()
+            self._socket.abort()
+            self._socket = None
         self._socket = QTcpSocket()
+        # Logger.log("d","self._socket.connectToHost %s" % self._address)
+        # Logger.log("d","self._socket.connectToHost %s" % self._port)
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        self.setShortDescription(i18n_catalog.i18nc("@action:button", "Печать на " + global_container_stack.getName()))
-        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Печать на " + global_container_stack.getName()))
+        name1 = "Print over " + global_container_stack.getName()
+        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+            name1 = "WIFI传输打印"
+        else:
+            name1 = "Print over " + global_container_stack.getName()
+        self.setShortDescription(i18n_catalog.i18nc("@action:button", name1))
+        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", name1))
         Logger.log("d", "MKS socket connecting ")
-        # self._socket.waitForConnected(2000)
+        self._socket.waitForConnected(2000)
+        # Logger.log("d","self._socket.connectToHost self._socket.state() %s" % self._socket.state())
+        # if self._socket.state() == 0 or self._socket.state() == 1:
+        #     self.connect()
+        # else:
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
+        preferences = Application.getInstance().getPreferences()
+        preferences.addPreference("mkswifi/stopupdate", "False")
         self._update_timer.start()
 
     def getProperties(self):
@@ -208,10 +233,72 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.sendCommand("M104 S0\r\n M140 S0\r\n M106 S255")
 
     @pyqtSlot()
+    def openfan(self):
+        self.sendCommand("M106 S255")
+
+    @pyqtSlot()
+    def closefan(self):
+        self.sendCommand("M106 S0")
+
+    @pyqtSlot()
+    def unlockmotor(self):
+        self.sendCommand("M84")
+
+    @pyqtSlot()
+    def e0down(self):
+        if not self._isPrinting:
+            self.sendCommand("T0\r\n G91\r\n G1 E10 F1000\r\n G90")
+        else:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message.show()
+
+    @pyqtSlot()
+    def e0up(self):
+        if not self._isPrinting:
+            self.sendCommand("T0\r\n G91\r\n G1 E-10 F1000\r\n G90")
+        else:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message.show()
+
+    @pyqtSlot()
+    def e1down(self):
+        if not self._isPrinting:
+            self.sendCommand("T1\r\n G91\r\n G1 E10 F1000\r\n G90")
+        else:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message.show()
+
+    @pyqtSlot()
+    def e1up(self):
+        if not self._isPrinting:
+            self.sendCommand("T1\r\n G91\r\n G1 E-10 F1000\r\n G90")
+        else:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message.show()
+
+    @pyqtSlot()
+    def printer_E_num(self):
+        return self._number_of_extruders
+
+    @pyqtSlot()
     def printer_state(self):
         if len(self._printers) <= 0:
             return "offline"
         return self.printers[0].state
+
+    @pyqtSlot()
+    def isprinterprinting(self):
+        if self._isPrinting:
+            return "true"
+        return "false"
 
     @pyqtSlot()
     def selectfile(self):
@@ -224,7 +311,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def deleteSDFiles(self, filename):
         # filename = "几何图.gcode"
         self._sendCommand("M30 1:/" + filename)
-        self.sdFiles.remove(filename)
+        if filename in self.sdFiles:
+            self.sdFiles.remove(filename)
         self._sendCommand("M20")
 
     @pyqtSlot(str)
@@ -237,86 +325,124 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/autoprint", "True")
         preferences.addPreference("mkswifi/savepath", "")
-        filename,_ = QFileDialog.getOpenFileName(None, "Выберите файл", preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
-        preferences.setValue("mkswifi/savepath", filename)
-        self._uploadpath = filename
-        if ".g" in filename.lower():
-            # Logger.log("d", "selectfile:"+filename)
-            if filename in self.sdFiles:
-                if self._mdialog:
-                    self._mdialog.close()
-                self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует!")
-                dialogvbox = QVBoxLayout()
-                dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
-                yesbtn.clicked.connect(lambda : self.renameupload(filename))
-                nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует! Вы хотите переименовать?")
-                self._mfilename = QLineEdit()
-                self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
-                dialoghbox.addWidget(yesbtn)
-                dialogvbox.addWidget(content)
-                dialogvbox.addWidget(self._mfilename)
-                dialogvbox.addLayout(dialoghbox)
-                self._mdialog.setLayout(dialogvbox)
-                self._mdialog.exec_()
-                return
-            if len(filename[filename.rfind("/")+1:]) >= 30:
-                if self._mdialog:
-                    self._mdialog.close()
-                self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Название файла слишком длинное!")
-                dialogvbox = QVBoxLayout()
-                dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
-                yesbtn.clicked.connect(lambda : self.renameupload(filename))
-                nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Название файла слишком длинное! Переименуйте, пожалуйста:")
-                self._mfilename = QLineEdit()
-                self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
-                dialoghbox.addWidget(yesbtn)
-                dialogvbox.addWidget(content)
-                dialogvbox.addWidget(self._mfilename)
-                dialogvbox.addLayout(dialoghbox)
-                self._mdialog.setLayout(dialogvbox)
-                self._mdialog.exec_()
-                return
-            if self.isBusy():
-                if self._exception_message:
-                    self._exception_message.hide()
-                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "Файл нельзя передавать во время печати!"))
-                self._exception_message.show()
-                return
-            self.uploadfunc(filename)
+        # if preferences.getValue("mkswifi/uploadingfile"):
+        if self._progress_message:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message.show()
+        else:
+            filename,_ = QFileDialog.getOpenFileName(None, "choose file", preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
+            preferences.setValue("mkswifi/savepath", filename)
+            self._uploadpath = filename
+            if ".g" in filename.lower():
+                Logger.log("d", "selectfile:"+filename)
+                if filename[filename.rfind("/")+1:] in self.sdFiles:
+                    if self._mdialog:
+                        self._mdialog.close()
+                    self._mdialog = QDialog()
+                    self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
+                    dialogvbox = QVBoxLayout()
+                    dialoghbox = QHBoxLayout()
+                    yesbtn = QPushButton("yes")
+                    nobtn = QPushButton("no")
+                    yesbtn.clicked.connect(lambda : self.uploadfunc(filename))
+                    nobtn.clicked.connect(self.closeMDialog)
+                    content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
+                    self._mfilename = QLineEdit()
+                    self._mfilename.setText(filename[filename.rfind("/")+1:])
+                    dialoghbox.addWidget(yesbtn)
+                    dialoghbox.addWidget(nobtn)
+                    dialogvbox.addWidget(content)
+                    dialogvbox.addWidget(self._mfilename)
+                    dialogvbox.addLayout(dialoghbox)
+                    self._mdialog.setLayout(dialogvbox)
+                    self._mdialog.exec_()
+                    return
+                if len(filename[filename.rfind("/")+1:]) >= 30:
+                    if self._mdialog:
+                        self._mdialog.close()
+                    self._mdialog = QDialog()
+                    self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
+                    dialogvbox = QVBoxLayout()
+                    dialoghbox = QHBoxLayout()
+                    yesbtn = QPushButton("yes")
+                    nobtn = QPushButton("no")
+                    yesbtn.clicked.connect(lambda : self.renameupload(filename))
+                    nobtn.clicked.connect(self.closeMDialog)
+                    content = QLabel("File name is too long to upload, please rename it.")
+                    self._mfilename = QLineEdit()
+                    self._mfilename.setText(filename[filename.rfind("/")+1:])
+                    dialoghbox.addWidget(yesbtn)
+                    dialoghbox.addWidget(nobtn)
+                    dialogvbox.addWidget(content)
+                    dialogvbox.addWidget(self._mfilename)
+                    dialogvbox.addLayout(dialoghbox)
+                    self._mdialog.setLayout(dialogvbox)
+                    self._mdialog.exec_()
+                    return
+                if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
+                    if self._mdialog:
+                        self._mdialog.close()
+                    self._mdialog = QDialog()
+                    self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+                    dialogvbox = QVBoxLayout()
+                    dialoghbox = QHBoxLayout()
+                    yesbtn = QPushButton("yes")
+                    nobtn = QPushButton("no")
+                    yesbtn.clicked.connect(lambda : self.renameupload(filename))
+                    nobtn.clicked.connect(self.closeMDialog)
+                    content = QLabel("File name can not include chinese, please rename it.")
+                    self._mfilename = QLineEdit()
+                    self._mfilename.setText(filename[filename.rfind("/")+1:])
+                    dialoghbox.addWidget(yesbtn)
+                    dialoghbox.addWidget(nobtn)
+                    dialogvbox.addWidget(content)
+                    dialogvbox.addWidget(self._mfilename)
+                    dialogvbox.addLayout(dialoghbox)
+                    self._mdialog.setLayout(dialogvbox)
+                    self._mdialog.exec_()
+                    return
+                if self.isBusy():
+                    if self._exception_message:
+                        self._exception_message.hide()
+                    self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
+                    self._exception_message.show()
+                    return
+                self.uploadfunc(filename)
+    
+    def is_contains_chinese(self,strs):
+        #检验是否含有中文字符
+        # Logger.log("d", "is_contains_chinese---filename==: %s" % str(strs))
+        # for _char in strs:
+        #     if '\u4e00' <= _char <= '\u9fa5':
+        #         return True
+        return False
 
     def closeMDialog(self):
         if self._mdialog:
             self._mdialog.close()
-
+    
     def renameupload(self, filename):
         if self._mfilename and ".g" in self._mfilename.text().lower():
             filename = filename[:filename.rfind("/")]+"/"+self._mfilename.text()
+            # Logger.log("d", "renameupload---filename==: %s" % str(filename))
             if self._mfilename.text() in self.sdFiles:
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует!")
+                self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
-                yesbtn.clicked.connect(lambda : self.renameupload(filename))
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
+                yesbtn.clicked.connect(lambda : self.uploadfunc(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует! Вы хотите переименовать?")
+                content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
                 dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
                 dialogvbox.addWidget(content)
                 dialogvbox.addWidget(self._mfilename)
                 dialogvbox.addLayout(dialoghbox)
@@ -327,18 +453,40 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Название файла слишком длинное!")
+                self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
                 yesbtn.clicked.connect(lambda : self.renameupload(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Название файла слишком длинное! Переименуйте, пожалуйста:")
+                content = QLabel("File name is too long to upload, please rename it.")
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
                 dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
+                dialogvbox.addWidget(content)
+                dialogvbox.addWidget(self._mfilename)
+                dialogvbox.addLayout(dialoghbox)
+                self._mdialog.setLayout(dialogvbox)
+                self._mdialog.exec_()
+                return
+            if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
+                if self._mdialog:
+                    self._mdialog.close()
+                self._mdialog = QDialog()
+                self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+                dialogvbox = QVBoxLayout()
+                dialoghbox = QHBoxLayout()
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
+                yesbtn.clicked.connect(lambda : self.renameupload(filename))
+                nobtn.clicked.connect(self.closeMDialog)
+                content = QLabel("File name can not include chinese, please rename it.")
+                self._mfilename = QLineEdit()
+                self._mfilename.setText(filename[filename.rfind("/")+1:])
+                dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
                 dialogvbox.addWidget(content)
                 dialogvbox.addWidget(self._mfilename)
                 dialogvbox.addLayout(dialoghbox)
@@ -348,59 +496,113 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy():
                 if self._exception_message:
                     self._exception_message.hide()
-                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "Файл нельзя передавать во время печати!"))
+                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
                 self._exception_message.show()
                 return
             self._mdialog.close()
-            self.uploadfunc(filename)
-
-
-
+            # preferences = Application.getInstance().getPreferences()
+            # if preferences.getValue("mkswifi/uploadingfile"):
+            if self._progress_message:
+                if self._error_message is not None:
+                    self._error_message.hide()
+                self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+                self._error_message.show()
+            else:
+                self.uploadfunc(filename)
+        
+        
+    
     def uploadfunc(self, filename):
+        if self._mdialog:
+            self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
-        preferences.addPreference("mkswifi/autoprint", "True")
-        preferences.addPreference("mkswifi/savepath", "")
-        self._update_timer.stop()
-        self._isSending = True
-        self._preheat_timer.stop()
-        single_string_file_data = ""
-        try:
-            f = open(self._uploadpath, "r")
-            single_string_file_data = f.read()
-            file_name = filename[filename.rfind("/")+1:]
-			
-            self._last_file_name = utils.transliterator(file_name)
-            self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла %$" % utils.transliterator(file_name)), 0, False, -1,
-                                        i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "Поставить на печать")
-                                        , option_state=preferences.getValue("mkswifi/autoprint"))
-            self._progress_message.addAction(i18n_catalog.i18nc("@action:button", "ОТМЕНА"), None, "")
-            self._progress_message.actionTriggered.connect(self._cancelSendGcode)
-            self._progress_message.optionToggled.connect(self._onOptionStateChanged)
-            self._progress_message.show()
-            self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
-            self._post_part = QHttpPart()
-            self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
-                                      "form-data; name=\"file\"; filename=\"%s\"" % utils.transliterator(file_name))
-            self._post_part.setBody(single_string_file_data.encode())
-            self._post_multi_part.append(self._post_part)
-            post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, utils.transliterator(file_name))))
-            post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
-            post_request.setRawHeader(b'Connection', b'keep-alive')
-            self._post_reply = self._manager.post(post_request, self._post_multi_part)
-            self._post_reply.uploadProgress.connect(self._onUploadProgress)
-            self._post_reply.sslErrors.connect(self._onUploadError)
-            self._gcode = None
-        except IOError as e:
-            Logger.log("e", "An exception occurred in network connection: %s" % str(e))
-            self._progress_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Не удалось передать файл!"))
+        if self._progress_message:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
             self._error_message.show()
-            self._update_timer.start()
-        except Exception as e:
-            self._update_timer.start()
-            self._progress_message.hide()
-            Logger.log("e", "An exception occurred in network connection: %s" % str(e))
+        else:
+            preferences.addPreference("mkswifi/autoprint", "True")
+            preferences.addPreference("mkswifi/savepath", "")
+            # preferences.addPreference("mkswifi/uploadingfile", "True")
+            self._update_timer.stop()
+            self._isSending = True
+            self._preheat_timer.stop()
+            single_string_file_data = ""
+            try:
+                f = open(self._uploadpath, "r", encoding=sys.getfilesystemencoding())
+                single_string_file_data = f.read()
+                # Logger.log("d", "single_string_file_data: %s" % str(single_string_file_data))
+                file_name = filename[filename.rfind("/")+1:]
+                # Logger.log("d", "file_namefile_name: %s" % str(file_name))
+                self._last_file_name = filename[filename.rfind("/")+1:]
+                # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
+                #                             i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
+                #                             , option_state=preferences.getValue("mkswifi/autoprint"))
+                name0 = "Print Jobs"
+                name1 = "Uploading print job to printer"
+                name2 = "Sending Print Job"
+                namecancel = "Cancel"
+                if self._application.getPreferences().getValue("general/language") == "zh_CN":
+                    name0 = "传输完成之后，立即打印。"
+                    name1 = "正在上传打印文件到打印机"
+                    name2 = "正在发送打印文件"
+                    namecancel = "取消"
+                else:
+                    name0 = "Print Jobs"
+                    name1 = "Uploading print job to printer"
+                    name2 = "Sending Print Job"
+                    namecancel = "Cancel"
+                    
+                self._progress_message = Message(name1, 0, False, -1,
+                                            name2, option_text=name0
+                                            , option_state=preferences.getValue("mkswifi/autoprint"))
+                self._progress_message.addAction("Cancel", namecancel, None, "")
+                self._progress_message.actionTriggered.connect(self._cancelSendGcode)
+                self._progress_message.optionToggled.connect(self._onOptionStateChanged)
+                self._progress_message.show()
 
+                data = QByteArray()
+                data.append(single_string_file_data.encode())
+
+                # self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
+                # self._post_part = QHttpPart()
+                # file_name = file_name.encode(sys.getfilesystemencoding())
+                # Logger.log("e", "sys.getfilesystemencoding(): %s" % str(sys.getfilesystemencoding()))
+                # Logger.log("d", "file_namefile_name222: %s" % str(file_name.encode("utf-8")))
+                # Logger.log("d", "QUrl.toPercentEncoding(): %s" % str(QUrl.toPercentEncoding(file_name)))
+                # self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
+                #                         "form-data; name=\"file\"; filename=\"%s\"" % file_name)
+                # self._post_part.setBody(single_string_file_data.encode())
+                # self._post_multi_part.append(self._post_part)
+                post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
+                # post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, QUrl.toPercentEncoding(file_name))))
+                # post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, "%E5%87%A0%E4%BD%95%E4%BD%93.gcode")))
+                post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
+                # post_request.setRawHeader(b'Content-Type', b'application/x-www-form-urlencoded')
+                post_request.setRawHeader(b'Connection', b'keep-alive')
+                self._post_reply = self._manager.post(post_request, data)
+                self._post_reply.uploadProgress.connect(self._onUploadProgress)
+                self._post_reply.sslErrors.connect(self._onUploadError)
+                self._gcode = None
+            except IOError as e:
+                Logger.log("e", "An exception occurred in network connection: %s" % str(e))
+                # preferences.setValue("mkswifi/uploadingfile", "False")
+                self._progress_message.hide()
+                self._progress_message = None
+                self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+                self._error_message.show()
+                self._update_timer.start()
+            except Exception as e:
+                # preferences.setValue("mkswifi/uploadingfile", "False")
+                self._update_timer.start()
+                if self._progress_message is not None:
+                    self._progress_message.hide()
+                    self._progress_message = None
+                Logger.log("e", "An exception occurred in network connection: %s" % str(e))
+
+
+            
 
     @pyqtProperty("QVariantList")
     def getSDFiles(self):
@@ -418,7 +620,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand(cmd)
 
     def _sendCommand(self, cmd):
+        if self._ischanging:
+            if "G28" in cmd or "G0" in cmd:
+                # Logger.log("d", "_sendCommand G28 in cmd or G0 in cmd-----------: %s" % str(cmd))
+                return
         # Logger.log("d", "_sendCommand %s" % str(cmd))
+        if self.isBusy():
+            if "M20" in cmd:
+                # Logger.log("d", "_sendCommand M20 in cmd-----------: %s" % str(cmd))
+                return
         if self._socket and self._socket.state() == 2 or self._socket.state() == 3:
             if isinstance(cmd, str):
                 self._command_queue.put(cmd + "\r\n")
@@ -427,12 +637,19 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._command_queue.put(eachCommand + "\r\n")
 
     def disconnect(self):
+        # Logger.log("d", "disconnect--------------")
+        preferencess = Application.getInstance().getPreferences()
+        if preferencess.getValue("mkswifi/stopupdate"):
+            # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
+            self._error_message = Message("Printer disconneted.")
+            self._error_message.show()
         # self._updateJobState("")
         self._isConnect = False
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Closed))
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
+            # self._socket.abort()
         if self._progress_message:
             self._progress_message.hide()
         if self._error_message:
@@ -457,8 +674,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not gcode_dict:
             return
         self._gcode = gcode_dict.get(active_build_plate, None)
-        # Logger.log("d", "mks ready for print")
-        self.startPrint()
+        Logger.log("d", "mks ready for print")
+        # preferences = Application.getInstance().getPreferences()
+        # if preferences.getValue("mkswifi/uploadingfile"):
+        if self._progress_message:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message.show()
+        else:
+            self.startPrint()
 
     def startPrint(self):
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
@@ -473,8 +698,21 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._progress_message = None
 
         if self.isBusy():
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла"), 0, False, -1,
-                                         i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."))
+            # self._error_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
+            #                              i18n_catalog.i18nc("@info:title", "Sending Data"))
+            # self._error_message.show()
+            tipsname = "Now is printing. Send file to printer failed."
+            if self._application.getPreferences().getValue("general/language") == "zh_CN":
+                tipsname = "正在打印中，发送文件失败"
+            else:
+                tipsname = "Now is printing. Send file to printer failed."
+            if self._progress_message is not None:
+                self._progress_message.hide()
+                self._progress_message = None
+            if self._error_message is not None:
+                self._error_message.hide()
+                self._error_message = None
+            self._error_message = Message(tipsname)
             self._error_message.show()
             return
         job_name = Application.getInstance().getPrintInformation().jobName.strip()
@@ -486,18 +724,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._mdialog:
                 self._mdialog.close()
             self._mdialog = QDialog()
-            self._mdialog.setWindowTitle("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует!")
+            self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
             dialogvbox = QVBoxLayout()
             dialoghbox = QHBoxLayout()
-            nobtn = QPushButton("Отмена")
-            yesbtn = QPushButton("Ок")
-            yesbtn.clicked.connect(self.recheckfilename)
+            yesbtn = QPushButton("yes")
+            nobtn = QPushButton("no")
+            yesbtn.clicked.connect(self._startPrint(filename))
             nobtn.clicked.connect(self.closeMDialog)
-            content = QLabel("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует! Вы хотите переименовать?")
+            content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
             self._mfilename = QLineEdit()
             self._mfilename.setText(filename[filename.rfind("/")+1:])
-            dialoghbox.addWidget(nobtn)
             dialoghbox.addWidget(yesbtn)
+            dialoghbox.addWidget(nobtn)
             dialogvbox.addWidget(content)
             dialogvbox.addWidget(self._mfilename)
             dialogvbox.addLayout(dialoghbox)
@@ -508,18 +746,40 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._mdialog:
                 self._mdialog.close()
             self._mdialog = QDialog()
-            self._mdialog.setWindowTitle("Название файла слишком длинное!")
+            self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
             dialogvbox = QVBoxLayout()
             dialoghbox = QHBoxLayout()
-            nobtn = QPushButton("Отмена")
-            yesbtn = QPushButton("Ок")
+            yesbtn = QPushButton("yes")
+            nobtn = QPushButton("no")
             yesbtn.clicked.connect(self.recheckfilename)
             nobtn.clicked.connect(self.closeMDialog)
-            content = QLabel("Название файла слишком длинное! Переименуйте, пожалуйста:")
+            content = QLabel("File name is too long to upload, please rename it.")
             self._mfilename = QLineEdit()
             self._mfilename.setText(filename[filename.rfind("/")+1:])
-            dialoghbox.addWidget(nobtn)
             dialoghbox.addWidget(yesbtn)
+            dialoghbox.addWidget(nobtn)
+            dialogvbox.addWidget(content)
+            dialogvbox.addWidget(self._mfilename)
+            dialogvbox.addLayout(dialoghbox)
+            self._mdialog.setLayout(dialogvbox)
+            self._mdialog.exec_()
+            return
+        if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
+            if self._mdialog:
+                self._mdialog.close()
+            self._mdialog = QDialog()
+            self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+            dialogvbox = QVBoxLayout()
+            dialoghbox = QHBoxLayout()
+            yesbtn = QPushButton("yes")
+            nobtn = QPushButton("no")
+            yesbtn.clicked.connect(self.recheckfilename)
+            nobtn.clicked.connect(self.closeMDialog)
+            content = QLabel("File name can not include chinese, please rename it.")
+            self._mfilename = QLineEdit()
+            self._mfilename.setText(filename[filename.rfind("/")+1:])
+            dialoghbox.addWidget(yesbtn)
+            dialoghbox.addWidget(nobtn)
             dialogvbox.addWidget(content)
             dialogvbox.addWidget(self._mfilename)
             dialogvbox.addLayout(dialoghbox)
@@ -535,18 +795,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует!")
+                self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
-                yesbtn.clicked.connect(self.recheckfilename)
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
+                yesbtn.clicked.connect(self._startPrint(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Файл с именем "+filename[filename.rfind("/")+1:]+" уже существует! Вы хотите переименовать?")
+                content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
                 dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
                 dialogvbox.addWidget(content)
                 dialogvbox.addWidget(self._mfilename)
                 dialogvbox.addLayout(dialoghbox)
@@ -557,18 +817,40 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("Название файла слишком длинное!")
+                self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                nobtn = QPushButton("Отмена")
-                yesbtn = QPushButton("Ок")
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
                 yesbtn.clicked.connect(self.recheckfilename)
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("Название файла слишком длинное! Переименуйте, пожалуйста:")
+                content = QLabel("File name is too long to upload, please rename it.")
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
-                dialoghbox.addWidget(nobtn)
                 dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
+                dialogvbox.addWidget(content)
+                dialogvbox.addWidget(self._mfilename)
+                dialogvbox.addLayout(dialoghbox)
+                self._mdialog.setLayout(dialogvbox)
+                self._mdialog.exec_()
+                return
+            if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
+                if self._mdialog:
+                    self._mdialog.close()
+                self._mdialog = QDialog()
+                self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+                dialogvbox = QVBoxLayout()
+                dialoghbox = QHBoxLayout()
+                yesbtn = QPushButton("yes")
+                nobtn = QPushButton("no")
+                yesbtn.clicked.connect(self.recheckfilename)
+                nobtn.clicked.connect(self.closeMDialog)
+                content = QLabel("File name can not include chinese, please rename it.")
+                self._mfilename = QLineEdit()
+                self._mfilename.setText(filename[filename.rfind("/")+1:])
+                dialoghbox.addWidget(yesbtn)
+                dialoghbox.addWidget(nobtn)
                 dialogvbox.addWidget(content)
                 dialogvbox.addWidget(self._mfilename)
                 dialogvbox.addLayout(dialoghbox)
@@ -578,7 +860,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy():
                 if self._exception_message:
                     self._exception_message.hide()
-                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "Файл нельзя передавать во время печати!"))
+                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
                 self._exception_message.show()
                 return
             self._mdialog.close()
@@ -587,24 +869,43 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def _messageBoxCallback(self, button):
         def delayedCallback():
             if button == QMessageBox.Yes:
-                self.startPrint()
+                self.startPrint()                
             else:
-                CuraApplication.getInstance().getController().setActiveStage("Подготовка")
+                CuraApplication.getInstance().getController().setActiveStage("PrepareStage")
 
     def _startPrint(self, file_name="cura_file.gcode"):
+        if self._mdialog:
+            self._mdialog.close()
+        preferences = Application.getInstance().getPreferences()
+        # if preferences.getValue("mkswifi/uploadingfile"):
+        if self._progress_message:
+            if self._error_message is not None:
+                self._error_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message.show()
+            return
         self._preheat_timer.stop()
-        # self._screenShot = utils.take_screenshot()
+        self._screenShot = utils.take_screenshot()
         try:
-            preferences = Application.getInstance().getPreferences()
             preferences.addPreference("mkswifi/autoprint", "True")
             preferences.addPreference("mkswifi/savepath", "")
+            # preferences.addPreference("mkswifi/uploadingfile", "True")
             # CuraApplication.getInstance().showPrintMonitor.emit(True)
-            self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла %s" % utils.transliterator(file_name)), 0, False, -1,
-                                         i18n_catalog.i18nc("@info:title", "Отправка файла на принтер..."), option_text=i18n_catalog.i18nc("@label", "Поставить на печать")
-                                         , option_state=preferences.getValue("mkswifi/autoprint"))
-            self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "ОТМЕНА"), None, "")
-            self._progress_message.actionTriggered.connect(self._cancelSendGcode)
-            self._progress_message.optionToggled.connect(self._onOptionStateChanged)
+            # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
+            #                              i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
+            #                              , option_state=preferences.getValue("mkswifi/autoprint"))
+            if self._application.getVersion().split(".")[0] == "4":
+                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1,
+                                        i18n_catalog.i18nc("@info:title", "Sending Print Job"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
+                                        , option_state=preferences.getValue("mkswifi/autoprint"))
+                self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "Cancel"), None, "")
+                self._progress_message.actionTriggered.connect(self._cancelSendGcode)
+                self._progress_message.optionToggled.connect(self._onOptionStateChanged)
+            else:
+                Application.getInstance().showPrintMonitor.emit(True)
+                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False,
+                                             -1)
+
             self._progress_message.show()
             # job_name = Application.getInstance().getPrintInformation().jobName.strip()
             # if job_name is "":
@@ -616,7 +917,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
             single_string_file_data = ""
             if self._screenShot:
-                single_string_file_data += utils.add_screenshot(self._screenShot, 50, 50, ";simage:")
+                single_string_file_data += utils.add_screenshot(self._screenShot, 100, 100, ";simage:")
                 single_string_file_data += utils.add_screenshot(self._screenShot, 200, 200, ";;gimage:")
                 single_string_file_data += "\r"
             last_process_events = time.time()
@@ -626,38 +927,53 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     QCoreApplication.processEvents()
                     last_process_events = time.time()
 
-            self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
-            self._post_part = QHttpPart()
+            data = QByteArray()
+            data.append(single_string_file_data.encode())
+
+            # self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
+            # self._post_part = QHttpPart()
             # self._post_part.setHeader(QNetworkRequest.ContentTypeHeader, b'application/octet-stream')
-            self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
-                                      "form-data; name=\"file\"; filename=\"%s\"" % utils.transliterator(file_name))
-            self._post_part.setBody(single_string_file_data.encode())
-            self._post_multi_part.append(self._post_part)
-            post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, utils.transliterator(file_name))))
+            # self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
+            #                           "form-data; name=\"file\"; filename=\"%s\"" % file_name)
+            # self._post_part.setBody(single_string_file_data.encode())
+            # self._post_multi_part.append(self._post_part)
+            post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
             post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
             post_request.setRawHeader(b'Connection', b'keep-alive')
-            self._post_reply = self._manager.post(post_request, self._post_multi_part)
+            self._post_reply = self._manager.post(post_request, data)
             self._post_reply.uploadProgress.connect(self._onUploadProgress)
             self._post_reply.sslErrors.connect(self._onUploadError)
-            # Logger.log("d", "http://%s:80/upload?X-Filename=%s" % (self._address, utils.transliterator(file_name)))
+            # Logger.log("d", "http://%s:80/upload?X-Filename=%s" % (self._address, file_name))
             self._gcode = None
         except IOError as e:
             Logger.log("e", "An exception occurred in network connection: %s" % str(e))
             self._progress_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Отправка файла на принтер не произошла!"))
+            self._progress_message = None
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
             self._error_message.show()
             self._update_timer.start()
         except Exception as e:
             self._update_timer.start()
-            self._progress_message.hide()
+            if self._progress_message is not None:
+                self._progress_message.hide()
+                self._progress_message = None
             Logger.log("e", "An exception occurred in network connection: %s" % str(e))
 
     def _printFile(self):
-        self._sendCommand("M23 " + utils.transliterator(self._last_file_name))
+        self._sendCommand("M23 " + self._last_file_name)
         self._sendCommand("M24")
 
     def _onUploadProgress(self, bytes_sent, bytes_total):
-        if bytes_total > 0:
+        Logger.log("d", "Upload _onUploadProgress bytes_sent %s" % str(bytes_sent))
+        Logger.log("d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
+        if bytes_sent == bytes_total and bytes_sent > 0:
+            self._progress_message.hide()
+            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Print job was successfully sent to the printer."))
+            self._error_message.show()
+            CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+            # preferences = Application.getInstance().getPreferences()
+            # preferences.setValue("mkswifi/uploadingfile", "False")
+        elif bytes_total > 0:
             new_progress = bytes_sent / bytes_total * 100
             # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
             # timeout responses if this happens.
@@ -665,12 +981,33 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if new_progress > self._progress_message.getProgress():
                 self._progress_message.show()  # Ensure that the message is visible.
                 self._progress_message.setProgress(bytes_sent / bytes_total * 100)
-        else:
-            self._progress_message.setProgress(0)
-            self._progress_message.hide()
+        # elif bytes_total == 0 and bytes_sent == 0:
+        # # 此时不能判断是否失败
+        #     self._progress_message.setProgress(0)
+        #     self._progress_message.hide()
+        #     self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+        #     self._error_message.show()                
+        else: 
+            # preferences = Application.getInstance().getPreferences()
+            # preferences.setValue("mkswifi/uploadingfile", "False")       
+            if self._progress_message is not None:    
+                self._progress_message.setProgress(0)
+                self._progress_message.hide()
+                self._progress_message = None
+            # self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+            # self._error_message.show()
+            # self._update_timer.start()
 
     def _onUploadError(self, reply, sslerror):
         Logger.log("d", "Upload Error")
+        # preferences = Application.getInstance().getPreferences()
+        # preferences.setValue("mkswifi/uploadingfile", "False")
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
+        self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+        self._error_message.show()
+        self._update_timer.start()
 
     def _setHeadPosition(self, x, y, z, speed):
         self._sendCommand("G0 X%s Y%s Z%s F%s" % (x, y, z, speed))
@@ -685,6 +1022,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("G0 Z%s F%s" % (z, speed))
 
     def _homeHead(self):
+        # Logger.log("e", "_homeHead_homeHead---------------")
         self._sendCommand("G28 X Y")
 
     def _homeBed(self):
@@ -694,21 +1032,37 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand(["G91", "G0 X%s Y%s Z%s F%s" % (x, y, z, speed), "G90"])
 
     def _update(self):
+        # Logger.log("d", "timer_update MKS wifi reconnecting")
+        preferencess = Application.getInstance().getPreferences()
+        if preferencess.getValue("mkswifi/stopupdate"):
+            # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
+            self._update_timer.stop()
+            return
+        # Logger.log("d", "self._socket.state() %s" % self._socket.state())
         if self._socket is not None and (self._socket.state() == 2 or self._socket.state() == 3):
-            _send_data = "M105\r\nM997\r\n"
+            # _send_data = "M105\r\nM997\r\n"
+            if self._command_queue.qsize() > 0:
+                _send_data = ""
+            else:
+                _send_data = "M105\r\nM997\r\n"
             if self.isBusy():
                 _send_data += "M994\r\nM992\r\nM27\r\n"
             while self._command_queue.qsize() > 0:
                 _queue_data = self._command_queue.get()
                 if "M23" in _queue_data:
-                    self._socket.writeData(_queue_data.encode())
+                    self._socket.writeData(_queue_data.encode(sys.getfilesystemencoding()))
                     continue
                 if "M24" in _queue_data:
-                    self._socket.writeData(_queue_data.encode())
+                    self._socket.writeData(_queue_data.encode(sys.getfilesystemencoding()))
                     continue
+                if self.isBusy():
+                    if "M20" in _queue_data:
+                        # Logger.log("d", "_update M20 in _queue_data-----------: %s" % str(_queue_data))
+                        continue
                 _send_data += _queue_data
-            # Logger.log("d", "_send_data: \r\n%s" % _send_data)
-            self._socket.writeData(_send_data.encode())
+            Logger.log("d", "_send_data: \r\n%s" % _send_data)
+            # Logger.log("d", "_send_datasys.getfilesystemencoding(): \r\n%s" % _send_data.encode(sys.getfilesystemencoding()))
+            self._socket.writeData(_send_data.encode(sys.getfilesystemencoding()))
             self._socket.flush()
             # self._socket.waitForReadyRead()
         else:
@@ -731,19 +1085,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @pyqtSlot()
     def cancelPrint(self):
+        # Logger.log("e", "cancelPrint: %s" % str(self._isPause))
         self._sendCommand("M26")
 
     @pyqtSlot()
     def pausePrint(self):
-        if self.printers[0].state == "pause":
+        # if self.printers[0].state == "paused":
+        # Logger.log("e", "pausePrint: %s" % str(self._isPause))
+        if self._isPause:
+            self._ischanging = True
             self._sendCommand("M24")
         else:
             self._sendCommand("M25")
-
+        
+        
 
     @pyqtSlot()
     def resumePrint(self):
-        self._sendCommand("M25")
+        # Logger.log("e", "resumePrint: %s" % str(self._isPause))
+        if self._isPause:
+            self._ischanging = True
+        self._sendCommand("M24")
 
     def on_read(self):
         if not self._socket:
@@ -755,22 +1117,26 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._connection_state != UnifiedConnectionState.Connected:
                 self._sendCommand("M20")
                 self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
-                self.setConnectionText(i18n_catalog.i18nc("@info:status", "Подключение по TFT произошло успешно!"))
+                self.setConnectionText(i18n_catalog.i18nc("@info:status", "TFT Connect succeed"))
             # ss = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
             # while self._socket.canReadLine():
                 # ss = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
             # ss_list = ss.split("\r\n")
+            # Logger.log("e", "sys.getfilesystemencoding(): %s" % str(sys.getfilesystemencoding()))
             if not self._printers:
                 self._createPrinterList()
             printer = self.printers[0]
             while self._socket.canReadLine():
+                
                 s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-                # Logger.log("d", "mks recv: "+s)
+                Logger.log("d", "mks recv: "+s)
+                # Logger.log("d", "mks recv self._socket addr: %s" % self._socket.peerAddress)
+                # self.__additional_components_view.findChild(QObject, "ManualPrinterControl").setProperty("enabled", False)
                 s = s.replace("\r", "").replace("\n", "")
                 # if time.time() - self.last_update_time > 10 or time.time() - self.last_update_time<-10:
                 #     Logger.log("d", "mks time:"+str(self.last_update_time)+str(time.time()))
                 #     self._sendCommand("M20")
-                #     self.last_update_time = time.time()
+                #     self.last_update_time = time.time() 
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
@@ -811,16 +1177,21 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self._isPrinting = False
                         self._isPause = False
                         job_state = 'idle'
+                        printer.acceptsCommands = True
                     elif "PRINTING" in s:
                         self._isPrinting = True
                         self._isPause = False
                         job_state = 'printing'
+                        printer.acceptsCommands = False
                     elif "PAUSE" in s:
                         self._isPrinting = False
                         self._isPause = True
                         job_state = 'paused'
+                        printer.acceptsCommands = False                        
                     print_job.updateState(job_state)
                     printer.updateState(job_state)
+                    if self._isPrinting:
+                        self._ischanging = False
                     # self._updateJobState(job_state)
                     continue
                 # print_job.updateState('idle')
@@ -847,17 +1218,26 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     # self.setTimeTotal(self._printing_time)
                     continue
                 if s.startswith("M27"):
-                    if self.isBusy():
-                        self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
-                        totaltime = self._printing_time/self._printing_progress*100
+                    if self._application.getVersion().split(".")[0] == "4":
+                        if self.isBusy():
+                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
+                            totaltime = self._printing_time/self._printing_progress*100
+                        else:
+                            self._printing_progress = 0
+                            totaltime = self._printing_time * 100
+                        # Logger.log("d", self._printing_time)
+                        # Logger.log("d", totaltime)
+                        # self.setProgress(self._printing_progress)
+                        print_job.updateTimeTotal(self._printing_time)
+                        print_job.updateTimeElapsed(self._printing_time*2-totaltime)
                     else:
-                        self._printing_progress = 0
-                        totaltime = self._printing_time * 100
-                    # Logger.log("d", self._printing_time)
-                    # Logger.log("d", totaltime)
-                    # self.setProgress(self._printing_progress)
-                    print_job.updateTimeTotal(self._printing_time)
-                    print_job.updateTimeElapsed(self._printing_time*2-totaltime)
+                        if self.isBusy():
+                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
+                            totaltime = 100 / self._printing_progress * self._printing_time
+                        else:
+                            self._printing_progress = 0
+                            totaltime = self._printing_time * 100
+                        print_job.updateTimeTotal(totaltime)
                     continue
                 if 'Begin file list' in s:
                     self._sdFileList = True
@@ -871,6 +1251,22 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     s = s.replace("\n", "").replace("\r", "")
                     if s.lower().endswith("gcode") or s.lower().endswith("gco") or s.lower.endswith("g"):
                         self.sdFiles.append(s)
+                    continue
+                if s.startswith("Upload"):
+                    tipsname = "Send file to printer failed."
+                    if self._application.getPreferences().getValue("general/language") == "zh_CN":
+                        tipsname = "发送文件失败"
+                    else:
+                        tipsname = "Send file to printer failed."
+                    if self._progress_message is not None:
+                        self._progress_message.hide()
+                        self._progress_message = None
+                    if self._error_message is not None:
+                        self._error_message.hide()
+                        self._error_message = None
+                    self._error_message = Message(tipsname)
+                    self._error_message.show()
+                    self._update_timer.start()
                     continue
         except Exception as e:
             print(e)
@@ -918,7 +1314,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = False
         self._progress_message.hide()
         self._post_reply.abort()
-
+    
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
         # self.__additional_components_view = CuraApplication.getInstance().createQmlComponent(self._monitor_view_qml_path, {"mkscontroller": self})
