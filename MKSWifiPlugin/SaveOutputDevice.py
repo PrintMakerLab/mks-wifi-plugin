@@ -23,8 +23,8 @@ class SaveOutputDevice(OutputDevice):
         self.setName("save_with_screenshot")
         self.setPriority(2)
         self._preferences = Application.getInstance().getPreferences()
-        self.setShortDescription(catalog.i18nc("@action:button", "Save as TFT file"))
-        self.setDescription(catalog.i18nc("@properties:tooltip", "Save as TFT file"))
+        self.setShortDescription(catalog.i18nc("@action:button", u"Сохранить в файл со скриншотом"))
+        self.setDescription(catalog.i18nc("@properties:tooltip", u"Сохранить в файл со скриншотом"))
         self.setIconName("save")
         self._writing = False
 
