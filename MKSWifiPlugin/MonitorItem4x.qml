@@ -337,7 +337,7 @@ Component
              Row
             {
                 x:10
-                y:450
+                y:600
                 spacing: 10
                 anchors
                 {
@@ -351,14 +351,14 @@ Component
                     id: homebutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // text: catalog.i18nc("@label", "Fan ON");
-                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Open Fan"
+                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
                 }
                 Button
                 {
                     id: uploadbutton2
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Close Fan"
+                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
                 }
                 Button
@@ -501,8 +501,8 @@ Component
                 //         return true
                 //     }
                 // }
-                x:270
-                y:220
+                x:310
+                y:243
                 spacing: UM.Theme.getSize("default_lining").height
                 anchors
                 {
