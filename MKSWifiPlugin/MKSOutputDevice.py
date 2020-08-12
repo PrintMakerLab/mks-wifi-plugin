@@ -72,10 +72,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._target_hotend_temperatures = [0] * self._num_extruders      
 
         self._application = CuraApplication.getInstance()
-        if self._application.getVersion().split(".")[0] == "4":
-            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem4x.qml")
-        else:
+        if self._application.getVersion().split(".")[0] < "4":
             self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem.qml")
+        else:
+            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem4x.qml")
 
         self.setPriority(3)  # Make sure the output device gets selected above local file output and Octoprint XD
         self._active_machine = CuraApplication.getInstance().getMachineManager().activeMachine
@@ -894,17 +894,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
             #                              i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
             #                              , option_state=preferences.getValue("mkswifi/autoprint"))
-            if self._application.getVersion().split(".")[0] == "4":
+            if self._application.getVersion().split(".")[0] < "4":
+                Application.getInstance().showPrintMonitor.emit(True)
+                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False, -1)
+            else:
                 self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1,
                                         i18n_catalog.i18nc("@info:title", "Sending Print Job"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
                                         , option_state=preferences.getValue("mkswifi/autoprint"))
                 self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "Cancel"), None, "")
                 self._progress_message.actionTriggered.connect(self._cancelSendGcode)
                 self._progress_message.optionToggled.connect(self._onOptionStateChanged)
-            else:
-                Application.getInstance().showPrintMonitor.emit(True)
-                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False,
-                                             -1)
 
             self._progress_message.show()
             # job_name = Application.getInstance().getPrintInformation().jobName.strip()
@@ -1218,7 +1217,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     # self.setTimeTotal(self._printing_time)
                     continue
                 if s.startswith("M27"):
-                    if self._application.getVersion().split(".")[0] == "4":
+                    if self._application.getVersion().split(".")[0] < "4":
+                        if self.isBusy():
+                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
+                            totaltime = 100 / self._printing_progress * self._printing_time
+                        else:
+                            self._printing_progress = 0
+                            totaltime = self._printing_time * 100
+                        print_job.updateTimeTotal(totaltime)
+                    else:
                         if self.isBusy():
                             self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
                             totaltime = self._printing_time/self._printing_progress*100
@@ -1230,14 +1237,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         # self.setProgress(self._printing_progress)
                         print_job.updateTimeTotal(self._printing_time)
                         print_job.updateTimeElapsed(self._printing_time*2-totaltime)
-                    else:
-                        if self.isBusy():
-                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
-                            totaltime = 100 / self._printing_progress * self._printing_time
-                        else:
-                            self._printing_progress = 0
-                            totaltime = self._printing_time * 100
-                        print_job.updateTimeTotal(totaltime)
                     continue
                 if 'Begin file list' in s:
                     self._sdFileList = True
