@@ -4,12 +4,12 @@ from UM.Application import Application
 from UM.Logger import Logger
 from UM.Signal import signalemitter
 from UM.Message import Message
-from cura.PrinterOutputDevice import PrinterOutputDevice, ConnectionState
+from cura.PrinterOutput.PrinterOutputDevice import PrinterOutputDevice, ConnectionState
 from cura.CuraApplication import CuraApplication
 
 from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice, AuthState
-from cura.PrinterOutput.PrinterOutputModel import PrinterOutputModel
-from cura.PrinterOutput.PrintJobOutputModel import PrintJobOutputModel
+from cura.PrinterOutput.Models.PrinterOutputModel import PrinterOutputModel
+from cura.PrinterOutput.Models.PrintJobOutputModel import PrintJobOutputModel
 from UM.PluginRegistry import PluginRegistry
 from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice
 from UM.Settings.ContainerRegistry import ContainerRegistry
