@@ -27,6 +27,10 @@ def getRect():
     result = max((right - left), (front - back))
     return result
 
+def printer_supports_screenshots(printer_name):
+    # printers in denylist sometimes ram the nozzle downwards at the end of a print
+    denylist = ["FLSUN QQ-S"]
+    return not (printer_name in denylist)
 
 def add_screenshot(img, width, height, img_type):
     result = ""
