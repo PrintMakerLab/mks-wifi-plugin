@@ -69,7 +69,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._target_bed_temperature = 0
         self._num_extruders = 1
         self._hotend_temperatures = [0] * self._num_extruders
-        self._target_hotend_temperatures = [0] * self._num_extruders      
+        self._target_hotend_temperatures = [0] * self._num_extruders
 
         self._application = CuraApplication.getInstance()
         if self._application.getVersion().split(".")[0] < "4":
@@ -410,7 +410,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._exception_message.show()
                     return
                 self.uploadfunc(filename)
-    
+
     def is_contains_chinese(self,strs):
         #检验是否含有中文字符
         # Logger.log("d", "is_contains_chinese---filename==: %s" % str(strs))
@@ -422,7 +422,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def closeMDialog(self):
         if self._mdialog:
             self._mdialog.close()
-    
+
     def renameupload(self, filename):
         if self._mfilename and ".g" in self._mfilename.text().lower():
             filename = filename[:filename.rfind("/")]+"/"+self._mfilename.text()
@@ -509,9 +509,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._error_message.show()
             else:
                 self.uploadfunc(filename)
-        
-        
-    
+
+
+
     def uploadfunc(self, filename):
         if self._mdialog:
             self._mdialog.close()
@@ -553,7 +553,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     name1 = "Uploading print job to printer"
                     name2 = "Sending Print Job"
                     namecancel = "Cancel"
-                    
+
                 self._progress_message = Message(name1, 0, False, -1,
                                             name2, option_text=name0
                                             , option_state=preferences.getValue("mkswifi/autoprint"))
@@ -602,7 +602,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 Logger.log("e", "An exception occurred in network connection: %s" % str(e))
 
 
-            
+
 
     @pyqtProperty("QVariantList")
     def getSDFiles(self):
@@ -869,7 +869,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def _messageBoxCallback(self, button):
         def delayedCallback():
             if button == QMessageBox.Yes:
-                self.startPrint()                
+                self.startPrint()
             else:
                 CuraApplication.getInstance().getController().setActiveStage("PrepareStage")
 
@@ -877,6 +877,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._mdialog:
             self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
+        global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
+        if not global_container_stack:
+            return
         # if preferences.getValue("mkswifi/uploadingfile"):
         if self._progress_message:
             if self._error_message is not None:
@@ -915,10 +918,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("d", "mks: "+file_name + Application.getInstance().getPrintInformation().jobName.strip())
 
             single_string_file_data = ""
-            if self._screenShot:
+            if self._screenShot and utils.printer_supports_screenshots(global_container_stack.getName()):
                 single_string_file_data += utils.add_screenshot(self._screenShot, 100, 100, ";simage:")
                 single_string_file_data += utils.add_screenshot(self._screenShot, 200, 200, ";;gimage:")
                 single_string_file_data += "\r"
+            else:
+                Logger.log("d", "Skipping screenshot in MKSOutputDevice.py")
             last_process_events = time.time()
             for line in self._gcode:
                 single_string_file_data += line
@@ -985,11 +990,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         #     self._progress_message.setProgress(0)
         #     self._progress_message.hide()
         #     self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
-        #     self._error_message.show()                
-        else: 
+        #     self._error_message.show()
+        else:
             # preferences = Application.getInstance().getPreferences()
-            # preferences.setValue("mkswifi/uploadingfile", "False")       
-            if self._progress_message is not None:    
+            # preferences.setValue("mkswifi/uploadingfile", "False")
+            if self._progress_message is not None:
                 self._progress_message.setProgress(0)
                 self._progress_message.hide()
                 self._progress_message = None
@@ -1096,8 +1101,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._sendCommand("M24")
         else:
             self._sendCommand("M25")
-        
-        
+
+
 
     @pyqtSlot()
     def resumePrint(self):
@@ -1126,7 +1131,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._createPrinterList()
             printer = self.printers[0]
             while self._socket.canReadLine():
-                
+
                 s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
                 Logger.log("d", "mks recv: "+s)
                 # Logger.log("d", "mks recv self._socket addr: %s" % self._socket.peerAddress)
@@ -1135,7 +1140,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # if time.time() - self.last_update_time > 10 or time.time() - self.last_update_time<-10:
                 #     Logger.log("d", "mks time:"+str(self.last_update_time)+str(time.time()))
                 #     self._sendCommand("M20")
-                #     self.last_update_time = time.time() 
+                #     self.last_update_time = time.time()
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
@@ -1186,7 +1191,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self._isPrinting = False
                         self._isPause = True
                         job_state = 'paused'
-                        printer.acceptsCommands = False                        
+                        printer.acceptsCommands = False
                     print_job.updateState(job_state)
                     printer.updateState(job_state)
                     if self._isPrinting:
@@ -1313,7 +1318,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = False
         self._progress_message.hide()
         self._post_reply.abort()
-    
+
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
         # self.__additional_components_view = CuraApplication.getInstance().createQmlComponent(self._monitor_view_qml_path, {"mkscontroller": self})

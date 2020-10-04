@@ -123,10 +123,12 @@ class SaveOutputDevice(OutputDevice):
         try:
             message.show()
             save_file = open(file_name, "w")
-            if image:
+            if image and utils.printer_supports_screenshots(global_container_stack.getName()):
                 save_file.write(utils.add_screenshot(image, 100, 100, ";simage:"))
                 save_file.write(utils.add_screenshot(image, 200, 200, ";;gimage:"))
                 save_file.write("\r")
+            else:
+                Logger.log("d", "Skipping screenshot in SaveOutputDevice.py")
             for line in _gcode:
                 save_file.write(line)
             save_file.close()
@@ -151,5 +153,3 @@ class SaveOutputDevice(OutputDevice):
     def _onMessageActionTriggered(self, message, action):
         if action == "open_folder" and hasattr(message, "_folder"):
             QDesktopServices.openUrl(QUrl.fromLocalFile(message._folder))
-
-
