@@ -152,7 +152,7 @@ Component
                 Button
                 {
                     id: editButton
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: 
                     {
                         if (activePrintJob.state == "printing") {
@@ -189,7 +189,7 @@ Component
                 Button
                 {
                     id: removeButton
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
                     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
@@ -221,7 +221,7 @@ Component
                         return true;
                     }
                     id: rediscoverButton
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: currentLanguage == "zh_CN" ? "SD 文件":"SD File"
                     onClicked: sdDialog.showDialog()
                 }
@@ -252,9 +252,9 @@ Component
                         return true;
                     }
                     id: uploadbutton
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     // text: catalog.i18nc("@info:status", "Sending data to printer");
-                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Sending Print Job";
+                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
                 }
             }
@@ -336,20 +336,18 @@ Component
 
              Row
             {
-                x:10
-                y:600
-                spacing: 10
+                spacing: UM.Theme.getSize("default_lining").width
                 anchors
                 {
                     leftMargin: UM.Theme.getSize("default_margin").width
                     rightMargin: UM.Theme.getSize("default_margin").width
-                    horizontalCenter: parent.horizontalCenter
-                    // bottomMargin: UM.Theme.getSize("default_margin").height
+                    right: parent.right
+                    bottom: parent.bottom
                 }
                 Button
                 {
                     id: homebutton2
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     // text: catalog.i18nc("@label", "Fan ON");
                     text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
@@ -357,7 +355,7 @@ Component
                 Button
                 {
                     id: uploadbutton2
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
                 }
@@ -387,7 +385,7 @@ Component
                         return true;
                     }
                     id: uploadbutton3
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()                    
                 }
@@ -417,7 +415,7 @@ Component
                         return true;
                     }
                     id: homebutton
-                    height: UM.Theme.getSize("save_button_save_to_button").height
+                    height: UM.Theme.getSize("setting_control").height
                     text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 }
@@ -426,7 +424,7 @@ Component
                 Button
                 {
                     x:0
-                    y:10
+                    y:15
                     id: editbutton
                     height: 20
                     width: 20
@@ -501,8 +499,8 @@ Component
                 //         return true
                 //     }
                 // }
-                x:310
-                y:243
+                x: Qt.platform.os == "osx" ? 335 : 310
+                y: Qt.platform.os == "osx" ? 265 : 243
                 spacing: UM.Theme.getSize("default_lining").height
                 anchors
                 {
