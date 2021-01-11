@@ -101,9 +101,9 @@ Component
         {
             id: horizontalCenterItem
             anchors.left: parent.left
-            anchors.right: sidebar.left
+            anchors.right: printaction.left
         }
-        Row
+        Cura.RoundedRectangle
         {
             id: printaction
             width: UM.Theme.getSize("print_setup_widget").width
@@ -153,161 +153,51 @@ Component
                 {
                     id: editButton
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: 
                     {
                         if (activePrintJob.state == "printing") {
-                             return currentLanguage == "zh_CN" ? "暂停打印" : "Pause"
-                        }else {
-                             return currentLanguage == "zh_CN" ? "恢复打印" : "Resume"
+                            return currentLanguage == "zh_CN" ? "暂停打印" : "Pause" //return catalog.i18nc("@label", "Pause");
+                        } else {
+                            return currentLanguage == "zh_CN" ? "恢复打印" : "Resume" // return catalog.i18nc("@label", "Resume")
                         }
-                        // if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'paused')
-                        // {
-                        //     return catalog.i18nc("@label", "Resume");
-                        // }else{
-                        //     return catalog.i18nc("@label", "Pause")+'/'+catalog.i18nc("@label", "Resume");
-                        // }
-                        // return catalog.i18nc("@label", Cura.MachineManager.printerOutputDevices[0].printer_state());
                     }
-                    // visible: manager.printer_state() == 'paused'
-                    enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+
                     onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
                 }
-                
-                // Button
-                // {
-                //     id: pauseButton
-                //     height: UM.Theme.getSize("save_button_save_to_button").height
-                //     text: 
-                //     {
-                //         return catalog.i18nc("@label", "Pause");
-                //     }
-                //     visible: manager.printer_state() != 'paused'
-                //     enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
-                //     onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
-                // }
 
                 Button
                 {
                     id: removeButton
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
-                    enabled: base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
                 }
 
                 Button
                 {
-                    enabled:
-                    {
-                        if (printerModel == null)
-                        {
-                            return false; //Can't control the printer if not connected
-                        }
-
-                        if (!connectedDevice.acceptsCommands)
-                        {
-                            return false; //Not allowed to do anything.
-                        }
-
-                        if(activePrintJob == null)
-                        {
-                            return true
-                        }
-
-                        if (activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                        {
-                            return false; //Printer is in a state where it can't react to manual control
-                        }
-                        return true;
-                    }
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
                     id: rediscoverButton
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "SD 文件":"SD File"
                     onClicked: sdDialog.showDialog()
                 }
 
                 Button
                 {
-                    enabled:
-                    {
-                        if (printerModel == null)
-                        {
-                            return false; //Can't control the printer if not connected
-                        }
-
-                        if (!connectedDevice.acceptsCommands)
-                        {
-                            return false; //Not allowed to do anything.
-                        }
-
-                        if(activePrintJob == null)
-                        {
-                            return true
-                        }
-
-                        if (activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                        {
-                            return false; //Printer is in a state where it can't react to manual control
-                        }
-                        return true;
-                    }
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
                     id: uploadbutton
                     height: UM.Theme.getSize("setting_control").height
-                    // text: catalog.i18nc("@info:status", "Sending data to printer");
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
                 }
             }
-            // Row
-            // {
-            //      enabled:
-            //     {
-            //         if (printerModel == null)
-            //         {
-            //             return false; //Can't control the printer if not connected
-            //         }
 
-            //         if (!connectedDevice.acceptsCommands)
-            //         {
-            //             return false; //Not allowed to do anything.
-            //         }
-
-            //         if(activePrintJob == null)
-            //         {
-            //             return true
-            //         }
-
-            //         if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-            //         {
-            //             return false; //Printer is in a state where it can't react to manual control
-            //         }
-            //         return true;
-            //     }
-            //     spacing: UM.Theme.getSize("default_lining").width
-            //     anchors
-            //     {
-            //         leftMargin: UM.Theme.getSize("default_margin").width
-            //         rightMargin: UM.Theme.getSize("default_margin").width
-            //         right: parent.right
-            //         bottom: parent.bottom
-            //         // bottomMargin: UM.Theme.getSize("default_margin").height
-            //     }
-            //     // Button
-            //     // {
-            //     //     id: homebutton
-            //     //     height: UM.Theme.getSize("save_button_save_to_button").height
-            //     //     text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
-            //     //     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
-            //     // }
-            //     Button
-            //     {
-            //         id: uploadbutton
-            //         height: UM.Theme.getSize("save_button_save_to_button").height
-            //         // text: catalog.i18nc("@info:status", "Sending data to printer");
-            //         text: currentLanguage == "zh_CN" ? "发送打印文件":"Sending Print Job";
-            //         onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
-            //     }
-            // }
             Row
             {
                 spacing: UM.Theme.getSize("default_lining").width
@@ -334,7 +224,7 @@ Component
                 // }
             }
 
-             Row
+            Row
             {
                 spacing: UM.Theme.getSize("default_lining").width
                 anchors
@@ -348,7 +238,7 @@ Component
                 {
                     id: homebutton2
                     height: UM.Theme.getSize("setting_control").height
-                    // text: catalog.i18nc("@label", "Fan ON");
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
                 }
@@ -356,66 +246,25 @@ Component
                 {
                     id: uploadbutton2
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
                 }
                 Button
                 {
-                    enabled:
-                    {
-                        if (printerModel == null)
-                        {
-                            return false; //Can't control the printer if not connected
-                        }
-
-                        if (!connectedDevice.acceptsCommands)
-                        {
-                            return false; //Not allowed to do anything.
-                        }
-
-                        if(activePrintJob == null)
-                        {
-                            return true
-                        }
-
-                        if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                        {
-                            return false; //Printer is in a state where it can't react to manual control
-                        }
-                        return true;
-                    }
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
                     id: uploadbutton3
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()                    
                 }
                 Button
                 {
-                    enabled:
-                    {
-                        if (printerModel == null)
-                        {
-                            return false; //Can't control the printer if not connected
-                        }
-
-                        if (!connectedDevice.acceptsCommands)
-                        {
-                            return false; //Not allowed to do anything.
-                        }
-
-                        if(activePrintJob == null)
-                        {
-                            return true
-                        }
-
-                        if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                        {
-                            return false; //Printer is in a state where it can't react to manual control
-                        }
-                        return true;
-                    }
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
                     id: homebutton
                     height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
                 }
@@ -423,8 +272,13 @@ Component
 
                 Button
                 {
-                    x:0
-                    y:15
+                    anchors
+                    {
+                        left: parent.left
+                        top: parent.top
+                        topMargin: UM.Theme.getSize("thick_margin").height - UM.Theme.getSize("default_margin").height / 3
+                    }
+                    style: UM.Theme.styles.monitor_button_style
                     id: editbutton
                     height: 20
                     width: 20
@@ -451,125 +305,99 @@ Component
 
             Column
             {
-                 enabled:
-                {
-                    if (printerModel == null)
-                    {
-                        return false; //Can't control the printer if not connected
-                    }
+                enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
-                    if (!connectedDevice.acceptsCommands)
-                    {
-                        return false; //Not allowed to do anything.
-                    }
-
-                    if(activePrintJob == null)
-                    {
-                        return true
-                    }
-
-                    if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                    {
-                        return false; //Printer is in a state where it can't react to manual control
-                    }
-                    return true;
-                }
-
-                // enabled:
-                // {
-                //     // if(Cura.MachineManager.printerOutputDevices[0].printer_state() == 'printing')
-                //     // {
-                //     //     return false
-                //     // }else {
-                //     //     return true
-                //     // }      
-                //     // if (connectedPrinter != null && connectedPrinter.acceptsCommands) {
-                //     //     return false
-                //     // }else {
-                //     //     return true
-                //     // }
-                //     // if (Cura.MachineManager.printerOutputDevices[0].isprinterprinting() == "true") {
-                //     //     return true
-                //     // }else {
-                //     //     return false
-                //     // }
-                //     if (connectedPrinter.jobState == "printing") {
-                //         return false
-                //     }else {
-                //         return true
-                //     }
-                // }
-                x: Qt.platform.os == "osx" ? 335 : 310
-                y: Qt.platform.os == "osx" ? 265 : 243
-                spacing: UM.Theme.getSize("default_lining").height
                 anchors
                 {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
+                    top: parent.top
+                    left: parent.left
+                    //had not found how to insert this into Cura's qml, so took the summ of sizes from Cura's sources
+                    leftMargin: Math.floor(parent.width * 0.4) + UM.Theme.getSize("default_margin").width * 2 + UM.Theme.getSize("default_lining").width * 7 + UM.Theme.getSize("setting_control").height * 4
+                }
+
+                Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
+                {
+                    id: outputDeviceNameLabel
+                    font: UM.Theme.getFont("large_bold")
+                    anchors.top: parent.top
+                    anchors.left: parent.left
+                    anchors.margins: UM.Theme.getSize("default_margin").width
+                    text: " "
+                }
+                Label //outputDevice.address spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
+                {
+                    id: outputDeviceAddressLabel
+                    font: UM.Theme.getFont("default_bold")
+                    color: UM.Theme.getColor("text_inactive")
+                    anchors.top: outputDeviceNameLabel.bottom
+                    anchors.left: parent.left
+                    anchors.margins: UM.Theme.getSize("default_margin").width
+                    text: " "
+                }
+                Rectangle //extruder spacer a size of implicitHeight from Cura/resources/qml/PrinterOutput/ExtruderBox.qml
+                {
+                    id: extruderBox
+                    anchors.top: outputDeviceAddressLabel.bottom
+                    anchors.topMargin: UM.Theme.getSize("default_margin").width
+                    height: UM.Theme.getSize("print_setup_extruder_box").height
+                }
+                Rectangle //heat bed spacer a size of height from Cura/resources/qml/PrinterOutput/HeatedBedBox.qml
+                {
+                    id: heatBedBox
+                    anchors.top: extruderBox.bottom
+                    anchors.topMargin: UM.Theme.getSize("thick_lining").width //gor from Cura/resources/qml/PrintMonitor.qml
+                    height: UM.Theme.getSize("print_setup_extruder_box").height
+                }
+                Rectangle //printer control spacer got from Cura/resources/qml/PrinterOutput/ManualPrinterControl.qml
+                {
+                    id: printerControlBox
+                    anchors.top: heatBedBox.bottom
+                    height: UM.Theme.getSize("setting_control").height
                 }
 
                 Label
-                    {
-                        text: catalog.i18nc("@label", "E0")
-                        color: UM.Theme.getColor("setting_control_text")
-                        font: UM.Theme.getFont("default")
-                        width: UM.Theme.getSize("section").height
-                        height: UM.Theme.getSize("setting_control").height
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-
-                Button
-                    {
-                        iconSource: UM.Theme.getIcon("arrow_top");
-                        style: UM.Theme.styles.monitor_button_style
-                        width: height
-                        height: UM.Theme.getSize("setting_control").height
-
-                        onClicked:
-                        {
-                            Cura.MachineManager.printerOutputDevices[0].e0up()
-                        }
-                    }
-                Button
-                    {
-                        iconSource: UM.Theme.getIcon("arrow_bottom");
-                        style: UM.Theme.styles.monitor_button_style
-                        width: height
-                        height: UM.Theme.getSize("setting_control").height
-
-                        onClicked:
-                        {
-                            Cura.MachineManager.printerOutputDevices[0].e0down()
-                        }
-                    }
+                {
+                    id: e0Box
+                    anchors.top: printerControlBox.bottom
+                    text: catalog.i18nc("@label", "E0")
+                    color: UM.Theme.getColor("setting_control_text")
+                    font: UM.Theme.getFont("default")
+                    width: UM.Theme.getSize("section").height
+                    height: UM.Theme.getSize("setting_control").height
+                    verticalAlignment: Text.AlignVCenter
+                    horizontalAlignment: Text.AlignHCenter
                 }
+
+                Button
+                {
+                    id: e0UpButton
+                    anchors.top: e0Box.bottom
+                    anchors.topMargin: UM.Theme.getSize("default_lining").height
+                    iconSource: UM.Theme.getIcon("arrow_top");
+                    style: UM.Theme.styles.monitor_button_style
+                    width: height
+                    height: UM.Theme.getSize("setting_control").height
+
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
+                }
+                Button
+                {
+                    id: e0DownButton
+                    anchors.top: e0UpButton.bottom
+                    anchors.topMargin: UM.Theme.getSize("default_lining").height
+                    iconSource: UM.Theme.getIcon("arrow_bottom");
+                    style: UM.Theme.styles.monitor_button_style
+                    width: height
+                    height: UM.Theme.getSize("setting_control").height
+
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
+                }
+            }
 
             Column
             {
-                 enabled:
-                {
-                    if (printerModel == null)
-                    {
-                        return false; //Can't control the printer if not connected
-                    }
+                enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || (activePrintJob.state != "printing" || activePrintJob.state != "resuming" || activePrintJob.state != "pausing" || activePrintJob.state != "error" || activePrintJob.state != "offline"))
 
-                    if (!connectedDevice.acceptsCommands)
-                    {
-                        return false; //Not allowed to do anything.
-                    }
-
-                    if(activePrintJob == null)
-                    {
-                        return true
-                    }
-
-                    if (activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline")
-                    {
-                        return false; //Printer is in a state where it can't react to manual control
-                    }
-                    return true;
-                }
                 visible:Cura.MachineManager.printerOutputDevices[0].printer_E_num() == 2 ? true : false
                 // visible: false
                 x:300
