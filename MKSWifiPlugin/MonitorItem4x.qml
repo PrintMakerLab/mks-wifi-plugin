@@ -1,4 +1,4 @@
-// Copyright (c) 2019 Aldo Hoeben / fieldOfView
+// Copyright (c) 2019
 // MKSPlugin is released under the terms of the AGPLv3 or higher.
 
 import QtQuick 2.2
@@ -9,6 +9,7 @@ import MKSPlugin 1.0 as MKSPlugin
 import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import QtQuick.Window 2.1
+
 import "."
 
 Component
@@ -20,9 +21,6 @@ Component
         property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
         property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
         property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
-        // property var printerModel: null
-        // property var activePrintJob: printerModel != null ? printerModel.activePrintJob : null
-        // property var connectedPrinter: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
         property var currentLanguage: UM.Preferences.getValue("general/language")
         // MKSPlugin.NetworkMJPGImage
         // {
@@ -101,11 +99,11 @@ Component
         {
             id: horizontalCenterItem
             anchors.left: parent.left
-            anchors.right: printaction.left
+            anchors.right: sidebar.left
         }
         Cura.RoundedRectangle
         {
-            id: printaction
+            id: sidebar
             width: UM.Theme.getSize("print_setup_widget").width
             SystemPalette { id: palette }
             UM.I18nCatalog { id: catalog; name:"cura" }
@@ -118,6 +116,7 @@ Component
                 bottom: parent.bottom
                 bottomMargin: UM.Theme.getSize("default_margin").height
             }
+
             Cura.PrintMonitor 
             {
                 id:controlpanel
@@ -130,8 +129,37 @@ Component
                     rightMargin: UM.Theme.getSize("default_margin").width
                 }
             }
+
             Row
             {
+                spacing: UM.Theme.getSize("default_lining").width
+                anchors
+                {
+                    leftMargin: UM.Theme.getSize("default_margin").width
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                    right: parent.right
+                    // bottomMargin: UM.Theme.getSize("default_margin").height
+                }
+                Label
+                {
+                    id: versionTitle
+                    text: "MKS WiFi Plugin"
+                    color: UM.Theme.getColor("text")
+                    wrapMode: Text.WordWrap
+                    font: UM.Theme.getFont("large_bold")
+                }
+                // Button
+                // {
+                //     id: uploadbutton6
+                //     height: UM.Theme.getSize("save_button_save_to_button").height
+                //     text: catalog.i18nc("@info:status", "open");
+                //     onClicked: connectActionDialog2.show()
+                // }
+            }
+
+            Row
+            {
+                height: childrenRect.height
                 spacing: UM.Theme.getSize("default_lining").width
                 anchors
                 {
@@ -200,32 +228,7 @@ Component
 
             Row
             {
-                spacing: UM.Theme.getSize("default_lining").width
-                anchors
-                {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    // bottomMargin: UM.Theme.getSize("default_margin").height
-                }
-                Label
-                {
-                id: versionTitle
-                text: catalog.i18nc("@title:window", "MKS CURA-Plugin V4.4")
-                wrapMode: Text.WordWrap
-                font: UM.Theme.getFont("large_bold")
-                }
-                // Button
-                // {
-                //     id: uploadbutton6
-                //     height: UM.Theme.getSize("save_button_save_to_button").height
-                //     text: catalog.i18nc("@info:status", "open");
-                //     onClicked: connectActionDialog2.show()
-                // }
-            }
-
-            Row
-            {
+                height: childrenRect.height
                 spacing: UM.Theme.getSize("default_lining").width
                 anchors
                 {
@@ -270,43 +273,42 @@ Component
                 }
             }
 
-                Button
-                {
-                    anchors
-                    {
-                        left: parent.left
-                        top: parent.top
-                        topMargin: UM.Theme.getSize("thick_margin").height - UM.Theme.getSize("default_margin").height / 3
-                    }
-                    style: UM.Theme.styles.monitor_button_style
-                    id: editbutton
-                    height: 20
-                    width: 20
-                    // text: currentLanguage == "zh_CN" ? "编辑" : "edit";
-                    // iconName: "list-activate";
-                    iconSource: UM.Theme.getIcon("settings")
-                    // color: UM.Theme.getColor("setting_control_button")
-                    // onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
-                    // onClicked: {
-                    //     Cura.Actions.configureMachines.trigger()
-                    // }
-                    onClicked: {
-                        // Cura.MachineAction.base.show()
-                        Cura.Actions.configureMachines.trigger()
-                    }
-                    // iconName: "configure"
-                   
-                    // background: {
-                    //     color: "white"
-                    // }
-
-                }
-            
-
-            Column
+            Rectangle
             {
-                enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+                anchors
+                {
+//                    left: parent.left
+//                    top: parent.top
+//                    topMargin: UM.Theme.getSize("thick_margin").height - UM.Theme.getSize("default_margin").height / 3
+                    top: parent.top
+                    left: parent.left
+                    topMargin: UM.Theme.getSize("default_margin").width
+                }
 
+                Row
+                {
+                    Button
+                    {
+                        style: UM.Theme.styles.monitor_button_style
+                        id: editbutton
+                        width: height
+                        height: nameBox.height//UM.Theme.getSize("setting_control").height - UM.Theme.getSize("default_margin").height / 2
+                        iconSource: UM.Theme.getIcon("settings")
+                        onClicked: Cura.Actions.configureMachines.trigger()
+                    }
+
+                    Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
+                    {
+                        id: nameBox
+
+                        font: UM.Theme.getFont("large_bold")
+                        text: " "
+                    }
+                }
+            }
+            
+            Rectangle
+            {
                 anchors
                 {
                     top: parent.top
@@ -328,7 +330,6 @@ Component
                 {
                     id: outputDeviceAddressLabel
                     font: UM.Theme.getFont("default_bold")
-                    color: UM.Theme.getColor("text_inactive")
                     anchors.top: outputDeviceNameLabel.bottom
                     anchors.left: parent.left
                     anchors.margins: UM.Theme.getSize("default_margin").width
@@ -355,97 +356,90 @@ Component
                     height: UM.Theme.getSize("setting_control").height
                 }
 
-                Label
+                Row
                 {
-                    id: e0Box
-                    anchors.top: printerControlBox.bottom
-                    text: catalog.i18nc("@label", "E0")
-                    color: UM.Theme.getColor("setting_control_text")
-                    font: UM.Theme.getFont("default")
-                    width: UM.Theme.getSize("section").height
-                    height: UM.Theme.getSize("setting_control").height
-                    verticalAlignment: Text.AlignVCenter
-                    horizontalAlignment: Text.AlignHCenter
-                }
+                    spacing: UM.Theme.getSize("default_margin").width
 
-                Button
-                {
-                    id: e0UpButton
-                    anchors.top: e0Box.bottom
-                    anchors.topMargin: UM.Theme.getSize("default_lining").height
-                    iconSource: UM.Theme.getIcon("arrow_top");
-                    style: UM.Theme.styles.monitor_button_style
-                    width: height
-                    height: UM.Theme.getSize("setting_control").height
+                    anchors
+                    {
+                        top: printerControlBox.bottom
+                    }
 
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
-                }
-                Button
-                {
-                    id: e0DownButton
-                    anchors.top: e0UpButton.bottom
-                    anchors.topMargin: UM.Theme.getSize("default_lining").height
-                    iconSource: UM.Theme.getIcon("arrow_bottom");
-                    style: UM.Theme.styles.monitor_button_style
-                    width: height
-                    height: UM.Theme.getSize("setting_control").height
+                    Column
+                    {
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
+                        spacing: UM.Theme.getSize("default_lining").height
+                        Label
+                        {
+                            text: catalog.i18nc("@label", "E0")
+                            color: UM.Theme.getColor("setting_control_text")
+                            font: UM.Theme.getFont("default")
+                            width: UM.Theme.getSize("section").height
+                            height: UM.Theme.getSize("setting_control").height
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Button
+                        {
+                            iconSource: UM.Theme.getIcon("arrow_top");
+                            style: UM.Theme.styles.monitor_button_style
+                            width: height
+                            height: UM.Theme.getSize("setting_control").height
+
+                            onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
+                        }
+                        Button
+                        {
+                            iconSource: UM.Theme.getIcon("arrow_bottom");
+                            style: UM.Theme.styles.monitor_button_style
+                            width: height
+                            height: UM.Theme.getSize("setting_control").height
+
+                            onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
+                        }
+                    }
+
+                    Column
+                    {
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                        visible:Cura.MachineManager.printerOutputDevices[0].printer_E_num() == 2 ? true : false
+
+                        spacing: UM.Theme.getSize("default_lining").height
+                        Label
+                        {
+                            text: catalog.i18nc("@label", "E1")
+                            color: UM.Theme.getColor("setting_control_text")
+                            font: UM.Theme.getFont("default")
+                            width: UM.Theme.getSize("section").height
+                            height: UM.Theme.getSize("setting_control").height
+                            verticalAlignment: Text.AlignVCenter
+                            horizontalAlignment: Text.AlignHCenter
+                        }
+
+                        Button
+                        {
+                            iconSource: UM.Theme.getIcon("arrow_top");
+                            style: UM.Theme.styles.monitor_button_style
+                            width: height
+                            height: UM.Theme.getSize("setting_control").height
+
+                            onClicked: Cura.MachineManager.printerOutputDevices[0].e1up()
+                        }
+                        Button
+                        {
+                            iconSource: UM.Theme.getIcon("arrow_bottom");
+                            style: UM.Theme.styles.monitor_button_style
+                            width: height
+                            height: UM.Theme.getSize("setting_control").height
+
+                            onClicked: Cura.MachineManager.printerOutputDevices[0].e1down()
+                        }
+                    }
                 }
             }
-
-            Column
-            {
-                enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || (activePrintJob.state != "printing" || activePrintJob.state != "resuming" || activePrintJob.state != "pausing" || activePrintJob.state != "error" || activePrintJob.state != "offline"))
-
-                visible:Cura.MachineManager.printerOutputDevices[0].printer_E_num() == 2 ? true : false
-                // visible: false
-                x:300
-                y:220
-                spacing: UM.Theme.getSize("default_lining").height
-                anchors
-                {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                }
-
-                Label
-                    {
-                        text: catalog.i18nc("@label", "E1")
-                        color: UM.Theme.getColor("setting_control_text")
-                        font: UM.Theme.getFont("default")
-                        width: UM.Theme.getSize("section").height
-                        height: UM.Theme.getSize("setting_control").height
-                        verticalAlignment: Text.AlignVCenter
-                        horizontalAlignment: Text.AlignHCenter
-                    }
-
-                Button
-                    {
-                        iconSource: UM.Theme.getIcon("arrow_top");
-                        style: UM.Theme.styles.monitor_button_style
-                        width: height
-                        height: UM.Theme.getSize("setting_control").height
-
-                        onClicked:
-                        {
-                            Cura.MachineManager.printerOutputDevices[0].e1up()
-                        }
-                    }
-                Button
-                    {
-                        iconSource: UM.Theme.getIcon("arrow_bottom");
-                        style: UM.Theme.styles.monitor_button_style
-                        width: height
-                        height: UM.Theme.getSize("setting_control").height
-
-                        onClicked:
-                        {
-                            Cura.MachineManager.printerOutputDevices[0].e1down()
-                        }
-                    }
-                }
-
         }
 
         // UM.Dialog {
