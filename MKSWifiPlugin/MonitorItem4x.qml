@@ -120,49 +120,65 @@ Component
                 bottomMargin: UM.Theme.getSize("default_margin").height
             }
 
-            Row
+            Column
             {
+                id: pluginHeader
+
                 spacing: UM.Theme.getSize("default_margin").width
 
                 anchors
                 {
-                    right: parent.right
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    top: parent.top
-                    topMargin: UM.Theme.getSize("default_margin").width
+                    right: base.right
+                    top: base.top
+                    margins: UM.Theme.getSize("default_margin").width
                 }
 
-                Label
+                Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
                 {
-                    id: versionTitle
+                    font: UM.Theme.getFont("large_bold")
                     text: "MKS WiFi Plugin"
                     color: UM.Theme.getColor("text")
-                    wrapMode: Text.WordWrap
-                    font: UM.Theme.getFont("large_bold")
+
+                    anchors.right: parent.right
                 }
 
-                Button
+                Row
                 {
-                    style: UM.Theme.styles.monitor_button_style
-                    id: settingsButton
-                    width: height
-                    height: versionTitle.height
-                    iconSource: UM.Theme.getIcon("settings")
-                    onClicked: Cura.Actions.configureMachines.trigger()
-
-                    onHoveredChanged:
+                    anchors
                     {
-                        if (hovered)
+                        right: parent.right
+                    }
+
+                    Label //outputDevice.address spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
+                    {
+                        id: outputDeviceAddressLabelSettingsSpacer
+                        font: UM.Theme.getFont("default_bold")
+                        text: " "
+                    }
+
+                    Button
+                    {
+                        style: UM.Theme.styles.monitor_button_style
+                        id: settingsButton
+                        width: height
+                        height: outputDeviceAddressLabelSettingsSpacer.height
+                        iconSource: UM.Theme.getIcon("settings")
+                        onClicked: Cura.Actions.configureMachines.trigger()
+
+                        onHoveredChanged:
                         {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: settingsButton.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Settings")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    settingsButton,
+                                    {x: 0, y: 0},//settingsButton.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Settings")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
                 }
@@ -180,7 +196,7 @@ Component
 
                 Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
                 {
-                    id: outputDeviceNameLabel
+                    id: outputDeviceNameLabelSpacer
                     font: UM.Theme.getFont("large_bold")
                     anchors.top: parent.top
                     anchors.left: parent.left
@@ -189,31 +205,31 @@ Component
                 }
                 Label //outputDevice.address spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
                 {
-                    id: outputDeviceAddressLabel
+                    id: outputDeviceAddressLabelSpacer
                     font: UM.Theme.getFont("default_bold")
-                    anchors.top: outputDeviceNameLabel.bottom
+                    anchors.top: outputDeviceNameLabelSpacer.bottom
                     anchors.left: parent.left
                     anchors.margins: UM.Theme.getSize("default_margin").width
                     text: " "
                 }
                 Rectangle //extruder spacer a size of implicitHeight from Cura/resources/qml/PrinterOutput/ExtruderBox.qml
                 {
-                    id: extruderBox
-                    anchors.top: outputDeviceAddressLabel.bottom
+                    id: extruderSpacer
+                    anchors.top: outputDeviceAddressLabelSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("default_margin").width
                     height: UM.Theme.getSize("print_setup_extruder_box").height
                 }
                 Rectangle //heat bed spacer a size of height from Cura/resources/qml/PrinterOutput/HeatedBedBox.qml
                 {
-                    id: heatBedBox
-                    anchors.top: extruderBox.bottom
+                    id: heatBedSpacer
+                    anchors.top: extruderSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("thick_lining").width //gor from Cura/resources/qml/PrintMonitor.qml
                     height: UM.Theme.getSize("print_setup_extruder_box").height
                 }
                 Rectangle //printer control spacer got from Cura/resources/qml/PrinterOutput/ManualPrinterControl.qml
                 {
-                    id: printerControlBox
-                    anchors.top: heatBedBox.bottom
+                    id: printerControlBoxSpacer
+                    anchors.top: heatBedSpacer.bottom
                     height: UM.Theme.getSize("setting_control").height
                 }
 
@@ -223,7 +239,7 @@ Component
 
                     anchors
                     {
-                        top: printerControlBox.bottom
+                        top: printerControlBoxSpacer.bottom
                     }
 
                     Column
@@ -311,6 +327,7 @@ Component
                     rightMargin: UM.Theme.getSize("default_margin").width
                     right: parent.right
                     bottom: parent.bottom
+                    bottomMargin: UM.Theme.getSize("save_button_save_to_button").height
                 }
                 Button
                 {
@@ -320,6 +337,22 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Turn fan on.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
                 Button
                 {
@@ -329,6 +362,22 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Turn fan off.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
                 Button
                 {
@@ -338,8 +387,24 @@ Component
 
                     height: UM.Theme.getSize("setting_control").height
                     style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
+                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motors"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
                 Button
                 {
@@ -351,11 +416,29 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
             }
 
             Row
             {
+                id: printButtonBox
+
                 height: childrenRect.height
                 spacing: UM.Theme.getSize("default_lining").width
                 anchors
@@ -363,7 +446,6 @@ Component
                     rightMargin: UM.Theme.getSize("default_margin").width
                     right: parent.right
                     bottom: parent.bottom
-                    bottomMargin: UM.Theme.getSize("save_button_save_to_button").height
                 }
 
                 Button
@@ -383,6 +465,22 @@ Component
                         }
                     }
                     onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                activePrintJob.state == "printing" ? catalog.i18nc("@tooltip", "Pause print.") : catalog.i18nc("@tooltip", "Resume print.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
 
                 Button
@@ -395,6 +493,22 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
                     onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Abort current print.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
 
                 Button
@@ -407,6 +521,22 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "SD 文件":"SD Files"
                     onClicked: sdDialog.showDialog()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
 
                 Button
@@ -419,6 +549,22 @@ Component
                     style: UM.Theme.styles.print_setup_action_button
                     text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+
+                    onHoveredChanged:
+                    {
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
+                        }
+                    }
                 }
             }
         }
