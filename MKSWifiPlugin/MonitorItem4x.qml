@@ -22,6 +22,10 @@ Component
         property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
         property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
         property var currentLanguage: UM.Preferences.getValue("general/language")
+
+        SystemPalette { id: palette }
+        UM.I18nCatalog { id: catalog; name:"cura" }
+
         // MKSPlugin.NetworkMJPGImage
         // {
         //     id: cameraImage
@@ -99,15 +103,14 @@ Component
         {
             id: horizontalCenterItem
             anchors.left: parent.left
-            anchors.right: sidebar.left
+            anchors.right: base.left
         }
-        Cura.RoundedRectangle
+
+        Cura.PrintMonitor
         {
-            id: sidebar
+            id:base
+
             width: UM.Theme.getSize("print_setup_widget").width
-            SystemPalette { id: palette }
-            UM.I18nCatalog { id: catalog; name:"cura" }
-            UM.I18nCatalog { id: fdmprinter; name:"fdmprinter"}
             anchors
             {
                 right: parent.right
@@ -117,29 +120,18 @@ Component
                 bottomMargin: UM.Theme.getSize("default_margin").height
             }
 
-            Cura.PrintMonitor 
-            {
-                id:controlpanel
-                width: parent.width
-                anchors
-                {
-                    left: parent.left
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                }
-            }
-
             Row
             {
-                spacing: UM.Theme.getSize("default_lining").width
+                spacing: UM.Theme.getSize("default_margin").width
+
                 anchors
                 {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
                     right: parent.right
-                    // bottomMargin: UM.Theme.getSize("default_margin").height
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                    top: parent.top
+                    topMargin: UM.Theme.getSize("default_margin").width
                 }
+
                 Label
                 {
                     id: versionTitle
@@ -148,165 +140,34 @@ Component
                     wrapMode: Text.WordWrap
                     font: UM.Theme.getFont("large_bold")
                 }
-                // Button
-                // {
-                //     id: uploadbutton6
-                //     height: UM.Theme.getSize("save_button_save_to_button").height
-                //     text: catalog.i18nc("@info:status", "open");
-                //     onClicked: connectActionDialog2.show()
-                // }
-            }
-
-            Row
-            {
-                height: childrenRect.height
-                spacing: UM.Theme.getSize("default_lining").width
-                anchors
-                {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    bottom: parent.bottom
-                    bottomMargin: UM.Theme.getSize("save_button_save_to_button").height
-                }
-                // Button
-                // {
-                //     id: addButton
-                //     height: UM.Theme.getSize("save_button_save_to_button").height
-                //     text: catalog.i18nc("@action:button", "Print");
-                //     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
-                // }
 
                 Button
                 {
-                    id: editButton
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: 
+                    style: UM.Theme.styles.monitor_button_style
+                    id: settingsButton
+                    width: height
+                    height: versionTitle.height
+                    iconSource: UM.Theme.getIcon("settings")
+                    onClicked: Cura.Actions.configureMachines.trigger()
+
+                    onHoveredChanged:
                     {
-                        if (activePrintJob.state == "printing") {
-                            return currentLanguage == "zh_CN" ? "暂停打印" : "Pause" //return catalog.i18nc("@label", "Pause");
-                        } else {
-                            return currentLanguage == "zh_CN" ? "恢复打印" : "Resume" // return catalog.i18nc("@label", "Resume")
+                        if (hovered)
+                        {
+                            base.showTooltip(
+                                base,
+                                {x: 0, y: settingsButton.mapToItem(base, 0, 0).y},
+                                catalog.i18nc("@tooltip", "Settings")
+                            );
+                        }
+                        else
+                        {
+                            base.hideTooltip();
                         }
                     }
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
-
-                    onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
-                }
-
-                Button
-                {
-                    id: removeButton
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
-                }
-
-                Button
-                {
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-                    id: rediscoverButton
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "SD 文件":"SD File"
-                    onClicked: sdDialog.showDialog()
-                }
-
-                Button
-                {
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-                    id: uploadbutton
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
                 }
             }
 
-            Row
-            {
-                height: childrenRect.height
-                spacing: UM.Theme.getSize("default_lining").width
-                anchors
-                {
-                    leftMargin: UM.Theme.getSize("default_margin").width
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    bottom: parent.bottom
-                }
-                Button
-                {
-                    id: homebutton2
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
-                }
-                Button
-                {
-                    id: uploadbutton2
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
-                }
-                Button
-                {
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-                    id: uploadbutton3
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()                    
-                }
-                Button
-                {
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-                    id: homebutton
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
-                }
-            }
-
-            Rectangle
-            {
-                anchors
-                {
-//                    left: parent.left
-//                    top: parent.top
-//                    topMargin: UM.Theme.getSize("thick_margin").height - UM.Theme.getSize("default_margin").height / 3
-                    top: parent.top
-                    left: parent.left
-                    topMargin: UM.Theme.getSize("default_margin").width
-                }
-
-                Row
-                {
-                    Button
-                    {
-                        style: UM.Theme.styles.monitor_button_style
-                        id: editbutton
-                        width: height
-                        height: nameBox.height//UM.Theme.getSize("setting_control").height - UM.Theme.getSize("default_margin").height / 2
-                        iconSource: UM.Theme.getIcon("settings")
-                        onClicked: Cura.Actions.configureMachines.trigger()
-                    }
-
-                    Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
-                    {
-                        id: nameBox
-
-                        font: UM.Theme.getFont("large_bold")
-                        text: " "
-                    }
-                }
-            }
-            
             Rectangle
             {
                 anchors
@@ -314,7 +175,7 @@ Component
                     top: parent.top
                     left: parent.left
                     //had not found how to insert this into Cura's qml, so took the summ of sizes from Cura's sources
-                    leftMargin: Math.floor(parent.width * 0.4) + UM.Theme.getSize("default_margin").width * 2 + UM.Theme.getSize("default_lining").width * 7 + UM.Theme.getSize("setting_control").height * 4
+                    leftMargin: Math.floor(parent.width * 0.4) + UM.Theme.getSize("default_margin").width * 2 + UM.Theme.getSize("default_lining").width * 5 + UM.Theme.getSize("setting_control").height * 4
                 }
 
                 Label //outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
@@ -440,6 +301,126 @@ Component
                     }
                 }
             }
+
+            Row
+            {
+                height: childrenRect.height
+                spacing: UM.Theme.getSize("default_lining").width
+                anchors
+                {
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                    right: parent.right
+                    bottom: parent.bottom
+                }
+                Button
+                {
+                    id: fanOnButton
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
+                }
+                Button
+                {
+                    id: fanOffButton
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+                }
+                Button
+                {
+                    id: unlockMotorButton
+
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motor"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+                }
+                Button
+                {
+                    id: coolDownButton
+
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+                }
+            }
+
+            Row
+            {
+                height: childrenRect.height
+                spacing: UM.Theme.getSize("default_lining").width
+                anchors
+                {
+                    rightMargin: UM.Theme.getSize("default_margin").width
+                    right: parent.right
+                    bottom: parent.bottom
+                    bottomMargin: UM.Theme.getSize("save_button_save_to_button").height
+                }
+
+                Button
+                {
+                    id: pauseResumeButton
+
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text:
+                    {
+                        if (activePrintJob.state == "printing") {
+                            return currentLanguage == "zh_CN" ? "暂停打印" : "Pause" //return catalog.i18nc("@label", "Pause");
+                        } else {
+                            return currentLanguage == "zh_CN" ? "恢复打印" : "Resume" // return catalog.i18nc("@label", "Resume")
+                        }
+                    }
+                    onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
+                }
+
+                Button
+                {
+                    id: abortButton
+
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
+                }
+
+                Button
+                {
+                    id: sdFileButton
+
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "SD 文件":"SD Files"
+                    onClicked: sdDialog.showDialog()
+                }
+
+                Button
+                {
+                    id: uploadButton
+
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    height: UM.Theme.getSize("setting_control").height
+                    style: UM.Theme.styles.print_setup_action_button
+                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+                }
+            }
         }
 
         // UM.Dialog {
@@ -456,7 +437,8 @@ Component
         //     }
         // }
 
-        UM.Dialog{
+        UM.Dialog
+        {
             id: sdDialog
             signal showDialog()
             onShowDialog:
@@ -555,63 +537,5 @@ Component
             }
         ]
         }
-
-        // Cura.RoundedRectangle
-        // {
-        //     id: sidebar
-
-        //     width: UM.Theme.getSize("print_setup_widget").width
-            // anchors
-            // {
-            //     right: parent.right
-            //     top: parent.top
-            //     topMargin: UM.Theme.getSize("default_margin").height
-            //     bottom: actionsPanel.top
-            //     bottomMargin: UM.Theme.getSize("default_margin").height
-            // }
-
-        //     border.width: UM.Theme.getSize("default_lining").width
-        //     border.color: UM.Theme.getColor("lining")
-        //     color: UM.Theme.getColor("main_background")
-
-        //     cornerSide: Cura.RoundedRectangle.Direction.Left
-        //     radius: UM.Theme.getSize("default_radius").width
-
-            // Cura.PrintMonitor {
-            //     width: parent.width
-            //     anchors
-            //     {
-            //         left: parent.left
-            //         leftMargin: UM.Theme.getSize("default_margin").width
-            //         right: parent.right
-            //         rightMargin: UM.Theme.getSize("default_margin").width
-            //     }
-            // }
-        // }
-
-        // Cura.RoundedRectangle
-        // {
-        //     id: actionsPanel
-        //     border.width: UM.Theme.getSize("default_lining").width
-        //     border.color: UM.Theme.getColor("lining")
-        //     color: UM.Theme.getColor("main_background")
-
-        //     cornerSide: Cura.RoundedRectangle.Direction.Left
-        //     radius: UM.Theme.getSize("default_radius").width
-
-        //     anchors.bottom: parent.bottom
-        //     anchors.right: parent.right
-
-        //     width: UM.Theme.getSize("print_setup_widget").width
-        //     height: monitorButton.height + UM.Theme.getSize("default_margin").height
-            
-            // Cura.MonitorButton
-            // {
-            //     id: monitorButton
-            //     width: parent.width
-            //     anchors.top: parent.top
-            //     anchors.topMargin: UM.Theme.getSize("default_margin").height
-            // }
-        // }
     }
 }
