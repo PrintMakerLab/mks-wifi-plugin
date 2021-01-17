@@ -106,6 +106,22 @@ Component
             anchors.right: base.left
         }
 
+        Cura.RoundedRectangle
+        {
+            id: background
+
+            width: UM.Theme.getSize("print_setup_widget").width
+
+            color: UM.Theme.getColor("main_background")
+
+            anchors
+            {
+                right: base.right
+                top: base.top
+                bottom: base.bottom
+            }
+        }
+
         Cura.PrintMonitor
         {
             id:base
@@ -115,9 +131,7 @@ Component
             {
                 right: parent.right
                 top: parent.top
-                topMargin: UM.Theme.getSize("default_margin").height
                 bottom: parent.bottom
-                bottomMargin: UM.Theme.getSize("default_margin").height
             }
 
             Column
@@ -171,8 +185,8 @@ Component
                             {
                                 base.showTooltip(
                                     settingsButton,
-                                    {x: 0, y: 0},//settingsButton.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Settings")
+                                    {x: 0, y: settingsButton.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Opens printer settings.")
                                 );
                             }
                             else
@@ -318,251 +332,276 @@ Component
                 }
             }
 
-            Row
+            Column
             {
-                height: childrenRect.height
-                spacing: UM.Theme.getSize("default_lining").width
-                anchors
-                {
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    bottom: parent.bottom
-                    bottomMargin: UM.Theme.getSize("save_button_save_to_button").height
-                }
-                Button
-                {
-                    id: fanOnButton
+                id: buttonBox
 
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
-
-                    onHoveredChanged:
-                    {
-                        if (hovered)
-                        {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Turn fan on.")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
-                        }
-                    }
-                }
-                Button
-                {
-                    id: fanOffButton
-
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
-
-                    onHoveredChanged:
-                    {
-                        if (hovered)
-                        {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Turn fan off.")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
-                        }
-                    }
-                }
-                Button
-                {
-                    id: unlockMotorButton
-
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motors"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
-
-                    onHoveredChanged:
-                    {
-                        if (hovered)
-                        {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
-                        }
-                    }
-                }
-                Button
-                {
-                    id: coolDownButton
-
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
-
-                    onHoveredChanged:
-                    {
-                        if (hovered)
-                        {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
-                        }
-                    }
-                }
-            }
-
-            Row
-            {
-                id: printButtonBox
+                spacing: UM.Theme.getSize("default_margin").width
 
                 height: childrenRect.height
-                spacing: UM.Theme.getSize("default_lining").width
+
                 anchors
                 {
-                    rightMargin: UM.Theme.getSize("default_margin").width
-                    right: parent.right
-                    bottom: parent.bottom
+                    right: base.right
+                    bottom: base.bottom
+                    bottomMargin: UM.Theme.getSize("default_margin").width
                 }
 
-                Button
+                Rectangle
                 {
-                    id: pauseResumeButton
+                    color: UM.Theme.getColor("wide_lining")
+                    width: base.width
+                    height: UM.Theme.getSize("thick_lining").width * 2
+                }
 
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+                Row
+                {
+                    id: controlButtonBox
 
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text:
+                    height: childrenRect.height
+                    spacing: UM.Theme.getSize("default_lining").width
+
+                    anchors
                     {
-                        if (activePrintJob.state == "printing") {
-                            return currentLanguage == "zh_CN" ? "暂停打印" : "Pause" //return catalog.i18nc("@label", "Pause");
-                        } else {
-                            return currentLanguage == "zh_CN" ? "恢复打印" : "Resume" // return catalog.i18nc("@label", "Resume")
+                        right: parent.right
+                        rightMargin: UM.Theme.getSize("default_margin").width
+                    }
+
+                    Button
+                    {
+                        id: fanOnButton
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
+
+                        onHoveredChanged:
+                        {
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Turn fan on.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
-                    onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
-
-                    onHoveredChanged:
+                    Button
                     {
-                        if (hovered)
+                        id: fanOffButton
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+
+                        onHoveredChanged:
                         {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                activePrintJob.state == "printing" ? catalog.i18nc("@tooltip", "Pause print.") : catalog.i18nc("@tooltip", "Resume print.")
-                            );
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Turn fan off.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
-                        else
+                    }
+                    Button
+                    {
+                        id: unlockMotorButton
+
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motors"
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+
+                        onHoveredChanged:
                         {
-                            base.hideTooltip();
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
+                        }
+                    }
+                    Button
+                    {
+                        id: coolDownButton
+
+                        enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "冷却":"Cool Down"
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+
+                        onHoveredChanged:
+                        {
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
                 }
 
-                Button
+                Row
                 {
-                    id: abortButton
+                    id: printButtonBox
 
-                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+                    height: childrenRect.height
+                    spacing: UM.Theme.getSize("default_lining").width
 
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
-
-                    onHoveredChanged:
+                    anchors
                     {
-                        if (hovered)
+                        right: parent.right
+                        rightMargin: UM.Theme.getSize("default_margin").width
+                    }
+
+                    Button
+                    {
+                        id: pauseResumeButton
+
+                        enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text:
                         {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Abort current print.")
-                            );
+                            if (activePrintJob.state == "printing") {
+                                return currentLanguage == "zh_CN" ? "暂停打印" : "Pause" //return catalog.i18nc("@label", "Pause");
+                            } else {
+                                return currentLanguage == "zh_CN" ? "恢复打印" : "Resume" // return catalog.i18nc("@label", "Resume")
+                            }
                         }
-                        else
+                        onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
+
+                        onHoveredChanged:
                         {
-                            base.hideTooltip();
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    activePrintJob.state == "printing" ? catalog.i18nc("@tooltip", "Pause print.") : catalog.i18nc("@tooltip", "Resume print.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
-                }
 
-                Button
-                {
-                    id: sdFileButton
-
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "SD 文件":"SD Files"
-                    onClicked: sdDialog.showDialog()
-
-                    onHoveredChanged:
+                    Button
                     {
-                        if (hovered)
+                        id: abortButton
+
+                        enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob.state == "printing" || activePrintJob.state == "paused")
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
+
+                        onHoveredChanged:
                         {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
-                            );
-                        }
-                        else
-                        {
-                            base.hideTooltip();
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Abort current print.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
-                }
 
-                Button
-                {
-                    id: uploadButton
-
-                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                    height: UM.Theme.getSize("setting_control").height
-                    style: UM.Theme.styles.print_setup_action_button
-                    text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
-                    onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
-
-                    onHoveredChanged:
+                    Button
                     {
-                        if (hovered)
+                        id: sdFileButton
+
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "SD 文件":"SD Files"
+                        onClicked: sdDialog.showDialog()
+
+                        onHoveredChanged:
                         {
-                            base.showTooltip(
-                                base,
-                                {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
-                            );
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
-                        else
+                    }
+
+                    Button
+                    {
+                        id: uploadButton
+
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                        height: UM.Theme.getSize("setting_control").height
+                        style: UM.Theme.styles.print_setup_action_button
+                        text: currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
+
+                        onHoveredChanged:
                         {
-                            base.hideTooltip();
+                            if (hovered)
+                            {
+                                base.showTooltip(
+                                    base,
+                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
+                                    catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
+                                );
+                            }
+                            else
+                            {
+                                base.hideTooltip();
+                            }
                         }
                     }
                 }
