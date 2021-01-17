@@ -84,9 +84,11 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             self._manual_instances.append(address)
             self._preferences.setValue("mkswifi/manual_instances", ",".join(self._manual_instances))
 
+        active_printer_name = Application.getInstance().getGlobalContainerStack().getName()
+
         instance_name = "manual:%s" % address
         properties = {
-            b"name": address.encode("utf-8"),
+            b"name": active_printer_name.encode("utf-8"),
             b"address": address.encode("utf-8"),
             b"manual": b"true",
             b"incomplete": b"false"
@@ -143,6 +145,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                     Logger.log("d", "Connecting [%s]..." % key)
                     self._printers[key].connect()
                     self._printers[key].connectionStateChanged.connect(self._onPrinterConnectionStateChanged)
+                self._printers[key]._properties.update({b"name": Application.getInstance().getGlobalContainerStack().getName().encode("utf-8")})
             else:
                 if self._printers[key].isConnected():
                     Logger.log("d", "Closing connection [%s]..." % key)
@@ -183,11 +186,11 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
             if self._error_message:
                 self._error_message.hide()
-            name = "Printer connect success"
+            name = "Printer connected successfully!"
             if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-                name = "打印机连接成功"
+                name = self._printers[key]._properties.get(b"name", b"").decode("utf-8") + " 打印机连接成功"
             else:
-                name = "Printer connect success"
+                name = self._printers[key]._properties.get(b"name", b"").decode("utf-8") + " printer connected successfully!"
             self._error_message = Message(name)
             self._error_message.show()
             self.getOutputDeviceManager().addOutputDevice(self._printers[key])
