@@ -171,11 +171,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.setShortDescription(i18n_catalog.i18nc("@action:button", name1))
         self.setDescription(i18n_catalog.i18nc("@properties:tooltip", name1))
         Logger.log("d", "MKS socket connecting ")
-        self._socket.waitForConnected(2000)
-        # Logger.log("d","self._socket.connectToHost self._socket.state() %s" % self._socket.state())
-        # if self._socket.state() == 0 or self._socket.state() == 1:
-        #     self.connect()
-        # else:
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
