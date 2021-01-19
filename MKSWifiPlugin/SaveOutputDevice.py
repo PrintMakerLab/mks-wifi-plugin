@@ -55,7 +55,12 @@ class SaveOutputDevice(OutputDevice):
         filters = []
         mime_types = []
         selected_filter = None
-        last_used_type = self._preferences.getValue("local_file/last_used_type")
+        
+        if "preferred_mimetypes" in kwargs and kwargs["preferred_mimetypes"] is not None:
+            preferred_mimetypes = kwargs["preferred_mimetypes"]
+        else:
+            preferred_mimetypes = Application.getInstance().getPreferences().getValue("local_file/last_used_type")
+        preferred_mimetype_list = preferred_mimetypes.split(";")
 
         if not file_handler:
             file_handler = Application.getInstance().getMeshFileHandler()
@@ -66,37 +71,48 @@ class SaveOutputDevice(OutputDevice):
         if limit_mimetypes:
             file_types = list(filter(lambda i: i["mime_type"] in limit_mimetypes, file_types))
 
+        file_types = [ft for ft in file_types if not ft["hide_in_file_dialog"]]
+
         if len(file_types) == 0:
             Logger.log("e", "There are no file types available to write with!")
-            raise OutputDeviceError.WriteRequestFailedError()
+            raise OutputDeviceError.WriteRequestFailedError(catalog.i18nc("@info:warning", "There are no file types available to write with!"))
+
+                # Find the first available preferred mime type
+        preferred_mimetype = None
+        for mime_type in preferred_mimetype_list:
+            if any(ft["mime_type"] == mime_type for ft in file_types):
+                preferred_mimetype = mime_type
+                break
 
         for item in file_types:
             type_filter = "{0} (*.{1})".format(item["description"], item["extension"])
             filters.append(type_filter)
             mime_types.append(item["mime_type"])
-            if last_used_type == item["mime_type"]:
+            if preferred_mimetype == item["mime_type"]:
                 selected_filter = type_filter
                 if file_name:
                     file_name += "." + item["extension"]
+
+        # CURA-6411: This code needs to be before dialog.selectFile and the filters, because otherwise in macOS (for some reason) the setDirectory call doesn't work.
+        stored_directory = Application.getInstance().getPreferences().getValue("local_file/dialog_save_path")
+        dialog.setDirectory(stored_directory)
+
+        # Add the file name before adding the extension to the dialog
+        if file_name is not None:
+            dialog.selectFile(file_name)
 
         dialog.setNameFilters(filters)
         if selected_filter is not None:
             dialog.selectNameFilter(selected_filter)
 
-        if file_name is not None:
-            dialog.selectFile(file_name)
-
-        stored_directory = self._preferences.getValue("local_file/dialog_save_path")
-        dialog.setDirectory(stored_directory)
-
         if not dialog.exec_():
             raise OutputDeviceError.UserCanceledError()
 
         save_path = dialog.directory().absolutePath()
-        self._preferences.setValue("local_file/dialog_save_path", save_path)
+        Application.getInstance().getPreferences().setValue("local_file/dialog_save_path", save_path)
 
         selected_type = file_types[filters.index(dialog.selectedNameFilter())]
-        self._preferences.setValue("local_file/last_used_type", selected_type["mime_type"])
+        Application.getInstance().getPreferences().setValue("local_file/last_used_type", selected_type["mime_type"])
 
         # Get file name from file dialog
         file_name = dialog.selectedFiles()[0]
