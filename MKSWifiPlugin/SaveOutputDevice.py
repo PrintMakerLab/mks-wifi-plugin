@@ -128,10 +128,7 @@ class SaveOutputDevice(OutputDevice):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if not global_container_stack:
             return
-        job_name = Application.getInstance().getPrintInformation().jobName.strip()
-        if job_name is "":
-            job_name = "untitled_print"
-        job_name = "%s.gcode" % job_name
+
         image = utils.take_screenshot()
         # Logger.log("d", os.path.abspath("")+"\\test.png")
         message = Message(catalog.i18nc("@info:status", "Saving to <filename>{0}</filename>").format(file_name),
@@ -152,7 +149,7 @@ class SaveOutputDevice(OutputDevice):
             self.writeFinished.emit(self)
             self.writeSuccess.emit(self)
             message = Message(
-                catalog.i18nc("@info:status", "Saved to <filename>{0}</filename>").format(job_name))
+                catalog.i18nc("@info:status", "Saved to <filename>{0}</filename>").format(file_name))
             message.addAction("open_folder", catalog.i18nc("@action:button", "Open Folder"), "open-folder",
                               catalog.i18nc("@info:tooltip", "Open the folder containing the file"))
             message._folder = os.path.dirname(file_name)
