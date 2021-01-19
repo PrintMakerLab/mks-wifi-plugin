@@ -41,7 +41,7 @@ class MachineConfig(MachineAction):
         plugin_file_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "plugin.json")
         try:
-            with open(plugin_file_path) as plugin_file:
+            with open(plugin_file_path, encoding="utf-8") as plugin_file:
                 plugin_info = json.load(plugin_file)
                 self._plugin_version = plugin_info["version"]
         except:
