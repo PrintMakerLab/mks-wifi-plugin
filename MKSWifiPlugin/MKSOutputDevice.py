@@ -936,7 +936,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False, -1)
             else:
                 self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1,
-                                        i18n_catalog.i18nc("@info:title", "Sending Print Job"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
+                                        i18n_catalog.i18nc("@info:title", "Sending Print Job"), option_text=i18n_catalog.i18nc("@label", "Print job")
                                         , option_state=preferences.getValue("mkswifi/autoprint"))
                 self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "Cancel"), None, "")
                 self._progress_message.actionTriggered.connect(self._cancelSendGcode)
