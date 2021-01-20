@@ -558,7 +558,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
                 #                             i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
                 #                             , option_state=preferences.getValue("mkswifi/autoprint"))
-                name0 = "Print Jobs"
+                name0 = "Print Job"
                 name1 = "Uploading print job to printer"
                 name2 = "Sending Print Job"
                 namecancel = "Cancel"
@@ -568,7 +568,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     name2 = "正在发送打印文件"
                     namecancel = "取消"
                 else:
-                    name0 = "Print Jobs"
+                    name0 = "Print Job"
                     name1 = "Uploading print job to printer"
                     name2 = "Sending Print Job"
                     namecancel = "Cancel"
