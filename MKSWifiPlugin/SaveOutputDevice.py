@@ -1,23 +1,27 @@
 # coding=utf-8
-from UM.Application import Application
-from UM.OutputDevice.OutputDevice import OutputDevice
-from UM.Logger import Logger
-from UM.Preferences import Preferences
-from UM.OutputDevice import OutputDeviceError
-from cura.CuraApplication import CuraApplication
 
-from PyQt5.QtWidgets import QFileDialog
-from UM.Message import Message
+import os
+import sys
+
 from PyQt5.QtCore import QUrl
 from PyQt5.QtGui import QDesktopServices
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
+
+from UM.Application import Application
+from UM.FileHandler.WriteFileJob import WriteFileJob
+from UM.Logger import Logger
+from UM.Mesh.MeshWriter import MeshWriter
+from UM.Message import Message
+from UM.OutputDevice import OutputDeviceError
+from UM.OutputDevice.OutputDevice import OutputDevice
+from UM.i18n import i18nCatalog
+
+catalog = i18nCatalog("uranium")
+
 
 from . import utils
 
-import sys
-import os
 
-from UM.i18n import i18nCatalog
-catalog = i18nCatalog("uranium")
 
 class SaveOutputDevice(OutputDevice):
     def __init__(self):
@@ -25,21 +29,22 @@ class SaveOutputDevice(OutputDevice):
         self.setName("save_with_screenshot")
         self.setPriority(2)
         self._preferences = Application.getInstance().getPreferences()
-        name1 = "Save as TFT file"
-        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-            name1 = "保存为TFT文件"
+        button_name = "Save as TFT file"
+        if Application.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+            button_name = "保存为TFT文件"
         else:
-            name1 = "Save as TFT file"
-        self.setShortDescription(catalog.i18nc("@action:button", name1))
-        self.setDescription(catalog.i18nc("@properties:tooltip", name1))
+            button_name = "Save as TFT file"
+        self.setShortDescription(catalog.i18nc("@action:button", button_name))
+        self.setDescription(catalog.i18nc("@properties:tooltip", button_name))
         self.setIconName("save")
+
         self._writing = False
 
-    def requestWrite(self, nodes, file_name=None, limit_mimetypes=None, file_handler=None, **kwargs):
+    def requestWrite(self, nodes, file_name = None, limit_mimetypes = None, file_handler = None, **kwargs):
         if self._writing:
             raise OutputDeviceError.DeviceBusyError()
 
-            # Set up and display file dialog
+        # Set up and display file dialog
         dialog = QFileDialog()
 
         dialog.setWindowTitle(catalog.i18nc("@title:window", "Save to File"))
@@ -55,98 +60,147 @@ class SaveOutputDevice(OutputDevice):
         filters = []
         mime_types = []
         selected_filter = None
-        last_used_type = self._preferences.getValue("local_file/last_used_type")
+
+        if "preferred_mimetypes" in kwargs and kwargs["preferred_mimetypes"] is not None:
+            preferred_mimetypes = kwargs["preferred_mimetypes"]
+        else:
+            preferred_mimetypes = Application.getInstance().getPreferences().getValue("local_file/last_used_type")
+        preferred_mimetype_list = preferred_mimetypes.split(";")
 
         if not file_handler:
             file_handler = Application.getInstance().getMeshFileHandler()
 
         file_types = file_handler.getSupportedFileTypesWrite()
 
-        file_types.sort(key=lambda k: k["description"])
+        file_types.sort(key = lambda k: k["description"])
         if limit_mimetypes:
             file_types = list(filter(lambda i: i["mime_type"] in limit_mimetypes, file_types))
 
+        file_types = [ft for ft in file_types if not ft["hide_in_file_dialog"]]
+
         if len(file_types) == 0:
             Logger.log("e", "There are no file types available to write with!")
-            raise OutputDeviceError.WriteRequestFailedError()
+            raise OutputDeviceError.WriteRequestFailedError(catalog.i18nc("@info:warning", "There are no file types available to write with!"))
+
+        # Find the first available preferred mime type
+        preferred_mimetype = None
+        for mime_type in preferred_mimetype_list:
+            if any(ft["mime_type"] == mime_type for ft in file_types):
+                preferred_mimetype = mime_type
+                break
 
         for item in file_types:
             type_filter = "{0} (*.{1})".format(item["description"], item["extension"])
             filters.append(type_filter)
             mime_types.append(item["mime_type"])
-            if last_used_type == item["mime_type"]:
+            if preferred_mimetype == item["mime_type"]:
                 selected_filter = type_filter
                 if file_name:
                     file_name += "." + item["extension"]
+
+        # CURA-6411: This code needs to be before dialog.selectFile and the filters, because otherwise in macOS (for some reason) the setDirectory call doesn't work.
+        stored_directory = Application.getInstance().getPreferences().getValue("local_file/dialog_save_path")
+        dialog.setDirectory(stored_directory)
+
+        # Add the file name before adding the extension to the dialog
+        if file_name is not None:
+            dialog.selectFile(file_name)
 
         dialog.setNameFilters(filters)
         if selected_filter is not None:
             dialog.selectNameFilter(selected_filter)
 
-        if file_name is not None:
-            dialog.selectFile(file_name)
-
-        stored_directory = self._preferences.getValue("local_file/dialog_save_path")
-        dialog.setDirectory(stored_directory)
-
         if not dialog.exec_():
             raise OutputDeviceError.UserCanceledError()
 
         save_path = dialog.directory().absolutePath()
-        self._preferences.setValue("local_file/dialog_save_path", save_path)
+        Application.getInstance().getPreferences().setValue("local_file/dialog_save_path", save_path)
 
         selected_type = file_types[filters.index(dialog.selectedNameFilter())]
-        self._preferences.setValue("local_file/last_used_type", selected_type["mime_type"])
+        Application.getInstance().getPreferences().setValue("local_file/last_used_type", selected_type["mime_type"])
 
         # Get file name from file dialog
         file_name = dialog.selectedFiles()[0]
-        active_build_plate = Application.getInstance().getMultiBuildPlateModel().activeBuildPlate
-        scene = Application.getInstance().getController().getScene()
-        gcode_dict = getattr(scene, "gcode_dict", None)
-        if not gcode_dict:
-            return
-        _gcode = gcode_dict.get(active_build_plate, None)
-        self.save_gcode(file_name, _gcode)
+        Logger.log("d", "Writing to [%s]..." % file_name)
 
-    def save_gcode(self, file_name, _gcode):
-        global_container_stack = Application.getInstance().getGlobalContainerStack()
-        if not global_container_stack:
-            return
-        job_name = Application.getInstance().getPrintInformation().jobName.strip()
-        if job_name is "":
-            job_name = "untitled_print"
-        job_name = "%s.gcode" % job_name
-        image = utils.take_screenshot()
-        # Logger.log("d", os.path.abspath("")+"\\test.png")
-        message = Message(catalog.i18nc("@info:status", "Saving to <filename>{0}</filename>").format(file_name),
-                          0, False, -1)
+        if os.path.exists(file_name):
+            result = QMessageBox.question(None, catalog.i18nc("@title:window", "File Already Exists"), catalog.i18nc("@label Don't translate the XML tag <filename>!", "The file <filename>{0}</filename> already exists. Are you sure you want to overwrite it?").format(file_name))
+            if result == QMessageBox.No:
+                raise OutputDeviceError.UserCanceledError()
+
+        self.writeStarted.emit(self)
+
+        # Actually writing file
+        if file_handler:
+            file_writer = file_handler.getWriter(selected_type["id"])
+        else:
+            file_writer = Application.getInstance().getMeshFileHandler().getWriter(selected_type["id"])
+
         try:
-            message.show()
-            save_file = open(file_name, "w")
-            if image and utils.printer_supports_screenshots(global_container_stack.getName()):
-                save_file.write(utils.add_screenshot(image, 100, 100, ";simage:"))
-                save_file.write(utils.add_screenshot(image, 200, 200, ";;gimage:"))
-                save_file.write("\r")
+            mode = selected_type["mode"]
+            if mode == MeshWriter.OutputMode.TextMode:
+                Logger.log("d", "Writing to Local File %s in text mode", file_name)
+                stream = open(file_name, "wt", encoding = "utf-8")
+            elif mode == MeshWriter.OutputMode.BinaryMode:
+                Logger.log("d", "Writing to Local File %s in binary mode", file_name)
+                stream = open(file_name, "wb")
             else:
-                Logger.log("d", "Skipping screenshot in SaveOutputDevice.py")
-            for line in _gcode:
-                save_file.write(line)
-            save_file.close()
-            message.hide()
-            self.writeFinished.emit(self)
+                Logger.log("e", "Unrecognised OutputMode.")
+                return None
+
+            # Adding screeshot section
+            image = utils.take_screenshot()
+
+            if image and utils.printer_supports_screenshots(Application.getInstance().getGlobalContainerStack().getName()):
+                stream.write(utils.add_screenshot(image, 100, 100, ";simage:"))
+                stream.write(utils.add_screenshot(image, 200, 200, ";;gimage:"))
+                stream.write("\r")
+            else:
+                Logger.log("d", "Skipping adding screenshot")
+            # End of screeshot section
+
+            job = WriteFileJob(file_writer, stream, nodes, mode)
+            job.setFileName(file_name)
+            job.setAddToRecentFiles(True)  # The file will be added into the "recent files" list upon success
+            job.progress.connect(self._onJobProgress)
+            job.finished.connect(self._onWriteJobFinished)
+
+            message = Message(catalog.i18nc("@info:progress Don't translate the XML tags <filename>!", "Saving to <filename>{0}</filename>").format(file_name),
+                              0, False, -1 , catalog.i18nc("@info:title", "Saving"))
+            message.show()
+
+            job.setMessage(message)
+            self._writing = True
+            job.start()
+        except PermissionError as e:
+            Logger.log("e", "Permission denied when trying to write to %s: %s", file_name, str(e))
+            raise OutputDeviceError.PermissionDeniedError(catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Permission denied when trying to save <filename>{0}</filename>").format(file_name)) from e
+        except OSError as e:
+            Logger.log("e", "Operating system would not let us write to %s: %s", file_name, str(e))
+            raise OutputDeviceError.WriteRequestFailedError(catalog.i18nc("@info:status Don't translate the XML tags <filename> or <message>!", "Could not save to <filename>{0}</filename>: <message>{1}</message>").format(file_name, str(e))) from e
+
+    def _onJobProgress(self, job, progress):
+        self.writeProgress.emit(self, progress)
+
+    def _onWriteJobFinished(self, job):
+        self._writing = False
+        self.writeFinished.emit(self)
+        if job.getResult():
             self.writeSuccess.emit(self)
-            message = Message(
-                catalog.i18nc("@info:status", "Saved to <filename>{0}</filename>").format(job_name))
-            message.addAction("open_folder", catalog.i18nc("@action:button", "Open Folder"), "open-folder",
-                              catalog.i18nc("@info:tooltip", "Open the folder containing the file"))
-            message._folder = os.path.dirname(file_name)
+            message = Message(catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Saved to <filename>{0}</filename>").format(job.getFileName()), title = catalog.i18nc("@info:title", "File Saved"))
+            message.addAction("open_folder", catalog.i18nc("@action:button", "Open Folder"), "open-folder", catalog.i18nc("@info:tooltip", "Open the folder containing the file"))
+            message._folder = os.path.dirname(job.getFileName())
             message.actionTriggered.connect(self._onMessageActionTriggered)
             message.show()
-        except Exception as e:
-            message.hide()
-            message = Message(catalog.i18nc("@info:status",
-                                            "Could not save to <filename>{0}</filename>: <message>{1}</message>").format(
-                file_name, str(e)), lifetime=0)
+        else:
+            message = Message(catalog.i18nc("@info:status Don't translate the XML tags <filename> or <message>!", "Could not save to <filename>{0}</filename>: <message>{1}</message>").format(job.getFileName(), str(job.getError())), lifetime = 0, title = catalog.i18nc("@info:title", "Warning"))
+            message.show()
+            self.writeError.emit(self)
+
+        try:
+            job.getStream().close()
+        except (OSError, PermissionError): #When you don't have the rights to do the final flush or the disk is full.
+            message = Message(catalog.i18nc("@info:status", "Something went wrong saving to <filename>{0}</filename>: <message>{1}</message>").format(job.getFileName(), str(job.getError())), title = catalog.i18nc("@info:title", "Error"))
             message.show()
             self.writeError.emit(self)
 
