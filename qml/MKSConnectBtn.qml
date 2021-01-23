@@ -8,6 +8,8 @@ import QtQuick.Window 2.1
 import UM 1.2 as UM
 import Cura 1.0 as Cura
 
+import os.path
+
 Item {
     id: base;
     property string activeQualityDefinitionId: Cura.MachineManager.activeQualityDefinitionId;
