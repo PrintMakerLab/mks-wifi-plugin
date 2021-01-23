@@ -1,4 +1,5 @@
-# coding=utf-8
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.i18n import i18nCatalog
 from UM.Application import Application
 from UM.Logger import Logger

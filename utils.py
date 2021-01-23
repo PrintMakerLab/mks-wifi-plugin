@@ -1,3 +1,5 @@
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 from cura.CuraApplication import CuraApplication
 from UM.Math.Vector import Vector
 from UM.Application import Application

@@ -1,3 +1,6 @@
+// Copyright (c) 2021
+// MKS Plugin is released under the terms of the AGPLv3 or higher.
+
 import UM 1.2 as UM
 import Cura 1.0 as Cura
 

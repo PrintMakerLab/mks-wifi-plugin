@@ -1,4 +1,5 @@
-# coding=utf-8
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.OutputDevice.OutputDevicePlugin import OutputDevicePlugin
 from . import MKSOutputDevice, SaveOutputDevice
 

@@ -1,3 +1,5 @@
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 import os, json
 
 from . import MKSOutputDevicePlugin
