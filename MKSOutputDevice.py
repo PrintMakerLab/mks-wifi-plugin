@@ -46,7 +46,19 @@ if TYPE_CHECKING:
     from UM.Scene.SceneNode import SceneNode #For typing.
     from UM.FileHandler.FileHandler import FileHandler #For typing.
 
-i18n_catalog = i18nCatalog("cura")
+# catalog = i18nCatalog("cura")
+
+from UM.Resources import Resources
+
+# Logger.log("e", "Plugin Resourses Path: " + os.path.join(os.path.abspath(os.path.dirname(__file__)), "resources"))
+Resources.addSearchPath(os.path.join(os.path.abspath(os.path.dirname(__file__)))) # Plugin translation file import
+
+# Logger.log("e", "i18nPaths: " + " ".join(Resources.getAllPathsForType(Resources.i18n)))
+
+catalog = i18nCatalog("mksplugin")
+
+if catalog.hasTranslationLoaded():
+    Logger.log("i", "MKS WiFi Plugin translation loaded!")
 
 class UnifiedConnectionState(IntEnum):
     try:
@@ -105,10 +117,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.setPriority(3)  # Make sure the output device gets selected above local file output and Octoprint XD
         self._active_machine = CuraApplication.getInstance().getMachineManager().activeMachine
         self.setName(instance_id)
-        self.setShortDescription(i18n_catalog.i18nc("@action:button", "Print over TFT"))
-        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", "Print over TFT"))
+        self.setShortDescription(catalog.i18nc("@action:button", "Print over TFT"))
+        self.setDescription(catalog.i18nc("@properties:tooltip", "Print over TFT"))
         self.setIconName("print")
-        self.setConnectionText(i18n_catalog.i18nc("@info:status", "Connected to TFT on {0}").format(self._key))
+        self.setConnectionText(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "Connected to TFT on <message>{0}</message>").format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(self._onGlobalContainerChanged)
 
         self._socket = None
@@ -188,13 +200,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         # Logger.log("d","self._socket.connectToHost %s" % self._port)
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        name1 = "Print over " + global_container_stack.getName()
-        if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-            name1 = "WIFI传输打印"
-        else:
-            name1 = "Print over " + global_container_stack.getName()
-        self.setShortDescription(i18n_catalog.i18nc("@action:button", name1))
-        self.setDescription(i18n_catalog.i18nc("@properties:tooltip", name1))
+        # name1 = "Print over " + global_container_stack.getName()
+        # if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+        #     name1 = "WIFI传输打印"
+        # else:
+        #     name1 = "Print over " + global_container_stack.getName()
+        self.setShortDescription(catalog.i18nc("@action:button Don't translate the XML tags <message>!", "Print over <message>{0}</message>").format(global_container_stack.getName()))
+        self.setDescription(catalog.i18nc("@properties:tooltip Don't translate the XML tags <message>!", "Print over <message>{0}</message>").format(global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
         self._setAcceptsCommands(True)
@@ -271,7 +283,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -281,7 +293,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -291,7 +303,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -301,7 +313,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -349,7 +361,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
             self._error_message.show()
         else:
             filename,_ = QFileDialog.getOpenFileName(None, "choose file", preferences.getValue("mkswifi/savepath"), "Gcode(*.gcode;*.g;*.goc)")
@@ -426,7 +438,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self.isBusy():
                     if self._exception_message:
                         self._exception_message.hide()
-                    self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
+                    self._exception_message = Message(catalog.i18nc("@info:status", "File cannot be transferred during printing."))
                     self._exception_message.show()
                     return
                 self.uploadfunc(filename)
@@ -516,7 +528,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy():
                 if self._exception_message:
                     self._exception_message.hide()
-                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
+                self._exception_message = Message(catalog.i18nc("@info:status", "File cannot be transferred during printing."))
                 self._exception_message.show()
                 return
             self._mdialog.close()
@@ -525,7 +537,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._progress_message:
                 if self._error_message is not None:
                     self._error_message.hide()
-                self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+                self._error_message = Message(catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
                 self._error_message.show()
             else:
                 self.uploadfunc(filename)
@@ -539,7 +551,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
             self._error_message.show()
         else:
             preferences.addPreference("mkswifi/autoprint", "True")
@@ -556,8 +568,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 file_name = filename[filename.rfind("/")+1:]
                 # Logger.log("d", "file_namefile_name: %s" % str(file_name))
                 self._last_file_name = filename[filename.rfind("/")+1:]
-                # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
-                #                             i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
+                # self._progress_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
+                #                             catalog.i18nc("@info:title", "Sending Data"), option_text=catalog.i18nc("@label", "Print jobs")
                 #                             , option_state=preferences.getValue("mkswifi/autoprint"))
                 name0 = "Print Job"
                 name1 = "Uploading print job to printer"
@@ -610,7 +622,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # preferences.setValue("mkswifi/uploadingfile", "False")
                 self._progress_message.hide()
                 self._progress_message = None
-                self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+                self._error_message = Message(catalog.i18nc("@info:status", "Send file to printer failed."))
                 self._error_message.show()
                 self._update_timer.start()
             except Exception as e:
@@ -716,7 +728,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
             self._error_message.show()
         else:
             self.startPrint()
@@ -734,8 +746,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._progress_message = None
 
         if self.isBusy():
-            # self._error_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
-            #                              i18n_catalog.i18nc("@info:title", "Sending Data"))
+            # self._error_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
+            #                              catalog.i18nc("@info:title", "Sending Data"))
             # self._error_message.show()
             tipsname = "Now is printing. Send file to printer failed."
             if self._application.getPreferences().getValue("general/language") == "zh_CN":
@@ -896,7 +908,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy():
                 if self._exception_message:
                     self._exception_message.hide()
-                self._exception_message = Message(i18n_catalog.i18nc("@info:status", "File cannot be transferred during printing."))
+                self._exception_message = Message(catalog.i18nc("@info:status", "File cannot be transferred during printing."))
                 self._exception_message.show()
                 return
             self._mdialog.close()
@@ -920,7 +932,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."))
             self._error_message.show()
             return
         self._preheat_timer.stop()
@@ -929,12 +941,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             preferences.addPreference("mkswifi/savepath", "")
             if self._application.getVersion().split(".")[0] < "4":
                 Application.getInstance().showPrintMonitor.emit(True)
-                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False, -1)
+                self._progress_message = Message(catalog.i18nc("@info:status", "Sending file to printer"), 0, False, -1)
             else:
-                self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1,
-                                        i18n_catalog.i18nc("@info:title", "Sending Print Job"), option_text=i18n_catalog.i18nc("@label", "Print job")
+                self._progress_message = Message(catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1,
+                                        catalog.i18nc("@info:title", "Sending Print Job"), option_text=catalog.i18nc("@label", "Print job")
                                         , option_state=preferences.getValue("mkswifi/autoprint"))
-                self._progress_message.addAction("Cancel", i18n_catalog.i18nc("@action:button", "Cancel"), None, "")
+                self._progress_message.addAction("Cancel", catalog.i18nc("@action:button", "Cancel"), None, "")
                 self._progress_message.actionTriggered.connect(self._cancelSendGcode)
                 self._progress_message.optionToggled.connect(self._onOptionStateChanged)
 
@@ -976,7 +988,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("e", "An exception occurred in network connection: %s" % str(e))
             self._progress_message.hide()
             self._progress_message = None
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Send file to printer failed."))
             self._error_message.show()
             self._update_timer.start()
         except Exception as e:
@@ -995,7 +1007,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         Logger.log("d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
         if bytes_sent == bytes_total and bytes_sent > 0:
             self._progress_message.hide()
-            self._error_message = Message(i18n_catalog.i18nc("@info:status", "Print job was successfully sent to the printer."))
+            self._error_message = Message(catalog.i18nc("@info:status", "Print job was successfully sent to the printer."))
             self._error_message.show()
             CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
         elif bytes_total > 0:
@@ -1017,7 +1029,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
+        self._error_message = Message(catalog.i18nc("@info:status", "Send file to printer failed."))
         self._error_message.show()
         self._update_timer.start()
 
@@ -1129,7 +1141,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._connection_state != UnifiedConnectionState.Connected:
                 self._sendCommand("M20")
                 self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
-                self.setConnectionText(i18n_catalog.i18nc("@info:status", "TFT Connect succeed"))
+                self.setConnectionText(catalog.i18nc("@info:status", "TFT Connect succeed"))
             if not self._printers:
                 self._createPrinterList()
             printer = self.printers[0]

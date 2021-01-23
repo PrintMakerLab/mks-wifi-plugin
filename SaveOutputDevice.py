@@ -16,7 +16,9 @@ from UM.OutputDevice import OutputDeviceError
 from UM.OutputDevice.OutputDevice import OutputDevice
 from UM.i18n import i18nCatalog
 
-catalog = i18nCatalog("uranium")
+# catalog = i18nCatalog("uranium")
+
+catalog = i18nCatalog("mksplugin")
 
 from . import utils
 
@@ -26,13 +28,13 @@ class SaveOutputDevice(OutputDevice):
         self.setName("save_with_screenshot")
         self.setPriority(2)
         self._preferences = Application.getInstance().getPreferences()
-        button_name = "Save as TFT file"
-        if Application.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-            button_name = "保存为TFT文件"
-        else:
-            button_name = "Save as TFT file"
-        self.setShortDescription(catalog.i18nc("@action:button", button_name))
-        self.setDescription(catalog.i18nc("@properties:tooltip", button_name))
+        # button_name = "Save as TFT file"
+        # if Application.getInstance().getPreferences().getValue("general/language") == "zh_CN":
+        #     button_name = "保存为TFT文件"
+        # else:
+        #     button_name = "Save as TFT file"
+        self.setShortDescription(catalog.i18nc("@action:button", "Save as TFT file"))
+        self.setDescription(catalog.i18nc("@properties:tooltip", "Save as TFT file"))
         self.setIconName("save")
 
         self._writing = False

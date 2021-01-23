@@ -1,0 +1,463 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-01-23 18:05+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: MachineConfig.py:32
+msgctxt "@action"
+msgid "MKS WiFi Connection"
+msgstr ""
+
+#: MKSOutputDevicePlugin.py:190
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer connected successfully!"
+msgstr ""
+
+#: SaveOutputDevice.py:36
+msgctxt "@action:button"
+msgid "Save as TFT file"
+msgstr ""
+
+#: SaveOutputDevice.py:37
+msgctxt "@properties:tooltip"
+msgid "Save as TFT file"
+msgstr ""
+
+#: SaveOutputDevice.py:49
+msgctxt "@title:window"
+msgid "Save to File"
+msgstr ""
+
+#: SaveOutputDevice.py:82
+msgctxt "@info:warning"
+msgid "There are no file types available to write with!"
+msgstr ""
+
+#: SaveOutputDevice.py:126
+msgctxt "@title:window"
+msgid "File Already Exists"
+msgstr ""
+
+#: SaveOutputDevice.py:126
+#, python-brace-format
+msgctxt "@label Don't translate the XML tag <filename>!"
+msgid ""
+"The file <filename>{0}</filename> already exists. Are you sure you want to "
+"overwrite it?"
+msgstr ""
+
+#: SaveOutputDevice.py:167
+#, python-brace-format
+msgctxt "@info:progress Don't translate the XML tags <filename>!"
+msgid "Saving to <filename>{0}</filename>"
+msgstr ""
+
+#: SaveOutputDevice.py:168
+msgctxt "@info:title"
+msgid "Saving"
+msgstr ""
+
+#: SaveOutputDevice.py:176
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "Permission denied when trying to save <filename>{0}</filename>"
+msgstr ""
+
+#: SaveOutputDevice.py:179 SaveOutputDevice.py:195
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
+msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
+msgstr ""
+
+#: SaveOutputDevice.py:189
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "Saved to <filename>{0}</filename>"
+msgstr ""
+
+#: SaveOutputDevice.py:189
+msgctxt "@info:title"
+msgid "File Saved"
+msgstr ""
+
+#: SaveOutputDevice.py:190
+msgctxt "@action:button"
+msgid "Open Folder"
+msgstr ""
+
+#: SaveOutputDevice.py:190
+msgctxt "@info:tooltip"
+msgid "Open the folder containing the file"
+msgstr ""
+
+#: SaveOutputDevice.py:195
+msgctxt "@info:title"
+msgid "Warning"
+msgstr ""
+
+#: SaveOutputDevice.py:202
+#, python-brace-format
+msgctxt "@info:status"
+msgid ""
+"Something went wrong saving to <filename>{0}</filename>: <message>{1}</"
+"message>"
+msgstr ""
+
+#: SaveOutputDevice.py:202
+msgctxt "@info:title"
+msgid "Error"
+msgstr ""
+
+#: MKSOutputDevice.py:120
+msgctxt "@action:button"
+msgid "Print over TFT"
+msgstr ""
+
+#: MKSOutputDevice.py:121
+msgctxt "@properties:tooltip"
+msgid "Print over TFT"
+msgstr ""
+
+#: MKSOutputDevice.py:123
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "Connected to TFT on <message>{0}</message>"
+msgstr ""
+
+#: MKSOutputDevice.py:208
+#, python-brace-format
+msgctxt "@action:button Don't translate the XML tags <message>!"
+msgid "Print over <message>{0}</message>"
+msgstr ""
+
+#: MKSOutputDevice.py:209
+#, python-brace-format
+msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
+msgid "Print over <message>{0}</message>"
+msgstr ""
+
+#: MKSOutputDevice.py:286 MKSOutputDevice.py:296 MKSOutputDevice.py:306
+#: MKSOutputDevice.py:316
+msgctxt "@info:status"
+msgid "Error: printing can not send"
+msgstr ""
+
+#: MKSOutputDevice.py:364 MKSOutputDevice.py:540 MKSOutputDevice.py:554
+#: MKSOutputDevice.py:731 MKSOutputDevice.py:935
+msgctxt "@info:status"
+msgid "Error: Another file is uploading, please try later."
+msgstr ""
+
+#: MKSOutputDevice.py:441 MKSOutputDevice.py:531 MKSOutputDevice.py:911
+msgctxt "@info:status"
+msgid "File cannot be transferred during printing."
+msgstr ""
+
+#: MKSOutputDevice.py:625 MKSOutputDevice.py:991 MKSOutputDevice.py:1032
+msgctxt "@info:status"
+msgid "Send file to printer failed."
+msgstr ""
+
+#: MKSOutputDevice.py:706 MKSOutputDevice.py:722
+msgctxt "@warning:status"
+msgid "Please prepare G-code before exporting."
+msgstr ""
+
+#: MKSOutputDevice.py:944
+msgctxt "@info:status"
+msgid "Sending file to printer"
+msgstr ""
+
+#: MKSOutputDevice.py:946
+msgctxt "@info:status"
+msgid "Uploading print job to printer"
+msgstr ""
+
+#: MKSOutputDevice.py:947
+msgctxt "@info:title"
+msgid "Sending Print Job"
+msgstr ""
+
+#: MKSOutputDevice.py:947
+msgctxt "@label"
+msgid "Print job"
+msgstr ""
+
+#: MKSOutputDevice.py:949 qml/MachineConfig.qml:423
+msgctxt "@action:button"
+msgid "Cancel"
+msgstr ""
+
+#: MKSOutputDevice.py:1010
+msgctxt "@info:status"
+msgid "Print job was successfully sent to the printer."
+msgstr ""
+
+#: MKSOutputDevice.py:1144
+msgctxt "@info:status"
+msgid "TFT Connect succeed"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:202
+msgctxt "@label"
+msgid "E0"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:240
+msgctxt "@label"
+msgid "E1"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:312
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:322
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:337
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:347
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:364
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:374
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:391
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:401
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:436
+msgctxt "@action:button"
+msgid "Pause"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:438
+msgctxt "@action:button"
+msgid "Resume"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:450
+msgctxt "@tooltip"
+msgid "Pause print."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:450
+msgctxt "@tooltip"
+msgid "Resume print."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:468
+msgctxt "@action:button"
+msgid "Abort Print"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:478
+msgctxt "@tooltip"
+msgid "Abort current print."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:496
+msgctxt "@action:button"
+msgid "SD Files"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:506
+msgctxt "@tooltip"
+msgid "Browse SD card in 3D printer."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:524
+msgctxt "@action:button"
+msgid "Send Print Job"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:534
+msgctxt "@tooltip"
+msgid "Select and send G-Code file to 3D printer."
+msgstr ""
+
+#: qml/MonitorItem4x.qml:556
+msgctxt "@title:window"
+msgid "Open file(s)"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:611
+msgctxt "@action:button"
+msgid "Delete"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:625
+msgctxt "@action:button"
+msgid "Print"
+msgstr ""
+
+#: qml/MonitorItem4x.qml:638 qml/MachineConfig.qml:126
+msgctxt "@action:button"
+msgid "Refresh"
+msgstr ""
+
+#: qml/MachineConfig.qml:77
+msgctxt "@title:window"
+msgid "Connect to Networked Printer"
+msgstr ""
+
+#: qml/MachineConfig.qml:87
+msgctxt "@label"
+msgid ""
+"To print directly to your printer over the network, please make sure your "
+"printer is connected to the network using a network cable or by connecting "
+"your printer to your WIFI network. If you don't connect Cura with your "
+"printer, you can still use a USB drive to transfer g-code files to your "
+"printer.\n"
+"\n"
+"Select your printer from the list below:"
+msgstr ""
+
+#: qml/MachineConfig.qml:97
+msgctxt "@action:button"
+msgid "Add"
+msgstr ""
+
+#: qml/MachineConfig.qml:107
+msgctxt "@action:button"
+msgid "Edit"
+msgstr ""
+
+#: qml/MachineConfig.qml:118
+msgctxt "@action:button"
+msgid "Remove"
+msgstr ""
+
+#: qml/MachineConfig.qml:216
+msgctxt "@label"
+msgid ""
+"If your printer is not listed, read the <a href='%1'>network printing "
+"troubleshooting guide</a>"
+msgstr ""
+
+#: qml/MachineConfig.qml:243
+msgctxt "@label"
+msgid "Type"
+msgstr ""
+
+#: qml/MachineConfig.qml:255
+msgctxt "@label Printer name"
+msgid "Ultimaker 3"
+msgstr ""
+
+#: qml/MachineConfig.qml:258
+msgctxt "@label Printer name"
+msgid "Ultimaker 3 Extended"
+msgstr ""
+
+#: qml/MachineConfig.qml:261
+msgctxt "@label Printer name"
+msgid "TFT WIFI"
+msgstr ""
+
+#: qml/MachineConfig.qml:274
+msgctxt "@label"
+msgid "Firmware version"
+msgstr ""
+
+#: qml/MachineConfig.qml:286
+msgctxt "@label"
+msgid "Address"
+msgstr ""
+
+#: qml/MachineConfig.qml:308
+msgctxt "@label"
+msgid "This printer is not set up to host a group of Ultimaker 3 printers."
+msgstr ""
+
+#: qml/MachineConfig.qml:312
+msgctxt "@label"
+msgid "This printer is the host for a group of %1 Ultimaker 3 printers."
+msgstr ""
+
+#: qml/MachineConfig.qml:322
+msgctxt "@label"
+msgid "The printer at this address has not yet responded."
+msgstr ""
+
+#: qml/MachineConfig.qml:329 qml/MKSConnectBtn.qml:70
+msgctxt "@action:button"
+msgid "Connect"
+msgstr ""
+
+#: qml/MachineConfig.qml:347
+msgctxt "@action:button"
+msgid "Disconnect"
+msgstr ""
+
+#: qml/MachineConfig.qml:372
+msgctxt "@title:window"
+msgid "Printer Address"
+msgstr ""
+
+#: qml/MachineConfig.qml:402
+msgctxt "@alabel"
+msgid "Enter the IP address or hostname of your printer on the network."
+msgstr ""
+
+#: qml/MachineConfig.qml:432
+msgctxt "@action:button"
+msgid "OK"
+msgstr ""
+
+#: qml/MKSConnectBtn.qml:61
+msgctxt "@action:button"
+msgid "Request Access"
+msgstr ""
+
+#: qml/MKSConnectBtn.qml:62
+msgctxt "@info:tooltip"
+msgid "Send access request to the printer"
+msgstr ""
+
+#: qml/MKSConnectBtn.qml:71
+msgctxt "@info:tooltip"
+msgid "Connect to a printer"
+msgstr ""
+
+#: qml/MKSConnectBtn.qml:81
+msgctxt "@action:button"
+msgid "Close"
+msgstr ""
