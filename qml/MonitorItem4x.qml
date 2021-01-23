@@ -544,20 +544,6 @@ Component
             }
         }
 
-        // UM.Dialog {
-        //     id: connectActionDialog2;
-        //     rightButtons: Button {
-        //         iconName: "dialog-close";
-        //         onClicked: connectActionDialog.reject();
-        //         text: catalog.i18nc("@action:button", "Close");
-        //     }
-
-        //     Loader {
-        //         anchors.fill: parent;
-        //         source: "MachineConfig.qml";
-        //     }
-        // }
-
         UM.Dialog
         {
             id: sdDialog

@@ -1,6 +1,5 @@
-# Copyright (c) 2018 Aldo Hoeben / fieldOfView
-# NetworkMJPGImage is released under the terms of the LGPLv3 or higher.
-
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 from PyQt5.QtCore import QUrl, pyqtProperty, pyqtSignal, pyqtSlot, QRect, QByteArray
 from PyQt5.QtGui import QImage, QPainter
 from PyQt5.QtQuick import QQuickPaintedItem

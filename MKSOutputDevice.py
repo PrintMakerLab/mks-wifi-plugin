@@ -1,4 +1,5 @@
-# coding=utf-8
+# Copyright (c) 2021
+# MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.i18n import i18nCatalog
 from UM.Application import Application
 from UM.Logger import Logger
@@ -97,9 +98,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         self._application = CuraApplication.getInstance()
         if self._application.getVersion().split(".")[0] < "4":
-            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem.qml")
+            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"qml",  "MonitorItem.qml")
         else:
-            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "MonitorItem4x.qml")
+            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"qml", "MonitorItem4x.qml")
 
         self.setPriority(3)  # Make sure the output device gets selected above local file output and Octoprint XD
         self._active_machine = CuraApplication.getInstance().getMachineManager().activeMachine
@@ -926,11 +927,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         try:
             preferences.addPreference("mkswifi/autoprint", "True")
             preferences.addPreference("mkswifi/savepath", "")
-            # preferences.addPreference("mkswifi/uploadingfile", "True")
-            # CuraApplication.getInstance().showPrintMonitor.emit(True)
-            # self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
-            #                              i18n_catalog.i18nc("@info:title", "Sending Data"), option_text=i18n_catalog.i18nc("@label", "Print jobs")
-            #                              , option_state=preferences.getValue("mkswifi/autoprint"))
             if self._application.getVersion().split(".")[0] < "4":
                 Application.getInstance().showPrintMonitor.emit(True)
                 self._progress_message = Message(i18n_catalog.i18nc("@info:status", "Sending file to printer"), 0, False, -1)
@@ -943,11 +939,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._progress_message.optionToggled.connect(self._onOptionStateChanged)
 
             self._progress_message.show()
-            # job_name = Application.getInstance().getPrintInformation().jobName.strip()
-            # if job_name is "":
-            #     job_name = "untitled_print"
-                # job_name = "cura_file"
-            # file_name = "%s.gcode" % job_name
             self._last_file_name = file_name
             Logger.log("d", "mks: "+file_name + Application.getInstance().getPrintInformation().jobName.strip())
 
@@ -973,13 +964,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             data = QByteArray()
             data.append(single_string_file_data.encode())
 
-            # self._post_multi_part = QHttpMultiPart(QHttpMultiPart.FormDataType)
-            # self._post_part = QHttpPart()
-            # self._post_part.setHeader(QNetworkRequest.ContentTypeHeader, b'application/octet-stream')
-            # self._post_part.setHeader(QNetworkRequest.ContentDispositionHeader,
-            #                           "form-data; name=\"file\"; filename=\"%s\"" % file_name)
-            # self._post_part.setBody(single_string_file_data.encode())
-            # self._post_multi_part.append(self._post_part)
             post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
             post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
             post_request.setRawHeader(b'Connection', b'keep-alive')
@@ -1014,8 +998,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._error_message = Message(i18n_catalog.i18nc("@info:status", "Print job was successfully sent to the printer."))
             self._error_message.show()
             CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
-            # preferences = Application.getInstance().getPreferences()
-            # preferences.setValue("mkswifi/uploadingfile", "False")
         elif bytes_total > 0:
             new_progress = bytes_sent / bytes_total * 100
             # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
@@ -1024,27 +1006,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if new_progress > self._progress_message.getProgress():
                 self._progress_message.show()  # Ensure that the message is visible.
                 self._progress_message.setProgress(bytes_sent / bytes_total * 100)
-        # elif bytes_total == 0 and bytes_sent == 0:
-        # # 此时不能判断是否失败
-        #     self._progress_message.setProgress(0)
-        #     self._progress_message.hide()
-        #     self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
-        #     self._error_message.show()
         else:
-            # preferences = Application.getInstance().getPreferences()
-            # preferences.setValue("mkswifi/uploadingfile", "False")
             if self._progress_message is not None:
                 self._progress_message.setProgress(0)
                 self._progress_message.hide()
                 self._progress_message = None
-            # self._error_message = Message(i18n_catalog.i18nc("@info:status", "Send file to printer failed."))
-            # self._error_message.show()
-            # self._update_timer.start()
 
     def _onUploadError(self, reply, sslerror):
         Logger.log("d", "Upload Error")
-        # preferences = Application.getInstance().getPreferences()
-        # preferences.setValue("mkswifi/uploadingfile", "False")
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
@@ -1161,11 +1130,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._sendCommand("M20")
                 self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
                 self.setConnectionText(i18n_catalog.i18nc("@info:status", "TFT Connect succeed"))
-            # ss = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-            # while self._socket.canReadLine():
-                # ss = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-            # ss_list = ss.split("\r\n")
-            # Logger.log("e", "sys.getfilesystemencoding(): %s" % str(sys.getfilesystemencoding()))
             if not self._printers:
                 self._createPrinterList()
             printer = self.printers[0]
@@ -1173,13 +1137,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
                 s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
                 Logger.log("d", "mks recv: "+s)
-                # Logger.log("d", "mks recv self._socket addr: %s" % self._socket.peerAddress)
-                # self.__additional_components_view.findChild(QObject, "ManualPrinterControl").setProperty("enabled", False)
                 s = s.replace("\r", "").replace("\n", "")
-                # if time.time() - self.last_update_time > 10 or time.time() - self.last_update_time<-10:
-                #     Logger.log("d", "mks time:"+str(self.last_update_time)+str(time.time()))
-                #     self._sendCommand("M20")
-                #     self.last_update_time = time.time()
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
@@ -1237,8 +1195,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self._ischanging = False
                     # self._updateJobState(job_state)
                     continue
-                # print_job.updateState('idle')
-                # printer.updateState('idle')
                 if s.startswith("M994"):
                     if self.isBusy() and s.rfind("/") != -1:
                         self._printing_filename = s[s.rfind("/") + 1:s.rfind(";")]
@@ -1256,9 +1212,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self._printing_time = 0
                     # Logger.log("d", self._printing_time)
                     print_job.updateTimeElapsed(self._printing_time)
-                    # self.setTimeElapsed(self._printing_time)
-                    # print_job.updateTimeTotal(self._printing_time)
-                    # self.setTimeTotal(self._printing_time)
                     continue
                 if s.startswith("M27"):
                     if self._application.getVersion().split(".")[0] < "4":
@@ -1276,9 +1229,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         else:
                             self._printing_progress = 0
                             totaltime = self._printing_time * 100
-                        # Logger.log("d", self._printing_time)
-                        # Logger.log("d", totaltime)
-                        # self.setProgress(self._printing_progress)
                         print_job.updateTimeTotal(self._printing_time)
                         print_job.updateTimeElapsed(self._printing_time*2-totaltime)
                     continue
@@ -1341,8 +1291,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("M20")
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/autoprint", "True")
-        # preferences.addPreference("mkswifi/savepath", "")
-        # preferences.setValue("mkswifi/autoprint", str(self._progress_message.getOptionState()))
         if preferences.getValue("mkswifi/autoprint"):
             self._printFile()
         if not http_status_code:
@@ -1360,7 +1308,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
-        # self.__additional_components_view = CuraApplication.getInstance().createQmlComponent(self._monitor_view_qml_path, {"mkscontroller": self})
         self.__additional_components_view = Application.getInstance().createQmlComponent(self._monitor_view_qml_path, {"manager": self})
         # trlist = CuraApplication.getInstance()._additional_components
         # for comp in trlist:
