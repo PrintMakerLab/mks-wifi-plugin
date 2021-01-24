@@ -1,20 +1,22 @@
-# MKS wifi plugin #
+# MKS WiFi plugin #
 
-MKS wifi plugin for Cura developed by Makerbase, and it is migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software")  after V4.4 version.
+MKS WiFi plugin for Cura developed by Makerbase, Jeredian and Elkin-Vasily and it was originaly migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software") after V4.4 version.
 
-Using the plugin with cura, you can connect to the mks robin wifi and mks tft wifi. Thus, you can control your 3d printer wirelessly. What is more, transferring gcode files to a printer can usually reach 100kbyte/s.
-The plugin also support previewing gcode file  when using MKS Robin TFT35 or MKS TFT35 LCD.
-
+Using the plugin with Cura, you can:
+  - Connect Cura to the MKS Robin WiFi and MKS TFT WiFi;
+  - Control your 3D printer wirelessly with Cura;
+  - Transfer .gcode files to a printer with 100kbyte/s speed;
+  - Get preview on 3D printer srceen when using MKS Robin TFT35 or MKS TFT35 LCD.
 
 ## Installation ##
 
 * Marketplace:
-  The plugin is available through the Cura Marketplace as the MKS Wifi Plugin. Thanks [Jeredian](https://github.com/Jeredian/mks-wifi-plugin "Jeredian") for uploading it to the Cura Marketplace.
+  Plugin is available through the Cura Marketplace as the MKS Wifi Plugin.
 
 * Manually:
-  - Download or clone the repository
-  - Open Cura configuration folder. It can be found via Help -> Show Configuration Folder inside Cura.
-  - Copy folder into [Cura configuration folder]/plugins/
+  - Download or clone this repository;
+  - Open Cura configuration folder. It can be found via Help -> Show Configuration Folder inside Cura;
+  - Copy folder into [Cura configuration folder]/plugins/ ;
   - Restart Cura.
   
- ** Notes: The mks wifi plugin V4.4 is only available on the Cura 3.6 or higher version. **
+ ** Notes: The MKS WiFi plugin is only available for Cura 4.5 or higher version. **
