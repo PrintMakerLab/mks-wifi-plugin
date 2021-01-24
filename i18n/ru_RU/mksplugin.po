@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-24 19:04+0300\n"
-"PO-Revision-Date: 2021-01-23 00:43+0300\n"
-"Last-Translator: Василий Елькин <elkin.vasily@gmail.com>\n"
+"POT-Creation-Date: 2021-01-25 01:10+0300\n"
+"PO-Revision-Date: 2021-01-25 01:14+0300\n"
+"Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -20,6 +20,7 @@ msgstr ""
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Language: ru\n"
 "X-Source-Language: en\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: MachineConfig.py:32
 msgctxt "@action"
@@ -168,57 +169,126 @@ msgid "Error: printing can not send"
 msgstr "Ошибка: Задание не может быть отправлено"
 
 #: MKSOutputDevice.py:364 MKSOutputDevice.py:540 MKSOutputDevice.py:554
-#: MKSOutputDevice.py:731 MKSOutputDevice.py:935
+#: MKSOutputDevice.py:729 MKSOutputDevice.py:933
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее."
 
-#: MKSOutputDevice.py:441 MKSOutputDevice.py:531 MKSOutputDevice.py:911
+#: MKSOutputDevice.py:376 MKSOutputDevice.py:466 MKSOutputDevice.py:773
+#: MKSOutputDevice.py:844
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> already exists."
+msgstr "Принтер <message>{0}</message> успешно подключен."
+
+#: MKSOutputDevice.py:379 MKSOutputDevice.py:401 MKSOutputDevice.py:423
+#: MKSOutputDevice.py:469 MKSOutputDevice.py:491 MKSOutputDevice.py:513
+#: MKSOutputDevice.py:776 MKSOutputDevice.py:798 MKSOutputDevice.py:820
+#: MKSOutputDevice.py:847 MKSOutputDevice.py:869 MKSOutputDevice.py:891
+msgctxt "@action:button"
+msgid "Yes"
+msgstr "Да"
+
+#: MKSOutputDevice.py:380 MKSOutputDevice.py:402 MKSOutputDevice.py:424
+#: MKSOutputDevice.py:470 MKSOutputDevice.py:492 MKSOutputDevice.py:514
+#: MKSOutputDevice.py:777 MKSOutputDevice.py:799 MKSOutputDevice.py:821
+#: MKSOutputDevice.py:848 MKSOutputDevice.py:870 MKSOutputDevice.py:892
+msgctxt "@action:button"
+msgid "No"
+msgstr "Нет"
+
+#: MKSOutputDevice.py:383 MKSOutputDevice.py:473 MKSOutputDevice.py:780
+#: MKSOutputDevice.py:851
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> already exists, please rename it."
+msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его."
+
+#: MKSOutputDevice.py:398 MKSOutputDevice.py:488 MKSOutputDevice.py:795
+#: MKSOutputDevice.py:866
+msgctxt "@info:status"
+msgid "File name is too long to upload."
+msgstr "Имя файла слишком длинное для загрузки."
+
+#: MKSOutputDevice.py:405 MKSOutputDevice.py:495 MKSOutputDevice.py:802
+#: MKSOutputDevice.py:873
+msgctxt "@info:status"
+msgid "File name is too long to upload, please rename it."
+msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
+
+#: MKSOutputDevice.py:420 MKSOutputDevice.py:510 MKSOutputDevice.py:817
+#: MKSOutputDevice.py:888
+msgctxt "@info:status"
+msgid "File name can not include chinese."
+msgstr "Имя файла не может содержать китайский."
+
+#: MKSOutputDevice.py:427 MKSOutputDevice.py:517 MKSOutputDevice.py:824
+#: MKSOutputDevice.py:895
+msgctxt "@info:status"
+msgid "File name can not include chinese, please rename it."
+msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его."
+
+#: MKSOutputDevice.py:441 MKSOutputDevice.py:531 MKSOutputDevice.py:909
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
 msgstr "Файл не может быть передан во время печати."
 
-#: MKSOutputDevice.py:625 MKSOutputDevice.py:991 MKSOutputDevice.py:1032
-msgctxt "@info:status"
-msgid "Send file to printer failed."
-msgstr "Отправка файла на принтер завершилась неудачей."
-
-#: MKSOutputDevice.py:706 MKSOutputDevice.py:722
-msgctxt "@warning:status"
-msgid "Please prepare G-code before exporting."
-msgstr "Пожалуйста, подготовьте G-code перед отправкой."
-
-#: MKSOutputDevice.py:944
-msgctxt "@info:status"
-msgid "Sending file to printer"
-msgstr "Отправка файла на принтер"
-
-#: MKSOutputDevice.py:946
+#: MKSOutputDevice.py:589 MKSOutputDevice.py:944
 msgctxt "@info:status"
 msgid "Uploading print job to printer"
 msgstr "Загрузка задания на принтер"
 
-#: MKSOutputDevice.py:947
-msgctxt "@info:title"
+#: MKSOutputDevice.py:589
+msgctxt "@info:status"
 msgid "Sending Print Job"
 msgstr "Отправка задания на печать"
 
-#: MKSOutputDevice.py:947
-msgctxt "@label"
-msgid "Print job"
+#: MKSOutputDevice.py:589
+msgctxt "@info:status"
+msgid "Print Job"
 msgstr "Начать печать после загрузки"
 
-#: MKSOutputDevice.py:949 qml/MachineConfig.qml:423
+#: MKSOutputDevice.py:590 MKSOutputDevice.py:947 qml/MachineConfig.qml:423
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Отменить"
 
-#: MKSOutputDevice.py:1010
+#: MKSOutputDevice.py:623 MKSOutputDevice.py:989 MKSOutputDevice.py:1030
+msgctxt "@info:status"
+msgid "Send file to printer failed."
+msgstr "Отправка файла на принтер завершилась неудачей."
+
+#: MKSOutputDevice.py:704 MKSOutputDevice.py:720
+msgctxt "@warning:status"
+msgid "Please prepare G-code before exporting."
+msgstr "Пожалуйста, подготовьте G-code перед отправкой."
+
+#: MKSOutputDevice.py:761
+msgctxt "@info:status"
+msgid "Now is printing. Send file to printer failed."
+msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
+
+#: MKSOutputDevice.py:942
+msgctxt "@info:status"
+msgid "Sending file to printer"
+msgstr "Отправка файла на принтер"
+
+#: MKSOutputDevice.py:945
+msgctxt "@info:title"
+msgid "Sending Print Job"
+msgstr "Отправка задания на печать"
+
+#: MKSOutputDevice.py:945
+msgctxt "@label"
+msgid "Print job"
+msgstr "Начать печать после загрузки"
+
+#: MKSOutputDevice.py:1008
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr "Задание было успешно отправлено на принтер."
 
-#: MKSOutputDevice.py:1144
+#: MKSOutputDevice.py:1142
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr "Соединение с TFT успешно"

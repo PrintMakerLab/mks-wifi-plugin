@@ -373,14 +373,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     if self._mdialog:
                         self._mdialog.close()
                     self._mdialog = QDialog()
-                    self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
+                    self._mdialog.setWindowTitle(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists.").format(filename[filename.rfind("/")+1:]))
                     dialogvbox = QVBoxLayout()
                     dialoghbox = QHBoxLayout()
-                    yesbtn = QPushButton("yes")
-                    nobtn = QPushButton("no")
+                    yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                    nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                     yesbtn.clicked.connect(lambda : self.uploadfunc(filename))
                     nobtn.clicked.connect(self.closeMDialog)
-                    content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
+                    content = QLabel(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists, please rename it.").format(filename[filename.rfind("/")+1:]))
                     self._mfilename = QLineEdit()
                     self._mfilename.setText(filename[filename.rfind("/")+1:])
                     dialoghbox.addWidget(yesbtn)
@@ -395,14 +395,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     if self._mdialog:
                         self._mdialog.close()
                     self._mdialog = QDialog()
-                    self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
+                    self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name is too long to upload."))
                     dialogvbox = QVBoxLayout()
                     dialoghbox = QHBoxLayout()
-                    yesbtn = QPushButton("yes")
-                    nobtn = QPushButton("no")
+                    yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                    nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                     yesbtn.clicked.connect(lambda : self.renameupload(filename))
                     nobtn.clicked.connect(self.closeMDialog)
-                    content = QLabel("File name is too long to upload, please rename it.")
+                    content = QLabel(catalog.i18nc("@info:status", "File name is too long to upload, please rename it."))
                     self._mfilename = QLineEdit()
                     self._mfilename.setText(filename[filename.rfind("/")+1:])
                     dialoghbox.addWidget(yesbtn)
@@ -417,14 +417,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     if self._mdialog:
                         self._mdialog.close()
                     self._mdialog = QDialog()
-                    self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+                    self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name can not include chinese."))
                     dialogvbox = QVBoxLayout()
                     dialoghbox = QHBoxLayout()
-                    yesbtn = QPushButton("yes")
-                    nobtn = QPushButton("no")
+                    yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                    nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                     yesbtn.clicked.connect(lambda : self.renameupload(filename))
                     nobtn.clicked.connect(self.closeMDialog)
-                    content = QLabel("File name can not include chinese, please rename it.")
+                    content = QLabel(catalog.i18nc("@info:status", "File name can not include chinese, please rename it."))
                     self._mfilename = QLineEdit()
                     self._mfilename.setText(filename[filename.rfind("/")+1:])
                     dialoghbox.addWidget(yesbtn)
@@ -463,14 +463,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("The "+filename[filename.rfind("/")+1:]+" file already exists.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists.").format(filename[filename.rfind("/")+1:]))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(lambda : self.uploadfunc(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("The "+filename[filename.rfind("/")+1:]+" file already exists. Do you want to upload it?")
+                content = QLabel(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists, please rename it.").format(filename[filename.rfind("/")+1:]))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -485,14 +485,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("File name is too long to upload, please rename it.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name is too long to upload."))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(lambda : self.renameupload(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("File name is too long to upload, please rename it.")
+                content = QLabel(catalog.i18nc("@info:status", "File name is too long to upload, please rename it."))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -507,14 +507,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("File name can not include chinese, please rename it.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name can not include chinese."))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(lambda : self.renameupload(filename))
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("File name can not include chinese, please rename it.")
+                content = QLabel(catalog.i18nc("@info:status", "File name can not include chinese, please rename it."))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -571,25 +571,23 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # self._progress_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
                 #                             catalog.i18nc("@info:title", "Sending Data"), option_text=catalog.i18nc("@label", "Print jobs")
                 #                             , option_state=preferences.getValue("mkswifi/autoprint"))
-                name0 = "Print Job"
-                name1 = "Uploading print job to printer"
-                name2 = "Sending Print Job"
-                namecancel = "Cancel"
-                if self._application.getPreferences().getValue("general/language") == "zh_CN":
-                    name0 = "传输完成之后，立即打印。"
-                    name1 = "正在上传打印文件到打印机"
-                    name2 = "正在发送打印文件"
-                    namecancel = "取消"
-                else:
-                    name0 = "Print Job"
-                    name1 = "Uploading print job to printer"
-                    name2 = "Sending Print Job"
-                    namecancel = "Cancel"
+                # name0 = "Print Job"
+                # name1 = "Uploading print job to printer"
+                # name2 = "Sending Print Job"
+                # namecancel = "Cancel"
+                # if self._application.getPreferences().getValue("general/language") == "zh_CN":
+                #     name0 = "传输完成之后，立即打印。"
+                #     name1 = "正在上传打印文件到打印机"
+                #     name2 = "正在发送打印文件"
+                #     namecancel = "取消"
+                # else:
+                #     name0 = "Print Job"
+                #     name1 = "Uploading print job to printer"
+                #     name2 = "Sending Print Job"
+                #     namecancel = "Cancel"
 
-                self._progress_message = Message(name1, 0, False, -1,
-                                            name2, option_text=name0
-                                            , option_state=preferences.getValue("mkswifi/autoprint"))
-                self._progress_message.addAction("Cancel", namecancel, None, "")
+                self._progress_message = Message(catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1, catalog.i18nc("@info:status", "Sending Print Job"), option_text=catalog.i18nc("@info:status", "Print Job"), option_state=preferences.getValue("mkswifi/autoprint"))
+                self._progress_message.addAction("Cancel", catalog.i18nc("@action:button", "Cancel"), None, "")
                 self._progress_message.actionTriggered.connect(self._cancelSendGcode)
                 self._progress_message.optionToggled.connect(self._onOptionStateChanged)
                 self._progress_message.show()
@@ -749,18 +747,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             # self._error_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
             #                              catalog.i18nc("@info:title", "Sending Data"))
             # self._error_message.show()
-            tipsname = "Now is printing. Send file to printer failed."
-            if self._application.getPreferences().getValue("general/language") == "zh_CN":
-                tipsname = "正在打印中，发送文件失败"
-            else:
-                tipsname = "Now is printing. Send file to printer failed."
+            # tipsname = "Now is printing. Send file to printer failed."
+            # if self._application.getPreferences().getValue("general/language") == "zh_CN":
+            #     tipsname = "正在打印中，发送文件失败"
+            # else:
+            #     tipsname = "Now is printing. Send file to printer failed."
             if self._progress_message is not None:
                 self._progress_message.hide()
                 self._progress_message = None
             if self._error_message is not None:
                 self._error_message.hide()
                 self._error_message = None
-            self._error_message = Message(tipsname)
+            self._error_message = Message(catalog.i18nc("@info:status", "Now is printing. Send file to printer failed."))
             self._error_message.show()
             return
         job_name = Application.getInstance().getPrintInformation().jobName.strip()
@@ -772,14 +770,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._mdialog:
                 self._mdialog.close()
             self._mdialog = QDialog()
-            self._mdialog.setWindowTitle(filename[filename.rfind("/")+1:]+" already exists.")
+            self._mdialog.setWindowTitle(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists.").format(filename[filename.rfind("/")+1:]))
             dialogvbox = QVBoxLayout()
             dialoghbox = QHBoxLayout()
-            yesbtn = QPushButton("yes")
-            nobtn = QPushButton("no")
+            yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+            nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
             yesbtn.clicked.connect(self.recheckfilename)
             nobtn.clicked.connect(self.closeMDialog)
-            content = QLabel(filename[filename.rfind("/")+1:]+" already exists, please rename it.")
+            content = QLabel(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists, please rename it.").format(filename[filename.rfind("/")+1:]))
             self._mfilename = QLineEdit()
             self._mfilename.setText(filename[filename.rfind("/")+1:])
             dialoghbox.addWidget(yesbtn)
@@ -794,14 +792,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._mdialog:
                 self._mdialog.close()
             self._mdialog = QDialog()
-            self._mdialog.setWindowTitle("File name is too long to upload.")
+            self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name is too long to upload."))
             dialogvbox = QVBoxLayout()
             dialoghbox = QHBoxLayout()
-            yesbtn = QPushButton("yes")
-            nobtn = QPushButton("no")
+            yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+            nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
             yesbtn.clicked.connect(self.recheckfilename)
             nobtn.clicked.connect(self.closeMDialog)
-            content = QLabel("File name is too long to upload, please rename it.")
+            content = QLabel(catalog.i18nc("@info:status", "File name is too long to upload, please rename it."))
             self._mfilename = QLineEdit()
             self._mfilename.setText(filename[filename.rfind("/")+1:])
             dialoghbox.addWidget(yesbtn)
@@ -816,14 +814,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self._mdialog:
                 self._mdialog.close()
             self._mdialog = QDialog()
-            self._mdialog.setWindowTitle("File name can not include chinese.")
+            self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name can not include chinese."))
             dialogvbox = QVBoxLayout()
             dialoghbox = QHBoxLayout()
-            yesbtn = QPushButton("yes")
-            nobtn = QPushButton("no")
+            yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+            nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
             yesbtn.clicked.connect(self.recheckfilename)
             nobtn.clicked.connect(self.closeMDialog)
-            content = QLabel("File name can not include chinese, please rename it.")
+            content = QLabel(catalog.i18nc("@info:status", "File name can not include chinese, please rename it."))
             self._mfilename = QLineEdit()
             self._mfilename.setText(filename[filename.rfind("/")+1:])
             dialoghbox.addWidget(yesbtn)
@@ -843,14 +841,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle(filename[filename.rfind("/")+1:]+" already exists.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists.").format(filename[filename.rfind("/")+1:]))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(self.recheckfilename)
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel(filename[filename.rfind("/")+1:]+" already exists, please rename it.")
+                content = QLabel(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> already exists, please rename it.").format(filename[filename.rfind("/")+1:]))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -865,14 +863,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("File name is too long to upload.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name is too long to upload."))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(self.recheckfilename)
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("File name is too long to upload, please rename it.")
+                content = QLabel(catalog.i18nc("@info:status", "File name is too long to upload, please rename it."))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -887,14 +885,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self._mdialog:
                     self._mdialog.close()
                 self._mdialog = QDialog()
-                self._mdialog.setWindowTitle("File name can not include chinese.")
+                self._mdialog.setWindowTitle(catalog.i18nc("@info:status", "File name can not include chinese."))
                 dialogvbox = QVBoxLayout()
                 dialoghbox = QHBoxLayout()
-                yesbtn = QPushButton("yes")
-                nobtn = QPushButton("no")
+                yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+                nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
                 yesbtn.clicked.connect(self.recheckfilename)
                 nobtn.clicked.connect(self.closeMDialog)
-                content = QLabel("File name can not include chinese, please rename it.")
+                content = QLabel(catalog.i18nc("@info:status", "File name can not include chinese, please rename it."))
                 self._mfilename = QLineEdit()
                 self._mfilename.setText(filename[filename.rfind("/")+1:])
                 dialoghbox.addWidget(yesbtn)
@@ -1315,6 +1313,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def _cancelSendGcode(self, message_id, action_id):
         self._update_timer.start()
         self._isSending = False
+        self._isPrinting = False
         self._progress_message.hide()
         self._post_reply.abort()
 
