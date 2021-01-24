@@ -69,7 +69,7 @@ Cura.MachineAction
         spacing: UM.Theme.getSize("default_margin").height
 
         SystemPalette { id: palette }
-        UM.I18nCatalog { id: catalog; name:"cura" }
+        UM.I18nCatalog { id: catalog; name:"mksplugin" }
         Label
         {
             id: pageTitle
@@ -344,7 +344,7 @@ Cura.MachineAction
                     Button
                     {
                         id: unconnectbtn
-                        text: currentLanguage == "zh_CN" ? "断开" : "Disconnect"
+                        text: catalog.i18nc("@action:button", "Disconnect") //currentLanguage == "zh_CN" ? "断开" : "Disconnect"
                         enabled: {
                             if (base.selectedPrinter && base.completeProperties) {
                                 if (connectedDevice != null) {

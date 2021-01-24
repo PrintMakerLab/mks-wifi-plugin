@@ -23,12 +23,13 @@ import time
 
 from PyQt5.QtCore import QTimer
 
-catalog = i18nCatalog("cura")
+# catalog = i18nCatalog("cura")
 
+catalog = i18nCatalog("mksplugin")
 
 class MachineConfig(MachineAction):
     def __init__(self, parent=None):
-        super().__init__("MachineConfig", catalog.i18nc("@action", "MKS WIFI"))
+        super().__init__("MachineConfig", catalog.i18nc("@action", "MKS WiFi Connection"))
         self._qml_url = os.path.join("qml", "MachineConfig.qml")
         ContainerRegistry.getInstance().containerAdded.connect(self._onContainerAdded)
 
