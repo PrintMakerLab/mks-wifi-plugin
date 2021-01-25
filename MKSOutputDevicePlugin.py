@@ -182,11 +182,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
             if self._error_message:
                 self._error_message.hide()
-            # name = "Printer connected successfully!"
-            # if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-            #     name = self._printers[key]._properties.get(b"name", b"").decode("utf-8") + " 打印机连接成功"
-            # else:
-            #     name = self._printers[key]._properties.get(b"name", b"").decode("utf-8") + " printer connected successfully!"
             self._error_message = Message(catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> printer connected successfully!").format(self._printers[key]._properties.get(b"name", b"").decode("utf-8")))
             self._error_message.show()
             self.getOutputDeviceManager().addOutputDevice(self._printers[key])
