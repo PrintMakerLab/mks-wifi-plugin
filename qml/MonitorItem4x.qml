@@ -110,7 +110,7 @@ Component
         {
             id: background
 
-            width: UM.Theme.getSize("print_setup_widget").width
+            width: UM.Theme.getSize("print_setup_widget").width - UM.Theme.getSize("default_margin").width // "- UM.Theme.getSize("default_margin").width" needed for correct alignment of extruder block when 2 extruders
 
             color: UM.Theme.getColor("main_background")
 
@@ -126,7 +126,7 @@ Component
         {
             id:base
 
-            width: UM.Theme.getSize("print_setup_widget").width
+            width: UM.Theme.getSize("print_setup_widget").width - UM.Theme.getSize("default_margin").width // "- UM.Theme.getSize("default_margin").width" needed for correct alignment of extruder block when 2 extruders
             anchors
             {
                 right: parent.right
@@ -232,7 +232,7 @@ Component
                     {
                         enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
-                        visible:Cura.MachineManager.printerOutputDevices[0].printer_E_num() == 2 ? true : false
+                        visible:CuraApplication.getInstance().getGlobalContainerStack().getProperty("machine_extruder_count", "value") > 1 ? true : false
 
                         spacing: UM.Theme.getSize("default_lining").height
                         Label
