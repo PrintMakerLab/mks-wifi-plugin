@@ -723,14 +723,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._progress_message = None
 
         if self.isBusy():
-            # self._error_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
-            #                              catalog.i18nc("@info:title", "Sending Data"))
-            # self._error_message.show()
-            # tipsname = "Now is printing. Send file to printer failed."
-            # if self._application.getPreferences().getValue("general/language") == "zh_CN":
-            #     tipsname = "正在打印中，发送文件失败"
-            # else:
-            #     tipsname = "Now is printing. Send file to printer failed."
             if self._progress_message is not None:
                 self._progress_message.hide()
                 self._progress_message = None
