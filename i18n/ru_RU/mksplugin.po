@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-25 01:10+0300\n"
-"PO-Revision-Date: 2021-01-25 01:14+0300\n"
-"Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
+"PO-Revision-Date: 2021-01-25 22:43+0400\n"
+"Last-Translator: ~~ <polrol728@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
@@ -56,7 +56,7 @@ msgstr "Недоступно ни одно расширение!"
 #: SaveOutputDevice.py:126
 msgctxt "@title:window"
 msgid "File Already Exists"
-msgstr "Файл уже существует"
+msgstr "Файл уже существует!"
 
 #: SaveOutputDevice.py:126
 #, python-brace-format
@@ -64,9 +64,7 @@ msgctxt "@label Don't translate the XML tag <filename>!"
 msgid ""
 "The file <filename>{0}</filename> already exists. Are you sure you want to "
 "overwrite it?"
-msgstr ""
-"Файл <filename>{0}</filename> существует. Уверены, что хотите перезаписать "
-"его?"
+msgstr "Файл <filename>{0}</filename> существует. Переименуйте его:"
 
 #: SaveOutputDevice.py:167
 #, python-brace-format
@@ -83,7 +81,7 @@ msgstr "Сохранение"
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Permission denied when trying to save <filename>{0}</filename>"
-msgstr "Недостаточно прав для сохранения <filename>{0}</filename>"
+msgstr "Недостаточно прав для сохранения <filename>{0}</filename>!"
 
 #: SaveOutputDevice.py:179 SaveOutputDevice.py:195
 #, python-brace-format
@@ -91,7 +89,7 @@ msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
 msgstr ""
 "Не удалось сохранить файл как <filename>{0}</filename>: <message>{1}</"
-"message>"
+"message>!"
 
 #: SaveOutputDevice.py:189
 #, python-brace-format
@@ -102,7 +100,7 @@ msgstr "Сохранить как <filename>{0}</filename>"
 #: SaveOutputDevice.py:189
 msgctxt "@info:title"
 msgid "File Saved"
-msgstr "Файл сохранен"
+msgstr "Файл сохранен!"
 
 #: SaveOutputDevice.py:190
 msgctxt "@action:button"
@@ -117,7 +115,7 @@ msgstr "Открыть папку, содержащую файл"
 #: SaveOutputDevice.py:195
 msgctxt "@info:title"
 msgid "Warning"
-msgstr "Предупреждение"
+msgstr "Предупреждение!"
 
 #: SaveOutputDevice.py:202
 #, python-brace-format
@@ -127,12 +125,12 @@ msgid ""
 "message>"
 msgstr ""
 "Что-то пошло не так при сохранении <filename>{0}</filename>: <message>{1}</"
-"message>"
+"message>!"
 
 #: SaveOutputDevice.py:202
 msgctxt "@info:title"
 msgid "Error"
-msgstr "Ошибка"
+msgstr "Ошибка!"
 
 #: MKSOutputDevice.py:120
 msgctxt "@action:button"
@@ -166,20 +164,20 @@ msgstr "Печать на <message>{0}</message>"
 #: MKSOutputDevice.py:316
 msgctxt "@info:status"
 msgid "Error: printing can not send"
-msgstr "Ошибка: Задание не может быть отправлено"
+msgstr "Ошибка: Задание не может быть отправлено!"
 
 #: MKSOutputDevice.py:364 MKSOutputDevice.py:540 MKSOutputDevice.py:554
 #: MKSOutputDevice.py:729 MKSOutputDevice.py:933
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
-msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее."
+msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее!"
 
 #: MKSOutputDevice.py:376 MKSOutputDevice.py:466 MKSOutputDevice.py:773
 #: MKSOutputDevice.py:844
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> already exists."
-msgstr "Принтер <message>{0}</message> успешно подключен."
+msgstr "Принтер <message>{0}</message> успешно подключен!"
 
 #: MKSOutputDevice.py:379 MKSOutputDevice.py:401 MKSOutputDevice.py:423
 #: MKSOutputDevice.py:469 MKSOutputDevice.py:491 MKSOutputDevice.py:513
@@ -202,36 +200,36 @@ msgstr "Нет"
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> already exists, please rename it."
-msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его."
+msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его!"
 
 #: MKSOutputDevice.py:398 MKSOutputDevice.py:488 MKSOutputDevice.py:795
 #: MKSOutputDevice.py:866
 msgctxt "@info:status"
 msgid "File name is too long to upload."
-msgstr "Имя файла слишком длинное для загрузки."
+msgstr "Имя файла слишком длинное для загрузки!"
 
 #: MKSOutputDevice.py:405 MKSOutputDevice.py:495 MKSOutputDevice.py:802
 #: MKSOutputDevice.py:873
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
-msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
+msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его:"
 
 #: MKSOutputDevice.py:420 MKSOutputDevice.py:510 MKSOutputDevice.py:817
 #: MKSOutputDevice.py:888
 msgctxt "@info:status"
 msgid "File name can not include chinese."
-msgstr "Имя файла не может содержать китайский."
+msgstr "Имя файла не может содержать китайский!"
 
 #: MKSOutputDevice.py:427 MKSOutputDevice.py:517 MKSOutputDevice.py:824
 #: MKSOutputDevice.py:895
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
-msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его."
+msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его:"
 
 #: MKSOutputDevice.py:441 MKSOutputDevice.py:531 MKSOutputDevice.py:909
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
-msgstr "Файл не может быть передан во время печати."
+msgstr "Файл не может быть передан во время печати!"
 
 #: MKSOutputDevice.py:589 MKSOutputDevice.py:944
 msgctxt "@info:status"
@@ -256,17 +254,17 @@ msgstr "Отменить"
 #: MKSOutputDevice.py:623 MKSOutputDevice.py:989 MKSOutputDevice.py:1030
 msgctxt "@info:status"
 msgid "Send file to printer failed."
-msgstr "Отправка файла на принтер завершилась неудачей."
+msgstr "Отправка файла на принтер завершилась неудачей!"
 
 #: MKSOutputDevice.py:704 MKSOutputDevice.py:720
 msgctxt "@warning:status"
 msgid "Please prepare G-code before exporting."
-msgstr "Пожалуйста, подготовьте G-code перед отправкой."
+msgstr "Пожалуйста, подготовьте G-код перед отправкой!"
 
 #: MKSOutputDevice.py:761
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
-msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
+msgstr "Идет печать. Отправка файла на принтер завершилась неудачей!"
 
 #: MKSOutputDevice.py:942
 msgctxt "@info:status"
@@ -286,7 +284,7 @@ msgstr "Начать печать после загрузки"
 #: MKSOutputDevice.py:1008
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
-msgstr "Задание было успешно отправлено на принтер."
+msgstr "Задание было успешно отправлено на принтер!"
 
 #: MKSOutputDevice.py:1142
 msgctxt "@info:status"
@@ -306,42 +304,42 @@ msgstr "E1"
 #: qml/MonitorItem4x.qml:312
 msgctxt "@action:button"
 msgid "Fan On"
-msgstr "Включить обдув"
+msgstr "Вкл. обд."
 
 #: qml/MonitorItem4x.qml:322
 msgctxt "@tooltip"
 msgid "Turn fan on."
-msgstr "Включить вентилятор обдува."
+msgstr "Включить вентилятор обдува"
 
 #: qml/MonitorItem4x.qml:337
 msgctxt "@action:button"
 msgid "Fan Off"
-msgstr "Выключить обдув"
+msgstr "Выкл. обд."
 
 #: qml/MonitorItem4x.qml:347
 msgctxt "@tooltip"
 msgid "Turn fan off."
-msgstr "Выключить вентилятор обдува."
+msgstr "Выключить вентилятор обдува"
 
 #: qml/MonitorItem4x.qml:364
 msgctxt "@action:button"
 msgid "Unlock Motors"
-msgstr "Разблокировать моторы"
+msgstr "Откл. моторы"
 
 #: qml/MonitorItem4x.qml:374
 msgctxt "@tooltip"
 msgid "Unlock 3D printer motors."
-msgstr "Разблокировать моторы 3D принтера."
+msgstr "Отключить моторы принтера"
 
 #: qml/MonitorItem4x.qml:391
 msgctxt "@action:button"
 msgid "Cool Down"
-msgstr "Охладить"
+msgstr "Охлад."
 
 #: qml/MonitorItem4x.qml:401
 msgctxt "@tooltip"
 msgid "Cool down heated bed and exptuder."
-msgstr "Охладить стол и экструдер."
+msgstr "Отключить нагрев стола и экструдера"
 
 #: qml/MonitorItem4x.qml:436
 msgctxt "@action:button"
@@ -356,22 +354,22 @@ msgstr "Продолжить"
 #: qml/MonitorItem4x.qml:450
 msgctxt "@tooltip"
 msgid "Pause print."
-msgstr "Приостановить печать."
+msgstr "Приостановить печать"
 
 #: qml/MonitorItem4x.qml:450
 msgctxt "@tooltip"
 msgid "Resume print."
-msgstr "Продолжить печать."
+msgstr "Продолжить печать"
 
 #: qml/MonitorItem4x.qml:468
 msgctxt "@action:button"
 msgid "Abort Print"
-msgstr "Прервать печать"
+msgstr "Прервать"
 
 #: qml/MonitorItem4x.qml:478
 msgctxt "@tooltip"
 msgid "Abort current print."
-msgstr "Прервать текущую печать."
+msgstr "Прервать текущую печать"
 
 #: qml/MonitorItem4x.qml:496
 msgctxt "@action:button"
@@ -381,22 +379,22 @@ msgstr "Файлы SD"
 #: qml/MonitorItem4x.qml:506
 msgctxt "@tooltip"
 msgid "Browse SD card in 3D printer."
-msgstr "Обзор SD-карты в вашем принтере."
+msgstr "Обзор SD-карты в вашем принтере"
 
 #: qml/MonitorItem4x.qml:524
 msgctxt "@action:button"
 msgid "Send Print Job"
-msgstr "Отправить на печать"
+msgstr "Отпр."
 
 #: qml/MonitorItem4x.qml:534
 msgctxt "@tooltip"
 msgid "Select and send G-Code file to 3D printer."
-msgstr "Выбрать и отправить файл G-Code на #D принтер."
+msgstr "Выбрать и отправить G-код файл на принтер"
 
 #: qml/MonitorItem4x.qml:556
 msgctxt "@title:window"
 msgid "Open file(s)"
-msgstr "Открыть файл(ы)"
+msgstr "Выберите файл"
 
 #: qml/MonitorItem4x.qml:611
 msgctxt "@action:button"
@@ -429,10 +427,10 @@ msgid ""
 "\n"
 "Select your printer from the list below:"
 msgstr ""
-"Для печати на принтере через сеть убедитесь в том,что принтер подключен при "
-"помощи сетевого кабеля или WiFi. Если вы не подключите Cura к вашему "
-"принтеру,  вы все еще сможете использовать USB-накопитель для переноса g-"
-"code файлов на принтер.\n"
+"Для печати на принтере через сеть убедитесь в том, что принтер подключен при "
+"помощи сетевого кабеля или WiFi. Если вы не подключите принтер к Cura,  вы "
+"все еще сможете использовать SD-накопитель для переноса g-код файлов на "
+"принтер.\n"
 "\n"
 "Выберите ваш принтер из списка ниже:"
 
@@ -457,8 +455,8 @@ msgid ""
 "If your printer is not listed, read the <a href='%1'>network printing "
 "troubleshooting guide</a>"
 msgstr ""
-"Если вашего принтера нет в списке, прочтите <a href='%1'>network printing "
-"troubleshooting guide</a>"
+"Если вашего принтера нет в списке, прочтите <a href='%1'>этот гайд по "
+"решению проблем с сетевой печатью</a>"
 
 #: qml/MachineConfig.qml:243
 msgctxt "@label"
@@ -508,17 +506,17 @@ msgstr "Принтер с этим адресом пока не отвечает
 #: qml/MachineConfig.qml:329 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
-msgstr "Соединиться"
+msgstr "Подключить"
 
 #: qml/MachineConfig.qml:347
 msgctxt "@action:button"
 msgid "Disconnect"
-msgstr "Отсоединиться"
+msgstr "Отключить"
 
 #: qml/MachineConfig.qml:372
 msgctxt "@title:window"
 msgid "Printer Address"
-msgstr "Адрес принтера"
+msgstr "Добавление нового принтера"
 
 #: qml/MachineConfig.qml:402
 msgctxt "@alabel"
