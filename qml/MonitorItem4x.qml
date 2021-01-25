@@ -309,7 +309,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Fan On") //currentLanguage == "zh_CN" ? "打开风扇" : "Fan On"
+                        text: catalog.i18nc("@action:button", "Fan On")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
 
                         onHoveredChanged:
@@ -334,7 +334,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Fan Off") //currentLanguage == "zh_CN" ? "关闭风扇" : "Fan Off"
+                        text: catalog.i18nc("@action:button", "Fan Off")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
 
                         onHoveredChanged:
@@ -361,7 +361,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Unlock Motors") //currentLanguage == "zh_CN" ? "解锁电机" : "Unlock Motors"
+                        text: catalog.i18nc("@action:button", "Unlock Motors")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
 
                         onHoveredChanged:
@@ -388,7 +388,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Cool Down") //currentLanguage == "zh_CN" ? "冷却":"Cool Down"
+                        text: catalog.i18nc("@action:button", "Cool Down")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
 
                         onHoveredChanged:
@@ -433,9 +433,9 @@ Component
                         text:
                         {
                             if (activePrintJob.state == "printing") {
-                                return catalog.i18nc("@action:button", "Pause") //currentLanguage == "zh_CN" ? "暂停打印" : "Pause"
+                                return catalog.i18nc("@action:button", "Pause")
                             } else {
-                                return catalog.i18nc("@action:button", "Resume") //currentLanguage == "zh_CN" ? "恢复打印" : "Resume"
+                                return catalog.i18nc("@action:button", "Resume")
                             }
                         }
                         onClicked:Cura.MachineManager.printerOutputDevices[0].pausePrint()
@@ -465,7 +465,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Abort Print") //currentLanguage == "zh_CN" ? "终止打印":"Abort Print"
+                        text: catalog.i18nc("@action:button", "Abort Print")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].cancelPrint()
 
                         onHoveredChanged:
@@ -493,7 +493,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "SD Files") //currentLanguage == "zh_CN" ? "SD 文件":"SD Files"
+                        text: catalog.i18nc("@action:button", "SD Files")
                         onClicked: sdDialog.showDialog()
 
                         onHoveredChanged:
@@ -521,7 +521,7 @@ Component
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Send Print Job") //currentLanguage == "zh_CN" ? "发送打印文件":"Send Print Job";
+                        text: catalog.i18nc("@action:button", "Send Print Job")
                         onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
 
                         onHoveredChanged:

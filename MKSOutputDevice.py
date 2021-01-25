@@ -196,15 +196,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._socket.abort()
             self._socket = None
         self._socket = QTcpSocket()
-        # Logger.log("d","self._socket.connectToHost %s" % self._address)
-        # Logger.log("d","self._socket.connectToHost %s" % self._port)
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        # name1 = "Print over " + global_container_stack.getName()
-        # if CuraApplication.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-        #     name1 = "WIFI传输打印"
-        # else:
-        #     name1 = "Print over " + global_container_stack.getName()
         self.setShortDescription(catalog.i18nc("@action:button Don't translate the XML tags <message>!", "Print over <message>{0}</message>").format(global_container_stack.getName()))
         self.setDescription(catalog.i18nc("@properties:tooltip Don't translate the XML tags <message>!", "Print over <message>{0}</message>").format(global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
@@ -571,20 +564,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 # self._progress_message = Message(catalog.i18nc("@info:status", "Sending data to printer"), 0, False, -1,
                 #                             catalog.i18nc("@info:title", "Sending Data"), option_text=catalog.i18nc("@label", "Print jobs")
                 #                             , option_state=preferences.getValue("mkswifi/autoprint"))
-                # name0 = "Print Job"
-                # name1 = "Uploading print job to printer"
-                # name2 = "Sending Print Job"
-                # namecancel = "Cancel"
-                # if self._application.getPreferences().getValue("general/language") == "zh_CN":
-                #     name0 = "传输完成之后，立即打印。"
-                #     name1 = "正在上传打印文件到打印机"
-                #     name2 = "正在发送打印文件"
-                #     namecancel = "取消"
-                # else:
-                #     name0 = "Print Job"
-                #     name1 = "Uploading print job to printer"
-                #     name2 = "Sending Print Job"
-                #     namecancel = "Cancel"
 
                 self._progress_message = Message(catalog.i18nc("@info:status", "Uploading print job to printer"), 0, False, -1, catalog.i18nc("@info:status", "Sending Print Job"), option_text=catalog.i18nc("@info:status", "Print Job"), option_state=preferences.getValue("mkswifi/autoprint"))
                 self._progress_message.addAction("Cancel", catalog.i18nc("@action:button", "Cancel"), None, "")

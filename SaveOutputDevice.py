@@ -28,11 +28,6 @@ class SaveOutputDevice(OutputDevice):
         self.setName("save_with_screenshot")
         self.setPriority(2)
         self._preferences = Application.getInstance().getPreferences()
-        # button_name = "Save as TFT file"
-        # if Application.getInstance().getPreferences().getValue("general/language") == "zh_CN":
-        #     button_name = "保存为TFT文件"
-        # else:
-        #     button_name = "Save as TFT file"
         self.setShortDescription(catalog.i18nc("@action:button", "Save as TFT file"))
         self.setDescription(catalog.i18nc("@properties:tooltip", "Save as TFT file"))
         self.setIconName("save")
