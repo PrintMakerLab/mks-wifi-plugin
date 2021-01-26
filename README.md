@@ -20,3 +20,6 @@ Using the plugin with Cura, you can:
   - Restart Cura.
   
  ** Notes: The MKS WiFi plugin is only available for Cura 4.5 or higher version. **
+
+## Funding ##
+ The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson")
