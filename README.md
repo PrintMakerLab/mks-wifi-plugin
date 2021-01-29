@@ -1,5 +1,10 @@
 # MKS WiFi plugin #
 
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=bugs)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=code_smells)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
+
 MKS WiFi plugin for Cura developed by Makerbase, Jeredian and Elkin-Vasily and it was originaly migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software") after V4.4 version.
 
 Using the plugin with Cura, you can:
