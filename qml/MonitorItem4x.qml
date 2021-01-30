@@ -232,7 +232,7 @@ Component
                     {
                         enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
-                        visible:CuraApplication.getInstance().getGlobalContainerStack().getProperty("machine_extruder_count", "value") > 1 ? true : false
+                        visible: Cura.MachineManager.printerOutputDevices[0].printer_E_num() > 1
 
                         spacing: UM.Theme.getSize("default_lining").height
                         Label

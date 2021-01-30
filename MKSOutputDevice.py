@@ -306,7 +306,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._error_message = Message(catalog.i18nc("@info:status", "Error: command can not send"))
             self._error_message.show()
 
-    @pyqtSlot()
+    @pyqtSlot(result=int)
     def printer_E_num(self):
         return self._number_of_extruders
 
