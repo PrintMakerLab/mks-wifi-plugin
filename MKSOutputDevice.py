@@ -561,7 +561,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 single_string_file_data = f.read()
                 file_name = filename[filename.rfind("/") + 1:]
                 self._last_file_name = filename[filename.rfind("/") + 1:]
-                self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get("print_job_title"), option_text=self._translations.get("print_job_label")), option_state = preferences.getValue(Constants.AUTO_PRINT))
+                self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get(
+                    "print_job_title"), option_text=self._translations.get("print_job_label"), option_state=preferences.getValue(Constants.AUTO_PRINT))
                 self._progress_message.addAction(
                     "Cancel", self._translations.get("button_cancel"), None, "")
                 self._progress_message.actionTriggered.connect(
@@ -570,25 +571,25 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._onOptionStateChanged)
                 self._progress_message.show()
 
-                data=QByteArray()
+                data = QByteArray()
                 data.append(single_string_file_data.encode())
 
-                post_request=QNetworkRequest(
+                post_request = QNetworkRequest(
                     QUrl("http://%s/upload?X-Filename=%s" %
                          (self._address, file_name)))
                 post_request.setRawHeader(b'Content-Type',
                                           b'application/octet-stream')
                 post_request.setRawHeader(b'Connection', b'keep-alive')
-                self._post_reply=self._manager.post(post_request, data)
+                self._post_reply = self._manager.post(post_request, data)
                 self._post_reply.uploadProgress.connect(self._onUploadProgress)
                 self._post_reply.sslErrors.connect(self._onUploadError)
-                self._gcode=None
+                self._gcode = None
             except IOError as e:
                 Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
                 # preferences.setValue("mkswifi/uploadingfile", "False")
                 self._progress_message.hide()
-                self._progress_message=None
-                self._error_message=Message(
+                self._progress_message = None
+                self._error_message = Message(
                     self._translations.get("file_send_failed"))
                 self._error_message.show()
                 self._update_timer.start()
@@ -597,7 +598,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._update_timer.start()
                 if self._progress_message is not None:
                     self._progress_message.hide()
-                    self._progress_message=None
+                    self._progress_message = None
                 Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
 
     @ pyqtProperty("QVariantList")
@@ -615,7 +616,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand(cmd)
 
     def _sendCommand(self, cmd):
-        in_cmd="G28" in cmd or "G0" in cmd
+        in_cmd = "G28" in cmd or "G0" in cmd
         if self._ischanging and in_cmd:
             return
         if self.isBusy() and "M20" in cmd:
@@ -630,13 +631,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def disconnect(self):
         # Logger.log("d", "disconnect--------------")
-        preferencess=Application.getInstance().getPreferences()
+        preferencess = Application.getInstance().getPreferences()
         if preferencess.getValue(Constants.STOP_UPDATE):
             # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
-            self._error_message=Message("Printer disconneted.")
+            self._error_message = Message("Printer disconneted.")
             self._error_message.show()
         # self._updateJobState("")
-        self._isConnect=False
+        self._isConnect = False
         self.setConnectionState(
             cast(ConnectionState, UnifiedConnectionState.Closed))
         if self._socket is not None:
@@ -657,31 +658,31 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def requestWrite(self,
                      node,
-                     file_name = None,
-                     filter_by_machine = False,
-                     file_handler = None,
+                     file_name=None,
+                     filter_by_machine=False,
+                     file_handler=None,
                      **kwargs):
         self.writeStarted.emit(self)
         self._update_timer.stop()
-        self._isSending=True
-        active_build_plate=Application.getInstance().getMultiBuildPlateModel(
+        self._isSending = True
+        active_build_plate = Application.getInstance().getMultiBuildPlateModel(
         ).activeBuildPlate
-        scene=Application.getInstance().getController().getScene()
+        scene = Application.getInstance().getController().getScene()
         if not hasattr(scene, "gcode_dict"):
             self.setInformation(self._translations.get("gcode_prepare"))
             return False
-        self._gcode=[]
-        gcode_dict=getattr(scene, "gcode_dict")
-        gcode_list=gcode_dict.get(active_build_plate, None)
+        self._gcode = []
+        gcode_dict = getattr(scene, "gcode_dict")
+        gcode_list = gcode_dict.get(active_build_plate, None)
         if gcode_list is not None:
-            has_settings=False
+            has_settings = False
             for gcode in gcode_list:
                 if gcode[:len(self._setting_keyword)] == self._setting_keyword:
-                    has_settings=True
+                    has_settings = True
                 self._gcode.append(gcode)
             # Serialise the current container stack and put it at the end of the file.
             if not has_settings:
-                settings=self._serialiseSettings(
+                settings = self._serialiseSettings(
                     Application.getInstance().getGlobalContainerStack())
                 self._gcode.append(settings)
         else:
@@ -697,32 +698,32 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self.startPrint()
 
     def startPrint(self):
-        global_container_stack=CuraApplication.getInstance(
+        global_container_stack = CuraApplication.getInstance(
         ).getGlobalContainerStack()
         if not global_container_stack:
             return
         if self._error_message:
             self._error_message.hide()
-            self._error_message=None
+            self._error_message = None
         if self._progress_message:
             self._progress_message.hide()
-            self._progress_message=None
+            self._progress_message = None
         if self.isBusy():
             if self._progress_message is not None:
                 self._progress_message.hide()
-                self._progress_message=None
+                self._progress_message = None
             if self._error_message is not None:
                 self._error_message.hide()
-                self._error_message=None
-            self._error_message=Message(
+                self._error_message = None
+            self._error_message = Message(
                 self._translations.get("file_send_failed2"))
             self._error_message.show()
             return
-        job_name=Application.getInstance().getPrintInformation(
+        job_name = Application.getInstance().getPrintInformation(
         ).jobName.strip()
         if job_name == "":
-            job_name="cura_file"
-        filename="%s.gcode" % job_name
+            job_name = "cura_file"
+        filename = "%s.gcode" % job_name
         if filename in self.sdFiles:
             self.show_exists_dialog(filename, self.recheckfilename)
             return
@@ -736,7 +737,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def recheckfilename(self):
         if self._mfilename and ".g" in self._mfilename.text().lower():
-            filename=self._mfilename.text()
+            filename = self._mfilename.text()
             if filename in self.sdFiles:
                 self.show_exists_dialog(filename, self.recheckfilename)
                 return
@@ -819,7 +820,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
             self._progress_message.hide()
             self._progress_message = None
-            self._error_message = Message(self._translations.get("file_send_failed"))
+            self._error_message = Message(
+                self._translations.get("file_send_failed"))
             self._error_message.show()
             self._update_timer.start()
         except Exception as e:
@@ -840,7 +842,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             "d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
         if bytes_sent == bytes_total and bytes_sent > 0:
             self._progress_message.hide()
-            self._error_message = Message(self._translations.get("file_send_success"))
+            self._error_message = Message(
+                self._translations.get("file_send_success"))
             self._error_message.show()
             CuraApplication.getInstance().getController().setActiveStage(
                 "MonitorStage")
@@ -865,7 +868,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(self._translations.get("file_send_failed"))
+        self._error_message = Message(
+            self._translations.get("file_send_failed"))
         self._error_message.show()
         self._update_timer.start()
 
