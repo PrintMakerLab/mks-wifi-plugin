@@ -227,12 +227,10 @@ class MachineConfig(MachineAction):
             return
 
         # Create extra components
-        self._application.addAdditionalComponent("monitorButtons",
-                                                 self.__additional_components_view.findChild(QObject,
-                                                                                             "networkPrinterConnectButton"))
-        self._application.addAdditionalComponent("machinesDetailPane",
-                                                 self.__additional_components_view.findChild(QObject,
-                                                                                             "networkPrinterConnectionInfo"))
+        self._application.addAdditionalComponent(
+            "monitorButtons", self.__additional_components_view.findChild(QObject, "networkPrinterConnectButton"))
+        self._application.addAdditionalComponent(
+            "machinesDetailPane", self.__additional_components_view.findChild(QObject, "networkPrinterConnectionInfo"))
 
     def _onContainerAdded(self, container):
         # Add this action as a supported action to all machine definitions
