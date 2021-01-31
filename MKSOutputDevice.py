@@ -267,40 +267,28 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE1))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE1)
 
     @pyqtSlot()
     def e0up(self):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE1))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE1)
 
     @pyqtSlot()
     def e1down(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE1))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE1)
 
     @pyqtSlot()
     def e1up(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE1))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE1)
 
     @pyqtSlot(result=int)
     def printer_E_num(self):
@@ -343,7 +331,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         preferences.addPreference(Constants.AUTO_PRINT, "True")
         preferences.addPreference(Constants.SAVE_PATH, "")
         if self._progress_message:
-            self.progress_error_message()
+            self.show_error_message(Constants.ERROR_MESSAGE2)
         else:
             filename,_ = QFileDialog.getOpenFileName(None, "choose file", preferences.getValue(Constants.SAVE_PATH), "Gcode(*.gcode;*.g;*.goc)")
             preferences.setValue(Constants.SAVE_PATH, filename)
@@ -413,10 +401,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         label = catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_TOO_LONG2)
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
-    def progress_error_message(self):
+    def show_error_message(self, message):
         if self._error_message is not None:
             self._error_message.hide()
-        self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE2))
+        self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, message))
         self._error_message.show()
 
     def show_progress_message(self, preferences):
@@ -465,7 +453,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return
             self._mdialog.close()
             if self._progress_message:
-                self.progress_error_message()
+                self.show_error_message(Constants.ERROR_MESSAGE2)
             else:
                 self.uploadfunc(filename)
 
@@ -474,10 +462,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE2))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE2)
         else:
             preferences.addPreference(Constants.AUTO_PRINT, "True")
             preferences.addPreference(Constants.SAVE_PATH, "")
@@ -610,10 +595,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         # preferences = Application.getInstance().getPreferences()
         # if preferences.getValue("mkswifi/uploadingfile"):
         if self._progress_message:
-            if self._error_message is not None:
-                self._error_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE2))
-            self._error_message.show()
+            self.show_error_message(Constants.ERROR_MESSAGE2)
         else:
             self.startPrint()
 
@@ -684,7 +666,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not global_container_stack:
             return
         if self._progress_message:
-            self.progress_error_message()
+            self.show_error_message(Constants.ERROR_MESSAGE2)
             return
         self._preheat_timer.stop()
         try:
