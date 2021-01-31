@@ -201,7 +201,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
             if self._error_message:
                 self._error_message.hide()
-            self._error_message = Message(self._translations["connected"].format(
+            self._error_message = Message(self._translations.get("connected").format(
                 self._printers[key]._properties.get(b"name", b"").decode("utf-8")))
             self._error_message.show()
             self.getOutputDeviceManager().addOutputDevice(self._printers[key])

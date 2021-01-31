@@ -132,11 +132,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         ).activeMachine
         self.setName(instance_id)
         self.setShortDescription(
-            self._translations["print_over_tft_action_button"])
-        self.setDescription(self._translations["print_over_tft_tooltip"])
+            self._translations.get("print_over_tft_action_button"))
+        self.setDescription(self._translations.get("print_over_tft_tooltip"))
         self.setIconName("print")
         self.setConnectionText(
-            self._translations["connected_message"].format(self._key))
+            self._translations.get("connected_message").format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(
             self._onGlobalContainerChanged)
 
@@ -252,9 +252,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         global_container_stack = CuraApplication.getInstance(
         ).getGlobalContainerStack()
         self.setShortDescription(
-            self._translations["print_over_action_button"].format(
+            self._translations.get("print_over_action_button").format(
                 global_container_stack.getName()))
-        self.setDescription(self._translations["print_over_tooltip"].format(
+        self.setDescription(self._translations.get("print_over_tooltip").format(
             global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
         self.setConnectionState(
@@ -331,28 +331,28 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            self.show_error_message(self._translations["error_1"])
+            self.show_error_message(self._translations.get("error_1"))
 
     @pyqtSlot()
     def e0up(self):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            self.show_error_message(self._translations["error_1"])
+            self.show_error_message(self._translations.get("error_1"))
 
     @pyqtSlot()
     def e1down(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            self.show_error_message(self._translations["error_1"])
+            self.show_error_message(self._translations.get("error_1"))
 
     @pyqtSlot()
     def e1up(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            self.show_error_message(self._translations["error_1"])
+            self.show_error_message(self._translations.get("error_1"))
 
     @pyqtSlot(result=int)
     def printer_E_num(self):
@@ -395,7 +395,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         preferences.addPreference(Constants.AUTO_PRINT, "True")
         preferences.addPreference(Constants.SAVE_PATH, "")
         if self._progress_message:
-            self.show_error_message(self._translations["error_2"])
+            self.show_error_message(self._translations.get("error_2"))
         else:
             filename, _ = QFileDialog.getOpenFileName(
                 None, "choose file", preferences.getValue(Constants.SAVE_PATH),
@@ -443,32 +443,32 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._mdialog.exec_()
 
     def show_exists_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations["button_yes"])
+        yesbtn = QPushButton(self._translations.get("button_yes"))
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations["button_no"])
+        nobtn = QPushButton(self._translations.get("button_no"))
         nobtn.clicked.connect(self.closeMDialog)
-        title = self._translations["file_exists_title"].format(
+        title = self._translations.get("file_exists_title").format(
             filename[filename.rfind("/") + 1:])
-        label = self._translations["file_exists_label"].format(
+        label = self._translations.get("file_exists_label").format(
             filename[filename.rfind("/") + 1:])
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_contains_chinese_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations["button_yes"])
+        yesbtn = QPushButton(self._translations.get("button_yes"))
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations["button_no"])
+        nobtn = QPushButton(self._translations.get("button_no"))
         nobtn.clicked.connect(self.closeMDialog)
-        title = self._translations["file_include_chinese_title"]
-        label = self._translations["file_include_chinese_label"]
+        title = self._translations.get("file_include_chinese_title")
+        label = self._translations.get("file_include_chinese_label")
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_to_long_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations["button_yes"])
+        yesbtn = QPushButton(self._translations.get("button_yes"))
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations["button_no"])
+        nobtn = QPushButton(self._translations.get("button_no"))
         nobtn.clicked.connect(self.closeMDialog)
-        title = self._translations["file_too_long_title"]
-        label = self._translations["file_too_long_label"]
+        title = self._translations.get("file_too_long_title")
+        label = self._translations.get("file_too_long_label")
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_error_message(self, message):
@@ -480,21 +480,21 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def show_progress_message(self, preferences):
         if self._application.getVersion().split(".")[0] < "4":
             Application.getInstance().showPrintMonitor.emit(True)
-            status = self._translations["sending_file"]
+            status = self._translations.get("sending_file")
             self._progress_message = Message(status, 0, False, -1)
         else:
-            status = self._translations["uploading_file"]
-            title = self._translations["print_job_title"]
+            status = self._translations.get("uploading_file")
+            title = self._translations.get("print_job_title")
             self._progress_message = Message(
                 status,
                 0,
                 False,
                 -1,
                 title,
-                option_text=self._translations["print_job_label"],
+                option_text=self._translations.get("print_job_label"),
                 option_state=preferences.getValue(Constants.AUTO_PRINT))
             self._progress_message.addAction(
-                "Cancel",  self._translations["button_cancel"], None, "")
+                "Cancel",  self._translations.get("button_cancel"), None, "")
             self._progress_message.actionTriggered.connect(
                 self._cancelSendGcode)
             self._progress_message.optionToggled.connect(
@@ -505,7 +505,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._exception_message:
             self._exception_message.hide()
         self._exception_message = Message(
-            self._translations["file_cant_transfer"])
+            self._translations.get("file_cant_transfer"))
         self._exception_message.show()
 
     def is_contains_chinese(self, strs):
@@ -536,7 +536,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return
             self._mdialog.close()
             if self._progress_message:
-                self.show_error_message(self._translations["error_2"])
+                self.show_error_message(self._translations.get("error_2"))
             else:
                 self.uploadfunc(filename)
 
@@ -545,7 +545,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
-            self.show_error_message(self._translations["error_2"])
+            self.show_error_message(self._translations.get("error_2"))
         else:
             preferences.addPreference(Constants.AUTO_PRINT, "True")
             preferences.addPreference(Constants.SAVE_PATH, "")
@@ -561,16 +561,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 single_string_file_data = f.read()
                 file_name = filename[filename.rfind("/") + 1:]
                 self._last_file_name = filename[filename.rfind("/") + 1:]
-
-                self._progress_message = Message(self._translations["uploading_file"],
-                    0,
-                    False,
-                    -1,
-                    self._translations["print_job_title"],
-                    option_text=self._translations["print_job_label"]),
-                    option_state = preferences.getValue(Constants.AUTO_PRINT))
+                self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get("print_job_title"), option_text=self._translations.get("print_job_label")), option_state = preferences.getValue(Constants.AUTO_PRINT))
                 self._progress_message.addAction(
-                    "Cancel", self._translations["button_cancel"], None, "")
+                    "Cancel", self._translations.get("button_cancel"), None, "")
                 self._progress_message.actionTriggered.connect(
                     self._cancelSendGcode)
                 self._progress_message.optionToggled.connect(
@@ -596,7 +589,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._progress_message.hide()
                 self._progress_message=None
                 self._error_message=Message(
-                    self._translations["file_send_failed"])
+                    self._translations.get("file_send_failed"))
                 self._error_message.show()
                 self._update_timer.start()
             except Exception as e:
@@ -675,7 +668,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         ).activeBuildPlate
         scene=Application.getInstance().getController().getScene()
         if not hasattr(scene, "gcode_dict"):
-            self.setInformation(self._translations["gcode_prepare"])
+            self.setInformation(self._translations.get("gcode_prepare"))
             return False
         self._gcode=[]
         gcode_dict=getattr(scene, "gcode_dict")
@@ -692,14 +685,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     Application.getInstance().getGlobalContainerStack())
                 self._gcode.append(settings)
         else:
-            self.setInformation(self._translations["gcode_prepare"])
+            self.setInformation(self._translations.get("gcode_prepare"))
             return False
 
         Logger.log("d", "mks ready for print")
         # preferences = Application.getInstance().getPreferences()
         # if preferences.getValue("mkswifi/uploadingfile"):
         if self._progress_message:
-            self.show_error_message(self._translations["error_2"])
+            self.show_error_message(self._translations.get("error_2"))
         else:
             self.startPrint()
 
@@ -722,7 +715,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._error_message.hide()
                 self._error_message=None
             self._error_message=Message(
-                self._translations["file_send_failed2"])
+                self._translations.get("file_send_failed2"))
             self._error_message.show()
             return
         job_name=Application.getInstance().getPrintInformation(
@@ -776,7 +769,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not global_container_stack:
             return
         if self._progress_message:
-            self.show_error_message(self._translations["error_2"])
+            self.show_error_message(self._translations.get("error_2"))
             return
         self._preheat_timer.stop()
         try:
@@ -826,7 +819,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
             self._progress_message.hide()
             self._progress_message = None
-            self._error_message = Message(self._translations["file_send_failed"])
+            self._error_message = Message(self._translations.get("file_send_failed"))
             self._error_message.show()
             self._update_timer.start()
         except Exception as e:
@@ -847,7 +840,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             "d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
         if bytes_sent == bytes_total and bytes_sent > 0:
             self._progress_message.hide()
-            self._error_message = Message(self._translations["file_send_success"])
+            self._error_message = Message(self._translations.get("file_send_success"))
             self._error_message.show()
             CuraApplication.getInstance().getController().setActiveStage(
                 "MonitorStage")
@@ -872,7 +865,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(self._translations["file_send_failed"])
+        self._error_message = Message(self._translations.get("file_send_failed"))
         self._error_message.show()
         self._update_timer.start()
 
@@ -980,7 +973,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._sendCommand("M20")
                 self.setConnectionState(
                     cast(ConnectionState, UnifiedConnectionState.Connected))
-                self.setConnectionText(self._translations["connected"])
+                self.setConnectionText(self._translations.get("connected"))
             if not self._printers:
                 self._createPrinterList()
             printer = self.printers[0]
