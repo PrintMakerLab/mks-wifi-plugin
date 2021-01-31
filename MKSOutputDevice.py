@@ -100,9 +100,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._properties = properties
 
         self._target_bed_temperature = 0
-        self._num_extruders = 1
-        self._hotend_temperatures = [0] * self._num_extruders
-        self._target_hotend_temperatures = [0] * self._num_extruders
 
         self._application = CuraApplication.getInstance()
         if self._application.getVersion().split(".")[0] < "4":
@@ -177,7 +174,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._preheat_timer.timeout.connect(self.cancelPreheatBed)
         self._exception_message = None
         self._output_controller = GenericOutputController(self)
-        self._number_of_extruders = 1
+        self._number_of_extruders = CuraApplication.getInstance().getGlobalContainerStack().getProperty("machine_extruder_count", "value")
         self._camera_url = ""
         # Application.getInstance().getOutputDeviceManager().outputDevicesChanged.connect(self._onOutputDevicesChanged)
         CuraApplication.getInstance().getCuraSceneController().activeBuildPlateChanged.connect(self.CreateMKSController)
@@ -305,7 +302,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.ERROR_MESSAGE1))
             self._error_message.show()
 
-    @pyqtSlot()
+    @pyqtSlot(result=int)
     def printer_E_num(self):
         return self._number_of_extruders
 
@@ -894,24 +891,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     t1_targettemp = float(t1_temp[t1_temp.find("/") + 1:len(t1_temp)])
                     bed_nowtemp = float(bed_temp[0:bed_temp.find("/")])
                     bed_targettemp = float(bed_temp[bed_temp.find("/") + 1:len(bed_temp)])
-                    # cura 3.4 new api
                     printer.updateBedTemperature(bed_nowtemp)
                     printer.updateTargetBedTemperature(bed_targettemp)
-                    extruder = printer.extruders[0]
-                    extruder.updateTargetHotendTemperature(t0_targettemp)
-                    extruder.updateHotendTemperature(t0_nowtemp)
-                    # self._number_of_extruders = 1
-                    # extruder = printer.extruders[1]
-                    # extruder.updateHotendTemperature(t1_nowtemp)
-                    # extruder.updateTargetHotendTemperature(t1_targettemp)
-                    # only on lower 3.4
-                    # self._setBedTemperature(bed_nowtemp)
-                    # self._updateTargetBedTemperature(bed_targettemp)
-                    # if self._num_extruders > 1:
-                    # self._setHotendTemperature(1, t1_nowtemp)
-                    # self._updateTargetHotendTemperature(1, t1_targettemp)
-                    # self._setHotendTemperature(0, t0_nowtemp)
-                    # self._updateTargetHotendTemperature(0, t0_targettemp)
+                    extruder0 = printer.extruders[0]
+                    extruder0.updateTargetHotendTemperature(t0_targettemp)
+                    extruder0.updateHotendTemperature(t0_nowtemp)
+                    if self._number_of_extruders > 1:
+                        extruder1 = printer.extruders[1]
+                        extruder1.updateTargetHotendTemperature(t1_targettemp)
+                        extruder1.updateHotendTemperature(t1_nowtemp)
                     continue
                 if printer.activePrintJob is None:
                     print_job = PrintJobOutputModel(output_controller=self._output_controller)
@@ -1015,13 +1003,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return False
         self._target_bed_temperature = temperature
         self.targetBedTemperatureChanged.emit()
-        return True
-
-    def _updateTargetHotendTemperature(self, index, temperature):
-        if self._target_hotend_temperatures[index] == temperature:
-            return False
-        self._target_hotend_temperatures[index] = temperature
-        self.targetHotendTemperaturesChanged.emit()
         return True
 
     def _createPrinterList(self):

@@ -117,7 +117,7 @@ class SaveOutputDevice(OutputDevice):
         Logger.log("d", "Writing to [%s]..." % file_name)
 
         if os.path.exists(file_name):
-            result = QMessageBox.question(None, catalog.i18nc("@title:window", "File Already Exists"), catalog.i18nc("@label Don't translate the XML tag <filename>!", "The file <filename>{0}</filename> already exists. Are you sure you want to overwrite it?").format(file_name))
+            result = QMessageBox.question(None, catalog.i18nc("@title:window Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists.").format(file_name[file_name.rfind("/")+1:]), catalog.i18nc("@label Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists. Are you sure you want to overwrite it?").format(file_name[file_name.rfind("/")+1:]))
             if result == QMessageBox.No:
                 raise OutputDeviceError.UserCanceledError()
 
@@ -180,8 +180,8 @@ class SaveOutputDevice(OutputDevice):
         self.writeFinished.emit(self)
         if job.getResult():
             self.writeSuccess.emit(self)
-            message = Message(catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Saved to <filename>{0}</filename>").format(job.getFileName()), title = catalog.i18nc(Constants.C_TITLE, "File Saved"))
-            message.addAction("open_folder", catalog.i18nc("@action:button", "Open Folder"), "open-folder", catalog.i18nc("@info:tooltip", "Open the folder containing the file"))
+            message = Message(catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Saved to <filename>{0}</filename>").format(job.getFileName()), title = catalog.i18nc(Constants.C_TITLE, "File saved"))
+            message.addAction("open_folder", catalog.i18nc(Constants.C_ACTION_BUTTON, "Open folder"), "open-folder", catalog.i18nc(Constants.C_TOOLTIP, "Open the folder containing the file"))
             message._folder = os.path.dirname(job.getFileName())
             message.actionTriggered.connect(self._onMessageActionTriggered)
             message.show()

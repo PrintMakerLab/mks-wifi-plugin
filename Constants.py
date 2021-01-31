@@ -26,7 +26,7 @@ C_INFO_STATUS_DNT1 = C_INFO_STATUS+" "+DNT_MESSAGE
 C_TOOLTIP_DNT1 = C_TOOLTIP+" "+DNT_MESSAGE
 
 # Errors
-ERROR_MESSAGE1= "Error: printing can not send"
+ERROR_MESSAGE1= "Error: command can not send"
 ERROR_MESSAGE2="Error: Another file is uploading, please try later."
 EXCEPTION_MESSAGE = "An exception occurred in network connection: %s"
 
