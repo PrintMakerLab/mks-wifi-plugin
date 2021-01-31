@@ -211,7 +211,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def init_translations(self):
         self._translations = {
-            "button_yes": catalog.i18nc(Constants.C_ACTION_BUTTON, "Yes"),
+            "button_yes": catalog.i18nc("@action:button", "Yes"),
             "button_no": catalog.i18nc("@action:button", "No"),
             "button_cancel": catalog.i18nc("@action:button", "Cancel"),
             "print_over_tft_action_button": catalog.i18nc("@action:button", "Print over TFT"),
