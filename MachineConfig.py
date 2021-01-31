@@ -23,8 +23,6 @@ import time
 
 from PyQt5.QtCore import QTimer
 
-# catalog = i18nCatalog("cura")
-
 catalog = i18nCatalog("mksplugin")
 
 class MachineConfig(MachineAction):
@@ -35,7 +33,6 @@ class MachineConfig(MachineAction):
 
         self._application = CuraApplication.getInstance()
         self._network_plugin = None
-
         self.__additional_components_context = None
         self.__additional_component = None
         self.__additional_components_view = None
