@@ -84,7 +84,7 @@ Cura.MachineAction
             id: pageDescription
             width: parent.width
             wrapMode: Text.WordWrap
-            text: catalog.i18nc("@label", "To print directly to your printer over the network, please make sure your printer is connected to the network using a network cable or by connecting your printer to your WIFI network. If you don't connect Cura with your printer, you can still use a USB drive to transfer g-code files to your printer.\n\nSelect your printer from the list below:")
+            text: catalog.i18nc("@label", "To print directly to your printer from Cura, please make sure your printer is connected to the same WiFi network as this computer. If you don't connect your printer with Cura, you can still use SD drive to transfer g-code files to your printer.\n\nSelect your printer from the list below:")
         }
 
         Row
@@ -369,7 +369,7 @@ Cura.MachineAction
         property string printerKey
         property alias addressText: addressField.text
 
-        title: catalog.i18nc("@title:window", "Printer Address")
+        title: catalog.i18nc("@title:window", "Adding a new printer")
 
         minimumWidth: 400 * screenScaleFactor
         minimumHeight: 130 * screenScaleFactor

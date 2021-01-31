@@ -276,7 +276,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: command can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -286,7 +286,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: command can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -296,7 +296,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: command can not send"))
             self._error_message.show()
 
     @pyqtSlot()
@@ -306,7 +306,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             if self._error_message is not None:
                 self._error_message.hide()
-            self._error_message = Message(catalog.i18nc("@info:status", "Error: printing can not send"))
+            self._error_message = Message(catalog.i18nc("@info:status", "Error: command can not send"))
             self._error_message.show()
 
     @pyqtSlot()
