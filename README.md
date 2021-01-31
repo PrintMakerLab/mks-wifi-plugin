@@ -12,14 +12,6 @@ Using the plugin with Cura, you can:
   - Control your 3D printer wirelessly with Cura;
   - Transfer .gcode files to a printer with 100kbyte/s speed;
   - Get preview on 3D printer srceen when using MKS Robin TFT35 or MKS TFT35 LCD.
-  
-## Project status ##
-[![SonarCloud](https://sonarcloud.io/images/project_badges/sonarcloud-black.svg)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=bugs)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=code_smells)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
 
 ## Installation ##
 
