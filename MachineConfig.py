@@ -25,6 +25,7 @@ from PyQt5.QtCore import QTimer
 
 catalog = i18nCatalog("mksplugin")
 
+
 class MachineConfig(MachineAction):
     def __init__(self, parent=None):
         super().__init__("MachineConfig", catalog.i18nc("@action", "MKS WiFi Connection"))
@@ -47,7 +48,8 @@ class MachineConfig(MachineAction):
         except Exception as e:
             # The actual version info is not critical to have so we can continue
             self._plugin_version = "0.0"
-            Logger.logException("w", "Could not get version information for the plugin: " +str(e))
+            Logger.logException(
+                "w", "Could not get version information for the plugin: " + str(e))
 
         self._user_agent = ("%s/%s %s/%s" % (
             self._application.getApplicationName(),
@@ -64,7 +66,7 @@ class MachineConfig(MachineAction):
         self._zeroconf_change_grace_period = 0.25
 
         self.timer = QTimer(self)
-        self.timer.start(10000) # 5s
+        self.timer.start(10000)  # 5s
         self.timer.timeout.connect(self.restartDiscovery)
 
     printersChanged = pyqtSignal()
@@ -150,7 +152,8 @@ class MachineConfig(MachineAction):
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
             if "mks_network_key" in meta_data:
-                global_container_stack.setMetaDataEntry("mks_network_key", None)
+                global_container_stack.setMetaDataEntry(
+                    "mks_network_key", None)
                 # Delete old authentication data.
                 global_container_stack.removeMetaDataEntry(
                     "network_authentication_id")
@@ -161,7 +164,7 @@ class MachineConfig(MachineAction):
             self._network_plugin.disConnections(key)
 
     @pyqtSlot(str)
-    def setKey(self, key):        
+    def setKey(self, key):
         Logger.log(
             "d", "MKS Plugin Plugin the network key of the active machine to %s", key)
         global_container_stack = self._application.getGlobalContainerStack()
@@ -184,7 +187,6 @@ class MachineConfig(MachineAction):
             preferences = Application.getInstance().getPreferences()
             preferences.addPreference("mkswifi/stopupdate", "True")
             self._network_plugin.reCheckConnections()
-        
 
     @pyqtSlot()
     def printtest(self):
@@ -216,7 +218,8 @@ class MachineConfig(MachineAction):
         Logger.log("d", "Creating additional ui components for tft35.")
 
         # Create networking dialog
-        path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "qml",  "MKSConnectBtn.qml")
+        path = os.path.join(os.path.dirname(
+            os.path.abspath(__file__)), "qml",  "MKSConnectBtn.qml")
         self.__additional_components_view = CuraApplication.getInstance(
         ).createQmlComponent(path, {"manager": self})
         if not self.__additional_components_view:

@@ -43,18 +43,21 @@ from UM.Preferences import Preferences
 
 from typing import cast, Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
 if TYPE_CHECKING:
-    from UM.Scene.SceneNode import SceneNode #For typing.
-    from UM.FileHandler.FileHandler import FileHandler #For typing.
+    from UM.Scene.SceneNode import SceneNode  # For typing.
+    from UM.FileHandler.FileHandler import FileHandler  # For typing.
 
 from UM.Resources import Resources
 from . import Constants
 
-Resources.addSearchPath(os.path.join(os.path.abspath(os.path.dirname(__file__)))) # Plugin translation file import
+Resources.addSearchPath(
+    os.path.join(os.path.abspath(
+        os.path.dirname(__file__))))  # Plugin translation file import
 
 catalog = i18nCatalog("mksplugin")
 
 if catalog.hasTranslationLoaded():
     Logger.log("i", "MKS WiFi Plugin translation loaded!")
+
 
 class UnifiedConnectionState(IntEnum):
     try:
@@ -64,11 +67,12 @@ class UnifiedConnectionState(IntEnum):
         Busy = ConnectionState.Busy
         Error = ConnectionState.Error
     except AttributeError:
-        Closed = ConnectionState.closed          # type: ignore
+        Closed = ConnectionState.closed  # type: ignore
         Connecting = ConnectionState.connecting  # type: ignore
-        Connected = ConnectionState.connected    # type: ignore
-        Busy = ConnectionState.busy              # type: ignore
-        Error = ConnectionState.error            # type: ignore
+        Connected = ConnectionState.connected  # type: ignore
+        Busy = ConnectionState.busy  # type: ignore
+        Error = ConnectionState.error  # type: ignore
+
 
 @signalemitter
 class MKSOutputDevice(NetworkedPrinterOutputDevice):
@@ -80,9 +84,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     """
 
     escape_characters = {
-        re.escape("\\"): "\\\\",  # The escape character.
-        re.escape("\n"): "\\n",   # Newlines. They break off the comment.
-        re.escape("\r"): "\\r"    # Carriage return. Windows users may need this for visualisation in their editors.
+        re.escape("\\"):
+        "\\\\",  # The escape character.
+        re.escape("\n"):
+        "\\n",  # Newlines. They break off the comment.
+        # Carriage return. Windows users may need this for visualisation in their editors.
+        re.escape("\r"):
+        "\\r"
     }
     """Dictionary that defines how characters are escaped when embedded in
     g-code.
@@ -92,8 +100,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     _setting_keyword = ";SETTING_"
 
-    def __init__(self, instance_id: str, address: str, properties: dict, **kwargs) -> None:
-        super().__init__(device_id = instance_id, address = address, properties = properties, **kwargs)
+    def __init__(self, instance_id: str, address: str, properties: dict,
+                 **kwargs) -> None:
+        super().__init__(device_id=instance_id,
+                         address=address,
+                         properties=properties,
+                         **kwargs)
+
+        self.init_translations()
+
         self._address = address
         self._port = 8080
         self._key = instance_id
@@ -103,18 +118,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         self._application = CuraApplication.getInstance()
         if self._application.getVersion().split(".")[0] < "4":
-            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"qml",  "MonitorItem.qml")
+            self._monitor_view_qml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "qml",
+                "MonitorItem.qml")
         else:
-            self._monitor_view_qml_path = os.path.join(os.path.dirname(os.path.abspath(__file__)),"qml", "MonitorItem4x.qml")
+            self._monitor_view_qml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "qml",
+                "MonitorItem4x.qml")
 
-        self.setPriority(3)  # Make sure the output device gets selected above local file output and Octoprint XD
-        self._active_machine = CuraApplication.getInstance().getMachineManager().activeMachine
+        # Make sure the output device gets selected above local file output and Octoprint XD
+        self.setPriority(3)
+        self._active_machine = CuraApplication.getInstance().getMachineManager(
+        ).activeMachine
         self.setName(instance_id)
-        self.setShortDescription(catalog.i18nc(Constants.C_ACTION_BUTTON, "Print over TFT"))
-        self.setDescription(catalog.i18nc(Constants.C_TOOLTIP, "Print over TFT"))
+        self.setShortDescription(
+            self._translations["print_over_tft_action_button"])
+        self.setDescription(self._translations["print_over_tft_tooltip"])
         self.setIconName("print")
-        self.setConnectionText(catalog.i18nc(Constants.C_INFO_STATUS_DNT_MESSAGE, "Connected to TFT on <message>{0}</message>").format(self._key))
-        Application.getInstance().globalContainerStackChanged.connect(self._onGlobalContainerChanged)
+        self.setConnectionText(
+            self._translations["connected_message"].format(self._key))
+        Application.getInstance().globalContainerStackChanged.connect(
+            self._onGlobalContainerChanged)
 
         self._socket = None
         self._gl = None
@@ -162,7 +186,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._ischanging = False
 
         self._update_timer = QTimer()
-        self._update_timer.setInterval(2000)  # TODO; Add preference for update interval
+        # TODO; Add preference for update interval
+        self._update_timer.setInterval(2000)
         self._update_timer.setSingleShot(False)
         self._update_timer.timeout.connect(self._update)
 
@@ -174,11 +199,45 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._preheat_timer.timeout.connect(self.cancelPreheatBed)
         self._exception_message = None
         self._output_controller = GenericOutputController(self)
-        self._number_of_extruders = CuraApplication.getInstance().getGlobalContainerStack().getProperty("machine_extruder_count", "value")
+        self._number_of_extruders = CuraApplication.getInstance(
+        ).getGlobalContainerStack().getProperty("machine_extruder_count",
+                                                "value")
         self._camera_url = ""
         # Application.getInstance().getOutputDeviceManager().outputDevicesChanged.connect(self._onOutputDevicesChanged)
-        CuraApplication.getInstance().getCuraSceneController().activeBuildPlateChanged.connect(self.CreateMKSController)
+        CuraApplication.getInstance().getCuraSceneController(
+        ).activeBuildPlateChanged.connect(self.CreateMKSController)
 
+    _translations = {}
+
+    def init_translations(self):
+        self._translations = {
+            "button_yes": catalog.i18nc(Constants.C_ACTION_BUTTON, "Yes"),
+            "button_no": catalog.i18nc("@action:button", "No"),
+            "button_cancel": catalog.i18nc("@action:button", "Cancel"),
+            "print_over_tft_action_button": catalog.i18nc("@action:button", "Print over TFT"),
+            "print_over_tft_tooltip": catalog.i18nc("@properties:tooltip", "Print over TFT"),
+            "connected_message": catalog.i18nc("@info:status Don't translate the XML tags <message>!", "Connected to TFT on <message>{0}</message>"),
+            "print_over_action_button": catalog.i18nc("@action:button Don't translate the XML tags <message>!", "Print over <message>{0}</message>"),
+            "print_over_tooltip": catalog.i18nc("@properties:tooltip Don't translate the XML tags <message>!", "Print over <message>{0}</message>"),
+            "file_exists_title": catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "<filename>{0}</filename> already exists."),
+            "file_exists_label": catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "<filename>{0}</filename> already exists, please rename it."),
+            "file_include_chinese_title": catalog.i18nc("@info:status", "File name can not include chinese."),
+            "file_include_chinese_label": catalog.i18nc("@info:status", "File name can not include chinese, please rename it."),
+            "file_too_long_title": catalog.i18nc("@info:status", "File name is too long to upload."),
+            "file_too_long_label": catalog.i18nc("@info:status", "File name is too long to upload, please rename it."),
+            "sending_file": catalog.i18nc("@info:status", "Sending file to printer"),
+            "uploading_file": catalog.i18nc("@info:status", "Uploading print job to printer"),
+            "print_job_title": catalog.i18nc("@info:title", "Sending Print Job"),
+            "print_job_label": catalog.i18nc("@label", "Print job"),
+            "file_cant_transfer": catalog.i18nc("@info:status", "File cannot be transferred during printing."),
+            "file_send_failed": catalog.i18nc("@info:status", "Send file to printer failed."),
+            "file_send_failed2": catalog.i18nc("@info:status", "Now is printing. Send file to printer failed."),
+            "file_send_success": catalog.i18nc("@info:status", "Print job was successfully sent to the printer."),
+            "gcode_prepare": catalog.i18nc("@warning:status", "Please prepare G-code before exporting."),
+            "connected": catalog.i18nc("@info:status", "TFT Connect succeed"),
+            "error_1": catalog.i18nc("@info:status", "Error: command can not send"),
+            "error_2": catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."),
+        }
 
     def _onOutputDevicesChanged(self):
         Logger.log("d", "MKS _onOutputDevicesChanged")
@@ -190,11 +249,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._socket = None
         self._socket = QTcpSocket()
         self._socket.connectToHost(self._address, self._port)
-        global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        self.setShortDescription(catalog.i18nc(Constants.C_ACTION_BUTTON_DNT_MESSAGE, "Print over <message>{0}</message>").format(global_container_stack.getName()))
-        self.setDescription(catalog.i18nc(Constants.C_TOOLTIP_DNT_MESSAGE, "Print over <message>{0}</message>").format(global_container_stack.getName()))
+        global_container_stack = CuraApplication.getInstance(
+        ).getGlobalContainerStack()
+        self.setShortDescription(
+            self._translations["print_over_action_button"].format(
+                global_container_stack.getName()))
+        self.setDescription(self._translations["print_over_tooltip"].format(
+            global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
-        self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
+        self.setConnectionState(
+            cast(ConnectionState, UnifiedConnectionState.Connecting))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
         preferences = Application.getInstance().getPreferences()
@@ -267,28 +331,28 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            self.show_error_message(Constants.ERROR_MESSAGE1)
+            self.show_error_message(self._translations["error_1"])
 
     @pyqtSlot()
     def e0up(self):
         if not self._isPrinting:
             self.sendCommand("T0\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            self.show_error_message(Constants.ERROR_MESSAGE1)
+            self.show_error_message(self._translations["error_1"])
 
     @pyqtSlot()
     def e1down(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E10 F1000\r\n G90")
         else:
-            self.show_error_message(Constants.ERROR_MESSAGE1)
+            self.show_error_message(self._translations["error_1"])
 
     @pyqtSlot()
     def e1up(self):
         if not self._isPrinting:
             self.sendCommand("T1\r\n G91\r\n G1 E-10 F1000\r\n G90")
         else:
-            self.show_error_message(Constants.ERROR_MESSAGE1)
+            self.show_error_message(self._translations["error_1"])
 
     @pyqtSlot(result=int)
     def printer_E_num(self):
@@ -322,7 +386,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @pyqtSlot(str)
     def printSDFiles(self, filename):
-        self._sendCommand("M23 "+filename)
+        self._sendCommand("M23 " + filename)
         self._sendCommand("M24")
 
     @pyqtSlot()
@@ -331,25 +395,29 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         preferences.addPreference(Constants.AUTO_PRINT, "True")
         preferences.addPreference(Constants.SAVE_PATH, "")
         if self._progress_message:
-            self.show_error_message(Constants.ERROR_MESSAGE2)
+            self.show_error_message(self._translations["error_2"])
         else:
-            filename,_ = QFileDialog.getOpenFileName(None, "choose file", preferences.getValue(Constants.SAVE_PATH), "Gcode(*.gcode;*.g;*.goc)")
+            filename, _ = QFileDialog.getOpenFileName(
+                None, "choose file", preferences.getValue(Constants.SAVE_PATH),
+                "Gcode(*.gcode;*.g;*.goc)")
             preferences.setValue(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():
                 self.show_upload_dialog(filename)
-                
 
     def show_upload_dialog(self, filename):
-        Logger.log("d", "selectfile:"+filename)
-        if filename[filename.rfind("/")+1:] in self.sdFiles:
-            self.show_exists_dialog(filename, lambda : self.uploadfunc(filename))
+        Logger.log("d", "selectfile:" + filename)
+        if filename[filename.rfind("/") + 1:] in self.sdFiles:
+            self.show_exists_dialog(filename,
+                                    lambda: self.uploadfunc(filename))
             return
-        if len(filename[filename.rfind("/")+1:]) >= 30:
-            self.show_to_long_dialog(filename, lambda : self.renameupload(filename))
+        if len(filename[filename.rfind("/") + 1:]) >= 30:
+            self.show_to_long_dialog(filename,
+                                     lambda: self.renameupload(filename))
             return
-        if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
-            self.show_contains_chinese_dialog(filename, lambda : self.renameupload(filename))
+        if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
+            self.show_contains_chinese_dialog(
+                filename, lambda: self.renameupload(filename))
             return
         if self.isBusy():
             self.isBusy_error_message()
@@ -362,7 +430,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._mdialog = QDialog()
         content = QLabel(label)
         self._mfilename = QLineEdit()
-        self._mfilename.setText(filename[filename.rfind("/")+1:])
+        self._mfilename.setText(filename[filename.rfind("/") + 1:])
         dialogvbox = QVBoxLayout()
         dialoghbox = QHBoxLayout()
         dialoghbox.addWidget(yesbtn)
@@ -375,61 +443,72 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._mdialog.exec_()
 
     def show_exists_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "Yes"))
+        yesbtn = QPushButton(self._translations["button_yes"])
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "No"))
+        nobtn = QPushButton(self._translations["button_no"])
         nobtn.clicked.connect(self.closeMDialog)
-        title = catalog.i18nc(Constants.C_INFO_STATUS_DNT_FILE, Constants.EXISTS1).format(filename[filename.rfind("/")+1:])
-        label = catalog.i18nc(Constants.C_INFO_STATUS_DNT_FILE, Constants.EXISTS2).format(filename[filename.rfind("/")+1:])
+        title = self._translations["file_exists_title"].format(
+            filename[filename.rfind("/") + 1:])
+        label = self._translations["file_exists_label"].format(
+            filename[filename.rfind("/") + 1:])
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_contains_chinese_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "Yes"))
+        yesbtn = QPushButton(self._translations["button_yes"])
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "No"))
+        nobtn = QPushButton(self._translations["button_no"])
         nobtn.clicked.connect(self.closeMDialog)
-        title = catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_INCLUDE1)
-        label = catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_INCLUDE2)
+        title = self._translations["file_include_chinese_title"]
+        label = self._translations["file_include_chinese_label"]
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_to_long_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "Yes"))
+        yesbtn = QPushButton(self._translations["button_yes"])
         yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "No"))
+        nobtn = QPushButton(self._translations["button_no"])
         nobtn.clicked.connect(self.closeMDialog)
-        title = catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_TOO_LONG1)
-        label = catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_TOO_LONG2)
+        title = self._translations["file_too_long_title"]
+        label = self._translations["file_too_long_label"]
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_error_message(self, message):
         if self._error_message is not None:
             self._error_message.hide()
-        self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, message))
+        self._error_message = Message(message)
         self._error_message.show()
 
     def show_progress_message(self, preferences):
         if self._application.getVersion().split(".")[0] < "4":
             Application.getInstance().showPrintMonitor.emit(True)
-            status = catalog.i18nc(Constants.C_INFO_STATUS, "Sending file to printer")
+            status = self._translations["sending_file"]
             self._progress_message = Message(status, 0, False, -1)
         else:
-            status = catalog.i18nc(Constants.C_INFO_STATUS, "Uploading print job to printer")
-            title = catalog.i18nc(Constants.C_TITLE, "Sending Print Job")
-            self._progress_message = Message(status, 0, False, -1, title, 
-                option_text=catalog.i18nc(Constants.C_LABEL, "Print job"),
+            status = self._translations["uploading_file"]
+            title = self._translations["print_job_title"]
+            self._progress_message = Message(
+                status,
+                0,
+                False,
+                -1,
+                title,
+                option_text=self._translations["print_job_label"],
                 option_state=preferences.getValue(Constants.AUTO_PRINT))
-            self._progress_message.addAction("Cancel", catalog.i18nc(Constants.C_ACTION_BUTTON, "Cancel"), None, "")
-            self._progress_message.actionTriggered.connect(self._cancelSendGcode)
-            self._progress_message.optionToggled.connect(self._onOptionStateChanged)
+            self._progress_message.addAction(
+                "Cancel",  self._translations["button_cancel"], None, "")
+            self._progress_message.actionTriggered.connect(
+                self._cancelSendGcode)
+            self._progress_message.optionToggled.connect(
+                self._onOptionStateChanged)
         self._progress_message.show()
 
     def isBusy_error_message(self):
         if self._exception_message:
             self._exception_message.hide()
-        self._exception_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_TRANSLATE))
+        self._exception_message = Message(
+            self._translations["file_cant_transfer"])
         self._exception_message.show()
 
-    def is_contains_chinese(self,strs):
+    def is_contains_chinese(self, strs):
         return False
 
     def closeMDialog(self):
@@ -438,22 +517,26 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def renameupload(self, filename):
         if self._mfilename and ".g" in self._mfilename.text().lower():
-            filename = filename[:filename.rfind("/")]+"/"+self._mfilename.text()
+            filename = filename[:filename.
+                                rfind("/")] + "/" + self._mfilename.text()
             if self._mfilename.text() in self.sdFiles:
-                self.show_exists_dialog(filename, lambda : self.uploadfunc(filename))
+                self.show_exists_dialog(filename,
+                                        lambda: self.uploadfunc(filename))
                 return
-            if len(filename[filename.rfind("/")+1:]) >= 30:
-                self.show_to_long_dialog(filename, lambda : self.renameupload(filename))
+            if len(filename[filename.rfind("/") + 1:]) >= 30:
+                self.show_to_long_dialog(filename,
+                                         lambda: self.renameupload(filename))
                 return
-            if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
-                self.show_contains_chinese_dialog(filename, lambda : self.renameupload(filename))
+            if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
+                self.show_contains_chinese_dialog(
+                    filename, lambda: self.renameupload(filename))
                 return
             if self.isBusy():
                 self.isBusy_error_message()
                 return
             self._mdialog.close()
             if self._progress_message:
-                self.show_error_message(Constants.ERROR_MESSAGE2)
+                self.show_error_message(self._translations["error_2"])
             else:
                 self.uploadfunc(filename)
 
@@ -462,7 +545,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
-            self.show_error_message(Constants.ERROR_MESSAGE2)
+            self.show_error_message(self._translations["error_2"])
         else:
             preferences.addPreference(Constants.AUTO_PRINT, "True")
             preferences.addPreference(Constants.SAVE_PATH, "")
@@ -472,33 +555,48 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._preheat_timer.stop()
             single_string_file_data = ""
             try:
-                f = open(self._uploadpath, "r", encoding=sys.getfilesystemencoding())
+                f = open(self._uploadpath,
+                         "r",
+                         encoding=sys.getfilesystemencoding())
                 single_string_file_data = f.read()
-                file_name = filename[filename.rfind("/")+1:]
-                self._last_file_name = filename[filename.rfind("/")+1:]
-               
-                self._progress_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, "Uploading print job to printer"), 0, False, -1, catalog.i18nc(Constants.C_INFO_STATUS, "Sending Print Job"), option_text=catalog.i18nc(Constants.C_INFO_STATUS, "Print Job"), option_state=preferences.getValue(Constants.AUTO_PRINT))
-                self._progress_message.addAction("Cancel", catalog.i18nc(Constants.C_ACTION_BUTTON, "Cancel"), None, "")
-                self._progress_message.actionTriggered.connect(self._cancelSendGcode)
-                self._progress_message.optionToggled.connect(self._onOptionStateChanged)
+                file_name = filename[filename.rfind("/") + 1:]
+                self._last_file_name = filename[filename.rfind("/") + 1:]
+
+                self._progress_message = Message(self._translations["uploading_file"],
+                    0,
+                    False,
+                    -1,
+                    self._translations["print_job_title"],
+                    option_text=self._translations["print_job_label"]),
+                    option_state = preferences.getValue(Constants.AUTO_PRINT))
+                self._progress_message.addAction(
+                    "Cancel", self._translations["button_cancel"], None, "")
+                self._progress_message.actionTriggered.connect(
+                    self._cancelSendGcode)
+                self._progress_message.optionToggled.connect(
+                    self._onOptionStateChanged)
                 self._progress_message.show()
 
-                data = QByteArray()
+                data=QByteArray()
                 data.append(single_string_file_data.encode())
 
-                post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
-                post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
+                post_request=QNetworkRequest(
+                    QUrl("http://%s/upload?X-Filename=%s" %
+                         (self._address, file_name)))
+                post_request.setRawHeader(b'Content-Type',
+                                          b'application/octet-stream')
                 post_request.setRawHeader(b'Connection', b'keep-alive')
-                self._post_reply = self._manager.post(post_request, data)
+                self._post_reply=self._manager.post(post_request, data)
                 self._post_reply.uploadProgress.connect(self._onUploadProgress)
                 self._post_reply.sslErrors.connect(self._onUploadError)
-                self._gcode = None
+                self._gcode=None
             except IOError as e:
                 Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
                 # preferences.setValue("mkswifi/uploadingfile", "False")
                 self._progress_message.hide()
-                self._progress_message = None
-                self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_SEND_FAILED))
+                self._progress_message=None
+                self._error_message=Message(
+                    self._translations["file_send_failed"])
                 self._error_message.show()
                 self._update_timer.start()
             except Exception as e:
@@ -506,34 +604,31 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._update_timer.start()
                 if self._progress_message is not None:
                     self._progress_message.hide()
-                    self._progress_message = None
+                    self._progress_message=None
                 Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
 
-
-
-
-    @pyqtProperty("QVariantList")
+    @ pyqtProperty("QVariantList")
     def getSDFiles(self):
         self._sendCommand("M20")
         return list(self.sdFiles)
-
 
     def _setTargetBedTemperature(self, temperature):
         if not self._updateTargetBedTemperature(temperature):
             return
         self._sendCommand(["M140 S%s" % temperature])
 
-    @pyqtSlot(str)
+    @ pyqtSlot(str)
     def sendCommand(self, cmd):
         self._sendCommand(cmd)
 
     def _sendCommand(self, cmd):
-        in_cmd = "G28" in cmd or "G0" in cmd
+        in_cmd="G28" in cmd or "G0" in cmd
         if self._ischanging and in_cmd:
             return
         if self.isBusy() and "M20" in cmd:
             return
-        if self._socket and self._socket.state() == 2 or self._socket.state() == 3:
+        if self._socket and self._socket.state() == 2 or self._socket.state(
+        ) == 3:
             if isinstance(cmd, str):
                 self._command_queue.put(cmd + "\r\n")
             elif isinstance(cmd, list):
@@ -542,14 +637,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def disconnect(self):
         # Logger.log("d", "disconnect--------------")
-        preferencess = Application.getInstance().getPreferences()
+        preferencess=Application.getInstance().getPreferences()
         if preferencess.getValue(Constants.STOP_UPDATE):
             # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
-            self._error_message = Message("Printer disconneted.")
+            self._error_message=Message("Printer disconneted.")
             self._error_message.show()
         # self._updateJobState("")
-        self._isConnect = False
-        self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Closed))
+        self._isConnect=False
+        self.setConnectionState(
+            cast(ConnectionState, UnifiedConnectionState.Closed))
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
@@ -566,86 +662,97 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def isBusy(self):
         return self._isPrinting or self._isPause
 
-    def requestWrite(self, node, file_name=None, filter_by_machine=False, file_handler=None, **kwargs):
+    def requestWrite(self,
+                     node,
+                     file_name = None,
+                     filter_by_machine = False,
+                     file_handler = None,
+                     **kwargs):
         self.writeStarted.emit(self)
         self._update_timer.stop()
-        self._isSending = True
-        active_build_plate = Application.getInstance().getMultiBuildPlateModel().activeBuildPlate
-        scene = Application.getInstance().getController().getScene()
+        self._isSending=True
+        active_build_plate=Application.getInstance().getMultiBuildPlateModel(
+        ).activeBuildPlate
+        scene=Application.getInstance().getController().getScene()
         if not hasattr(scene, "gcode_dict"):
-            self.setInformation(catalog.i18nc(Constants.C_WARNING_STATUS, "Please prepare G-code before exporting."))
+            self.setInformation(self._translations["gcode_prepare"])
             return False
-        self._gcode = []
-        gcode_dict = getattr(scene, "gcode_dict")
-        gcode_list = gcode_dict.get(active_build_plate, None)
+        self._gcode=[]
+        gcode_dict=getattr(scene, "gcode_dict")
+        gcode_list=gcode_dict.get(active_build_plate, None)
         if gcode_list is not None:
-            has_settings = False
+            has_settings=False
             for gcode in gcode_list:
                 if gcode[:len(self._setting_keyword)] == self._setting_keyword:
-                    has_settings = True
+                    has_settings=True
                 self._gcode.append(gcode)
             # Serialise the current container stack and put it at the end of the file.
             if not has_settings:
-                settings = self._serialiseSettings(Application.getInstance().getGlobalContainerStack())
+                settings=self._serialiseSettings(
+                    Application.getInstance().getGlobalContainerStack())
                 self._gcode.append(settings)
         else:
-            self.setInformation(catalog.i18nc(Constants.C_WARNING_STATUS, "Please prepare G-code before exporting."))
+            self.setInformation(self._translations["gcode_prepare"])
             return False
 
         Logger.log("d", "mks ready for print")
         # preferences = Application.getInstance().getPreferences()
         # if preferences.getValue("mkswifi/uploadingfile"):
         if self._progress_message:
-            self.show_error_message(Constants.ERROR_MESSAGE2)
+            self.show_error_message(self._translations["error_2"])
         else:
             self.startPrint()
 
     def startPrint(self):
-        global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
+        global_container_stack=CuraApplication.getInstance(
+        ).getGlobalContainerStack()
         if not global_container_stack:
             return
         if self._error_message:
             self._error_message.hide()
-            self._error_message = None
+            self._error_message=None
         if self._progress_message:
             self._progress_message.hide()
-            self._progress_message = None
+            self._progress_message=None
         if self.isBusy():
             if self._progress_message is not None:
                 self._progress_message.hide()
-                self._progress_message = None
+                self._progress_message=None
             if self._error_message is not None:
                 self._error_message.hide()
-                self._error_message = None
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, "Now is printing. Send file to printer failed."))
+                self._error_message=None
+            self._error_message=Message(
+                self._translations["file_send_failed2"])
             self._error_message.show()
             return
-        job_name = Application.getInstance().getPrintInformation().jobName.strip()
+        job_name=Application.getInstance().getPrintInformation(
+        ).jobName.strip()
         if job_name == "":
-            job_name = "cura_file"
-        filename = "%s.gcode" % job_name
+            job_name="cura_file"
+        filename="%s.gcode" % job_name
         if filename in self.sdFiles:
-            self.show_exists_dialog(filename,self.recheckfilename)
+            self.show_exists_dialog(filename, self.recheckfilename)
             return
-        if len(filename[filename.rfind("/")+1:]) >= 30:
+        if len(filename[filename.rfind("/") + 1:]) >= 30:
             self.show_to_long_dialog(filename, self.recheckfilename)
             return
-        if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
-            self.show_contains_chinese_dialog(filename,self.recheckfilename)
+        if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
+            self.show_contains_chinese_dialog(filename, self.recheckfilename)
             return
         self._startPrint(filename)
 
     def recheckfilename(self):
         if self._mfilename and ".g" in self._mfilename.text().lower():
-            filename = self._mfilename.text()
+            filename=self._mfilename.text()
             if filename in self.sdFiles:
-                self.show_exists_dialog(filename,self.recheckfilename)
+                self.show_exists_dialog(filename, self.recheckfilename)
                 return
-            if len(filename[filename.rfind("/")+1:]) >= 30:
+            if len(filename[filename.rfind("/") + 1:]) >= 30:
                 self.show_to_long_dialog(filename, self.recheckfilename)
                 return
-            if self.is_contains_chinese(filename[filename.rfind("/")+1:]):
-                self.show_contains_chinese_dialog(filename,self.recheckfilename)
+            if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
+                self.show_contains_chinese_dialog(filename,
+                                                  self.recheckfilename)
                 return
             if self.isBusy():
                 self.isBusy_error_message()
@@ -657,17 +764,19 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if button == QMessageBox.Yes:
             self.startPrint()
         else:
-            CuraApplication.getInstance().getController().setActiveStage("PrepareStage")
+            CuraApplication.getInstance().getController().setActiveStage(
+                "PrepareStage")
 
     def _startPrint(self, file_name="cura_file.gcode"):
         if self._mdialog:
             self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
-        global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
+        global_container_stack = CuraApplication.getInstance(
+        ).getGlobalContainerStack()
         if not global_container_stack:
             return
         if self._progress_message:
-            self.show_error_message(Constants.ERROR_MESSAGE2)
+            self.show_error_message(self._translations["error_2"])
             return
         self._preheat_timer.stop()
         try:
@@ -675,13 +784,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             preferences.addPreference(Constants.SAVE_PATH, "")
             self.show_progress_message(preferences)
             self._last_file_name = file_name
-            Logger.log("d", "mks: "+file_name + Application.getInstance().getPrintInformation().jobName.strip())
+            Logger.log(
+                "d", "mks: " + file_name + Application.getInstance().
+                getPrintInformation().jobName.strip())
             single_string_file_data = ""
             # Adding screeshot section
             self._screenShot = utils.take_screenshot()
-            if self._screenShot and utils.printer_supports_screenshots(global_container_stack.getName()):
-                single_string_file_data += utils.add_screenshot(self._screenShot, 100, 100, ";simage:")
-                single_string_file_data += utils.add_screenshot(self._screenShot, 200, 200, ";;gimage:")
+            if self._screenShot and utils.printer_supports_screenshots(
+                    global_container_stack.getName()):
+                single_string_file_data += utils.add_screenshot(
+                    self._screenShot, 100, 100, ";simage:")
+                single_string_file_data += utils.add_screenshot(
+                    self._screenShot, 200, 200, ";;gimage:")
                 single_string_file_data += "\r"
             else:
                 Logger.log("d", "Skipping screenshot in MKSOutputDevice.py")
@@ -697,8 +811,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             data = QByteArray()
             data.append(single_string_file_data.encode())
 
-            post_request = QNetworkRequest(QUrl("http://%s/upload?X-Filename=%s" % (self._address, file_name)))
-            post_request.setRawHeader(b'Content-Type', b'application/octet-stream')
+            post_request = QNetworkRequest(
+                QUrl("http://%s/upload?X-Filename=%s" %
+                     (self._address, file_name)))
+            post_request.setRawHeader(b'Content-Type',
+                                      b'application/octet-stream')
             post_request.setRawHeader(b'Connection', b'keep-alive')
             self._post_reply = self._manager.post(post_request, data)
             self._post_reply.uploadProgress.connect(self._onUploadProgress)
@@ -709,7 +826,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
             self._progress_message.hide()
             self._progress_message = None
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_SEND_FAILED))
+            self._error_message = Message(self._translations["file_send_failed"])
             self._error_message.show()
             self._update_timer.start()
         except Exception as e:
@@ -724,21 +841,26 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("M24")
 
     def _onUploadProgress(self, bytes_sent, bytes_total):
-        Logger.log("d", "Upload _onUploadProgress bytes_sent %s" % str(bytes_sent))
-        Logger.log("d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
+        Logger.log("d",
+                   "Upload _onUploadProgress bytes_sent %s" % str(bytes_sent))
+        Logger.log(
+            "d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
         if bytes_sent == bytes_total and bytes_sent > 0:
             self._progress_message.hide()
-            self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, "Print job was successfully sent to the printer."))
+            self._error_message = Message(self._translations["file_send_success"])
             self._error_message.show()
-            CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+            CuraApplication.getInstance().getController().setActiveStage(
+                "MonitorStage")
         elif bytes_total > 0:
             new_progress = bytes_sent / bytes_total * 100
             # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
             # timeout responses if this happens.
             self._last_response_time = time.time()
             if new_progress > self._progress_message.getProgress():
-                self._progress_message.show()  # Ensure that the message is visible.
-                self._progress_message.setProgress(bytes_sent / bytes_total * 100)
+                # Ensure that the message is visible.
+                self._progress_message.show()
+                self._progress_message.setProgress(bytes_sent / bytes_total *
+                                                   100)
         else:
             if self._progress_message is not None:
                 self._progress_message.setProgress(0)
@@ -750,7 +872,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(catalog.i18nc(Constants.C_INFO_STATUS, Constants.F_SEND_FAILED))
+        self._error_message = Message(self._translations["file_send_failed"])
         self._error_message.show()
         self._update_timer.start()
 
@@ -774,7 +896,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("G28 Z")
 
     def _moveHead(self, x, y, z, speed):
-        self._sendCommand(["G91", "G0 X%s Y%s Z%s F%s" % (x, y, z, speed), "G90"])
+        self._sendCommand(
+            ["G91", "G0 X%s Y%s Z%s F%s" % (x, y, z, speed), "G90"])
 
     def _update(self):
         # Logger.log("d", "timer_update MKS wifi reconnecting")
@@ -782,13 +905,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if preferencess.getValue(Constants.STOP_UPDATE):
             self._update_timer.stop()
             return
-        if self._socket is not None and (self._socket.state() == 2 or self._socket.state() == 3):
+        if self._socket is not None and (self._socket.state() == 2
+                                         or self._socket.state() == 3):
             self.write_socket_data()
         else:
             Logger.log("d", "MKS wifi reconnecting")
             self.disconnect()
             self.connect()
-    
+
     def write_socket_data(self):
         _send_data = ("M105\r\nM997\r\n", "")[self._command_queue.qsize() > 0]
         if self.isBusy():
@@ -796,10 +920,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         while self._command_queue.qsize() > 0:
             _queue_data = self._command_queue.get()
             if "M23" in _queue_data:
-                self._socket.writeData(_queue_data.encode(sys.getfilesystemencoding()))
+                self._socket.writeData(
+                    _queue_data.encode(sys.getfilesystemencoding()))
                 continue
             if "M24" in _queue_data:
-                self._socket.writeData(_queue_data.encode(sys.getfilesystemencoding()))
+                self._socket.writeData(
+                    _queue_data.encode(sys.getfilesystemencoding()))
                 continue
             if self.isBusy() and "M20" in _queue_data:
                 continue
@@ -836,8 +962,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             self._sendCommand("M25")
 
-
-
     @pyqtSlot()
     def resumePrint(self):
         # Logger.log("e", "resumePrint: %s" % str(self._isPause))
@@ -854,26 +978,31 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._isConnect = True
             if self._connection_state != UnifiedConnectionState.Connected:
                 self._sendCommand("M20")
-                self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
-                self.setConnectionText(catalog.i18nc(Constants.C_INFO_STATUS, "TFT Connect succeed"))
+                self.setConnectionState(
+                    cast(ConnectionState, UnifiedConnectionState.Connected))
+                self.setConnectionText(self._translations["connected"])
             if not self._printers:
                 self._createPrinterList()
             printer = self.printers[0]
             while self._socket.canReadLine():
 
-                s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-                Logger.log("d", "mks recv: "+s)
+                s = str(self._socket.readLine().data(),
+                        encoding=sys.getfilesystemencoding())
+                Logger.log("d", "mks recv: " + s)
                 s = s.replace("\r", "").replace("\n", "")
                 if "T" in s and "B" in s and "T0" in s:
                     t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
                     t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
                     bed_temp = s[s.find("B:") + len("B:"):s.find("T0:")]
                     t0_nowtemp = float(t0_temp[0:t0_temp.find("/")])
-                    t0_targettemp = float(t0_temp[t0_temp.find("/") + 1:len(t0_temp)])
+                    t0_targettemp = float(t0_temp[t0_temp.find("/") +
+                                                  1:len(t0_temp)])
                     t1_nowtemp = float(t1_temp[0:t1_temp.find("/")])
-                    t1_targettemp = float(t1_temp[t1_temp.find("/") + 1:len(t1_temp)])
+                    t1_targettemp = float(t1_temp[t1_temp.find("/") +
+                                                  1:len(t1_temp)])
                     bed_nowtemp = float(bed_temp[0:bed_temp.find("/")])
-                    bed_targettemp = float(bed_temp[bed_temp.find("/") + 1:len(bed_temp)])
+                    bed_targettemp = float(bed_temp[bed_temp.find("/") +
+                                                    1:len(bed_temp)])
                     printer.updateBedTemperature(bed_nowtemp)
                     printer.updateTargetBedTemperature(bed_targettemp)
                     extruder0 = printer.extruders[0]
@@ -885,7 +1014,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         extruder1.updateHotendTemperature(t1_nowtemp)
                     continue
                 if printer.activePrintJob is None:
-                    print_job = PrintJobOutputModel(output_controller=self._output_controller)
+                    print_job = PrintJobOutputModel(
+                        output_controller=self._output_controller)
                     printer.updateActivePrintJob(print_job)
                 else:
                     print_job = printer.activePrintJob
@@ -914,7 +1044,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     continue
                 if s.startswith("M994"):
                     if self.isBusy() and s.rfind("/") != -1:
-                        self._printing_filename = s[s.rfind("/") + 1:s.rfind(";")]
+                        self._printing_filename = s[s.rfind("/") +
+                                                    1:s.rfind(";")]
                     else:
                         self._printing_filename = ""
                     print_job.updateName(self._printing_filename)
@@ -922,9 +1053,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     continue
                 if s.startswith("M992"):
                     if self.isBusy():
-                        tm = s[s.find("M992") + len("M992"):len(s)].replace(" ", "")
+                        tm = s[s.find("M992") + len("M992"):len(s)].replace(
+                            " ", "")
                         mms = tm.split(":")
-                        self._printing_time = int(mms[0]) * 3600 + int(mms[1]) * 60 + int(mms[2])
+                        self._printing_time = int(mms[0]) * 3600 + int(
+                            mms[1]) * 60 + int(mms[2])
                     else:
                         self._printing_time = 0
                     # Logger.log("d", self._printing_time)
@@ -933,7 +1066,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if s.startswith("M27"):
                     if self._application.getVersion().split(".")[0] < "4":
                         if self.isBusy():
-                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
+                            self._printing_progress = float(
+                                s[s.find("M27") + len("M27"):len(s)].replace(
+                                    " ", ""))
                             totaltime = 100 / self._printing_progress * self._printing_time
                         else:
                             self._printing_progress = 0
@@ -941,13 +1076,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         print_job.updateTimeTotal(totaltime)
                     else:
                         if self.isBusy():
-                            self._printing_progress = float(s[s.find("M27") + len("M27"):len(s)].replace(" ", ""))
-                            totaltime = self._printing_time/self._printing_progress*100
+                            self._printing_progress = float(
+                                s[s.find("M27") + len("M27"):len(s)].replace(
+                                    " ", ""))
+                            totaltime = self._printing_time / self._printing_progress * 100
                         else:
                             self._printing_progress = 0
                             totaltime = self._printing_time * 100
                         print_job.updateTimeTotal(self._printing_time)
-                        print_job.updateTimeElapsed(self._printing_time*2-totaltime)
+                        print_job.updateTimeElapsed(self._printing_time * 2 -
+                                                    totaltime)
                     continue
                 if 'Begin file list' in s:
                     self._sdFileList = True
@@ -957,17 +1095,19 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if 'End file list' in s:
                     self._sdFileList = False
                     continue
-                if self._sdFileList :
+                if self._sdFileList:
                     s = s.replace("\n", "").replace("\r", "")
-                    if s.lower().endswith("gcode") or s.lower().endswith("gco") or s.lower.endswith("g"):
+                    if s.lower().endswith("gcode") or s.lower().endswith(
+                            "gco") or s.lower.endswith("g"):
                         self.sdFiles.append(s)
                     continue
                 if s.startswith("Upload"):
-                    tipsname = Constants.F_SEND_FAILED
-                    if self._application.getPreferences().getValue("general/language") == "zh_CN":
+                    tipsname = "Send file to printer failed."
+                    if self._application.getPreferences().getValue(
+                            "general/language") == "zh_CN":
                         tipsname = "发送文件失败"
                     else:
-                        tipsname = Constants.F_SEND_FAILED
+                        tipsname = "Send file to printer failed."
                     if self._progress_message is not None:
                         self._progress_message.hide()
                         self._progress_message = None
@@ -989,13 +1129,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return True
 
     def _createPrinterList(self):
-        printer = PrinterOutputModel(output_controller=self._output_controller, number_of_extruders=self._number_of_extruders)
+        printer = PrinterOutputModel(
+            output_controller=self._output_controller,
+            number_of_extruders=self._number_of_extruders)
         printer.updateName(self.name)
         self._printers = [printer]
         self.printersChanged.emit()
 
     def _onRequestFinished(self, reply):
-        http_status_code = reply.attribute(QNetworkRequest.HttpStatusCodeAttribute)
+        http_status_code = reply.attribute(
+            QNetworkRequest.HttpStatusCodeAttribute)
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")
@@ -1019,7 +1162,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
-        self.__additional_components_view = Application.getInstance().createQmlComponent(self._monitor_view_qml_path, {"manager": self})
+        self.__additional_components_view = Application.getInstance(
+        ).createQmlComponent(self._monitor_view_qml_path, {"manager": self})
         # trlist = CuraApplication.getInstance()._additional_components
         # for comp in trlist:
         Logger.log("w", "create mkscontroller ")
@@ -1027,26 +1171,33 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             Logger.log("w", "Could not create ui components for tft35.")
 
     def _onGlobalContainerChanged(self) -> None:
-        self._global_container_stack = Application.getInstance().getGlobalContainerStack()
-        definitions = self._global_container_stack.definition.findDefinitions(key="cooling")
+        self._global_container_stack = Application.getInstance(
+        ).getGlobalContainerStack()
+        definitions = self._global_container_stack.definition.findDefinitions(
+            key="cooling")
         Logger.log("d", definitions[0].label)
 
-    def _createFlattenedContainerInstance(self, instance_container1, instance_container2):
+    def _createFlattenedContainerInstance(self, instance_container1,
+                                          instance_container2):
         """Create a new container with container 2 as base and container 1 written over it."""
 
         flat_container = InstanceContainer(instance_container2.getName())
 
         # The metadata includes id, name and definition
-        flat_container.setMetaData(copy.deepcopy(instance_container2.getMetaData()))
+        flat_container.setMetaData(
+            copy.deepcopy(instance_container2.getMetaData()))
 
         if instance_container1.getDefinition():
-            flat_container.setDefinition(instance_container1.getDefinition().getId())
+            flat_container.setDefinition(
+                instance_container1.getDefinition().getId())
 
         for key in instance_container2.getAllKeys():
-            flat_container.setProperty(key, "value", instance_container2.getProperty(key, "value"))
+            flat_container.setProperty(
+                key, "value", instance_container2.getProperty(key, "value"))
 
         for key in instance_container1.getAllKeys():
-            flat_container.setProperty(key, "value", instance_container1.getProperty(key, "value"))
+            flat_container.setProperty(
+                key, "value", instance_container1.getProperty(key, "value"))
 
         return flat_container
 
@@ -1059,36 +1210,54 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         """
         container_registry = self._application.getContainerRegistry()
 
-        prefix = self._setting_keyword + str(MKSOutputDevice.version) + " "  # The prefix to put before each line.
+        # The prefix to put before each line.
+        prefix = self._setting_keyword + str(MKSOutputDevice.version) + " "
         prefix_length = len(prefix)
 
         quality_type = stack.quality.getMetaDataEntry("quality_type")
         container_with_profile = stack.qualityChanges
-        machine_definition_id_for_quality = ContainerTree.getInstance().machines[stack.definition.getId()].quality_definition
+        machine_definition_id_for_quality = ContainerTree.getInstance(
+        ).machines[stack.definition.getId()].quality_definition
         if container_with_profile.getId() == "empty_quality_changes":
             # If the global quality changes is empty, create a new one
-            quality_name = container_registry.uniqueName(stack.quality.getName())
-            quality_id = container_registry.uniqueName((stack.definition.getId() + "_" + quality_name).lower().replace(" ", "_"))
+            quality_name = container_registry.uniqueName(
+                stack.quality.getName())
+            quality_id = container_registry.uniqueName(
+                (stack.definition.getId() + "_" +
+                 quality_name).lower().replace(" ", "_"))
             container_with_profile = InstanceContainer(quality_id)
             container_with_profile.setName(quality_name)
             container_with_profile.setMetaDataEntry("type", "quality_changes")
-            container_with_profile.setMetaDataEntry("quality_type", quality_type)
-            if stack.getMetaDataEntry("position") is not None:  # For extruder stacks, the quality changes should include an intent category.
-                container_with_profile.setMetaDataEntry("intent_category", stack.intent.getMetaDataEntry("intent_category", "default"))
-            container_with_profile.setDefinition(machine_definition_id_for_quality)
-            container_with_profile.setMetaDataEntry("setting_version", stack.quality.getMetaDataEntry("setting_version"))
+            container_with_profile.setMetaDataEntry("quality_type",
+                                                    quality_type)
+            # For extruder stacks, the quality changes should include an intent category.
+            if stack.getMetaDataEntry("position") is not None:
+                container_with_profile.setMetaDataEntry(
+                    "intent_category",
+                    stack.intent.getMetaDataEntry("intent_category",
+                                                  "default"))
+            container_with_profile.setDefinition(
+                machine_definition_id_for_quality)
+            container_with_profile.setMetaDataEntry(
+                "setting_version",
+                stack.quality.getMetaDataEntry("setting_version"))
 
-        flat_global_container = self._createFlattenedContainerInstance(stack.userChanges, container_with_profile)
+        flat_global_container = self._createFlattenedContainerInstance(
+            stack.userChanges, container_with_profile)
         # If the quality changes is not set, we need to set type manually
         if flat_global_container.getMetaDataEntry("type", None) is None:
             flat_global_container.setMetaDataEntry("type", "quality_changes")
 
         # Ensure that quality_type is set. (Can happen if we have empty quality changes).
-        if flat_global_container.getMetaDataEntry("quality_type", None) is None:
-            flat_global_container.setMetaDataEntry("quality_type", stack.quality.getMetaDataEntry("quality_type", "normal"))
+        if flat_global_container.getMetaDataEntry("quality_type",
+                                                  None) is None:
+            flat_global_container.setMetaDataEntry(
+                "quality_type",
+                stack.quality.getMetaDataEntry("quality_type", "normal"))
 
         # Get the machine definition ID for quality profiles
-        flat_global_container.setMetaDataEntry("definition", machine_definition_id_for_quality)
+        flat_global_container.setMetaDataEntry(
+            "definition", machine_definition_id_for_quality)
 
         serialized = flat_global_container.serialize()
         data = {"global_quality": serialized}
@@ -1098,30 +1267,45 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             extruder_quality = extruder.qualityChanges
             if extruder_quality.getId() == "empty_quality_changes":
                 # Same story, if quality changes is empty, create a new one
-                quality_name = container_registry.uniqueName(stack.quality.getName())
-                quality_id = container_registry.uniqueName((stack.definition.getId() + "_" + quality_name).lower().replace(" ", "_"))
+                quality_name = container_registry.uniqueName(
+                    stack.quality.getName())
+                quality_id = container_registry.uniqueName(
+                    (stack.definition.getId() + "_" +
+                     quality_name).lower().replace(" ", "_"))
                 extruder_quality = InstanceContainer(quality_id)
                 extruder_quality.setName(quality_name)
                 extruder_quality.setMetaDataEntry("type", "quality_changes")
                 extruder_quality.setMetaDataEntry("quality_type", quality_type)
-                extruder_quality.setDefinition(machine_definition_id_for_quality)
-                extruder_quality.setMetaDataEntry("setting_version", stack.quality.getMetaDataEntry("setting_version"))
+                extruder_quality.setDefinition(
+                    machine_definition_id_for_quality)
+                extruder_quality.setMetaDataEntry(
+                    "setting_version",
+                    stack.quality.getMetaDataEntry("setting_version"))
 
-            flat_extruder_quality = self._createFlattenedContainerInstance(extruder.userChanges, extruder_quality)
+            flat_extruder_quality = self._createFlattenedContainerInstance(
+                extruder.userChanges, extruder_quality)
             # If the quality changes is not set, we need to set type manually
             if flat_extruder_quality.getMetaDataEntry("type", None) is None:
-                flat_extruder_quality.setMetaDataEntry("type", "quality_changes")
+                flat_extruder_quality.setMetaDataEntry("type",
+                                                       "quality_changes")
 
             # Ensure that extruder is set. (Can happen if we have empty quality changes).
-            if flat_extruder_quality.getMetaDataEntry("position", None) is None:
-                flat_extruder_quality.setMetaDataEntry("position", extruder.getMetaDataEntry("position"))
+            if flat_extruder_quality.getMetaDataEntry("position",
+                                                      None) is None:
+                flat_extruder_quality.setMetaDataEntry(
+                    "position", extruder.getMetaDataEntry("position"))
 
             # Ensure that quality_type is set. (Can happen if we have empty quality changes).
-            if flat_extruder_quality.getMetaDataEntry("quality_type", None) is None:
-                flat_extruder_quality.setMetaDataEntry("quality_type", extruder.quality.getMetaDataEntry("quality_type", "normal"))
+            if flat_extruder_quality.getMetaDataEntry("quality_type",
+                                                      None) is None:
+                flat_extruder_quality.setMetaDataEntry(
+                    "quality_type",
+                    extruder.quality.getMetaDataEntry("quality_type",
+                                                      "normal"))
 
             # Change the default definition
-            flat_extruder_quality.setMetaDataEntry("definition", machine_definition_id_for_quality)
+            flat_extruder_quality.setMetaDataEntry(
+                "definition", machine_definition_id_for_quality)
 
             extruder_serialized = flat_extruder_quality.serialize()
             data.setdefault("extruder_quality", []).append(extruder_serialized)
@@ -1130,21 +1314,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         # Check if there is any profiles
         if not all_setting_keys:
-            Logger.log("i", "No custom settings found, not writing settings to g-code.")
+            Logger.log(
+                "i",
+                "No custom settings found, not writing settings to g-code.")
             return ""
 
         json_string = json.dumps(data)
 
         # Escape characters that have a special meaning in g-code comments.
-        pattern = re.compile("|".join(MKSOutputDevice.escape_characters.keys()))
+        pattern = re.compile("|".join(
+            MKSOutputDevice.escape_characters.keys()))
 
         # Perform the replacement with a regular expression.
-        escaped_string = pattern.sub(lambda m: MKSOutputDevice.escape_characters[re.escape(m.group(0))], json_string)
+        escaped_string = pattern.sub(
+            lambda m: MKSOutputDevice.escape_characters[re.escape(m.group(0))],
+            json_string)
 
         # Introduce line breaks so that each comment is no longer than 80 characters. Prepend each line with the prefix.
         result = ""
 
         # Lines have 80 characters, so the payload of each line is 80 - prefix.
         for pos in range(0, len(escaped_string), 80 - prefix_length):
-            result += prefix + escaped_string[pos: pos + 80 - prefix_length] + "\n"
+            result += prefix + \
+                escaped_string[pos: pos + 80 - prefix_length] + "\n"
         return result
