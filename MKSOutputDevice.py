@@ -1099,12 +1099,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self.sdFiles.append(s)
                     continue
                 if s.startswith("Upload"):
-                    tipsname = "Send file to printer failed."
+                    tipsname = self._translations.get("file_send_failed")
                     if self._application.getPreferences().getValue(
                             "general/language") == "zh_CN":
                         tipsname = "发送文件失败"
                     else:
-                        tipsname = "Send file to printer failed."
+                        tipsname = self._translations.get("file_send_failed")
                     if self._progress_message is not None:
                         self._progress_message.hide()
                         self._progress_message = None
