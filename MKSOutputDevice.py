@@ -113,7 +113,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.setShortDescription(catalog.i18nc(Constants.C_ACTION_BUTTON, "Print over TFT"))
         self.setDescription(catalog.i18nc(Constants.C_TOOLTIP, "Print over TFT"))
         self.setIconName("print")
-        self.setConnectionText(catalog.i18nc(Constants.C_INFO_STATUS_DNT1, "Connected to TFT on <message>{0}</message>").format(self._key))
+        self.setConnectionText(catalog.i18nc(Constants.C_INFO_STATUS_DNT_MESSAGE, "Connected to TFT on <message>{0}</message>").format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(self._onGlobalContainerChanged)
 
         self._socket = None
@@ -191,8 +191,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._socket = QTcpSocket()
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
-        self.setShortDescription(catalog.i18nc(Constants.C_ACTION_BUTTON_DNT1, "Print over <message>{0}</message>").format(global_container_stack.getName()))
-        self.setDescription(catalog.i18nc(Constants.C_TOOLTIP_DNT1, "Print over <message>{0}</message>").format(global_container_stack.getName()))
+        self.setShortDescription(catalog.i18nc(Constants.C_ACTION_BUTTON_DNT_MESSAGE, "Print over <message>{0}</message>").format(global_container_stack.getName()))
+        self.setDescription(catalog.i18nc(Constants.C_TOOLTIP_DNT_MESSAGE, "Print over <message>{0}</message>").format(global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
         self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connecting))
         self._setAcceptsCommands(True)
@@ -379,8 +379,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         yesbtn.clicked.connect(yes_clicked)
         nobtn = QPushButton(catalog.i18nc(Constants.C_ACTION_BUTTON, "No"))
         nobtn.clicked.connect(self.closeMDialog)
-        title = catalog.i18nc(Constants.C_INFO_STATUS_DNT1, Constants.EXISTS1).format(filename[filename.rfind("/")+1:])
-        label = catalog.i18nc(Constants.C_INFO_STATUS_DNT1, Constants.EXISTS2).format(filename[filename.rfind("/")+1:])
+        title = catalog.i18nc(Constants.C_INFO_STATUS_DNT_FILE, Constants.EXISTS1).format(filename[filename.rfind("/")+1:])
+        label = catalog.i18nc(Constants.C_INFO_STATUS_DNT_FILE, Constants.EXISTS2).format(filename[filename.rfind("/")+1:])
         self.show_dialog(filename, label, title, yesbtn, nobtn)
 
     def show_contains_chinese_dialog(self, filename, yes_clicked):
@@ -528,7 +528,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand(cmd)
 
     def _sendCommand(self, cmd):
-        if self._ischanging and ("G28" in cmd or "G0") in cmd:
+        in_cmd = "G28" in cmd or "G0" in cmd
+        if self._ischanging and in_cmd:
             return
         if self.isBusy() and "M20" in cmd:
             return

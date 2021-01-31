@@ -21,9 +21,13 @@ DNT_FILENAME = "Don't translate the XML tags <filename>!"
 DNT_BOTH = "Don't translate the XML tags <filename> or <message>!"
 
 # DNT combined messages
-C_ACTION_BUTTON_DNT1 = C_ACTION_BUTTON+" "+DNT_MESSAGE
-C_INFO_STATUS_DNT1 = C_INFO_STATUS+" "+DNT_MESSAGE
-C_TOOLTIP_DNT1 = C_TOOLTIP+" "+DNT_MESSAGE
+C_ACTION_BUTTON_DNT_MESSAGE = C_ACTION_BUTTON+" "+DNT_MESSAGE
+C_INFO_STATUS_DNT_MESSAGE = C_INFO_STATUS+" "+DNT_MESSAGE
+C_TOOLTIP_DNT_MESSAGE = C_TOOLTIP+" "+DNT_MESSAGE
+
+C_ACTION_BUTTON_DNT_FILE = C_ACTION_BUTTON+" "+DNT_FILENAME
+C_INFO_STATUS_DNT_FILE = C_INFO_STATUS+" "+DNT_FILENAME
+C_TOOLTIP_DNT_FILE = C_TOOLTIP+" "+DNT_FILENAME
 
 # Errors
 ERROR_MESSAGE1 = "Error: command can not send"
@@ -31,8 +35,8 @@ ERROR_MESSAGE2 = "Error: Another file is uploading, please try later."
 EXCEPTION_MESSAGE = "An exception occurred in network connection: %s"
 
 # Exists
-EXISTS1 = "<message>{0}</message> already exists."
-EXISTS2 = "<message>{0}</message> already exists, please rename it."
+EXISTS1 = "<filename>{0}</filename> already exists."
+EXISTS2 = "<filename>{0}</filename> already exists, please rename it."
 
 # File
 F_TOO_LONG1= "File name is too long to upload."
