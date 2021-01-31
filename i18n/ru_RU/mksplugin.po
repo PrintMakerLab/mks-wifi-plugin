@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-31 13:53+0300\n"
+"POT-Creation-Date: 2021-02-01 00:53+0300\n"
 "PO-Revision-Date: 2021-01-31 13:39+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -21,44 +21,44 @@ msgstr ""
 "X-Source-Language: en\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: MachineConfig.py:32
+#: MachineConfig.py:31
 msgctxt "@action"
 msgid "MKS WiFi Connection"
 msgstr "Подключение MKS WiFi"
 
-#: MKSOutputDevicePlugin.py:185
+#: MKSOutputDevicePlugin.py:69
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer connected successfully!"
 msgstr "Принтер <message>{0}</message> успешно подключен!"
 
-#: SaveOutputDevice.py:31
+#: SaveOutputDevice.py:40
 msgctxt "@action:button"
 msgid "Save as TFT file"
 msgstr "Сохранить как TFT файл"
 
-#: SaveOutputDevice.py:32
+#: SaveOutputDevice.py:41
 msgctxt "@properties:tooltip"
 msgid "Save as TFT file"
 msgstr "Сохранить как TFT файл"
 
-#: SaveOutputDevice.py:44
+#: SaveOutputDevice.py:42
 msgctxt "@title:window"
 msgid "Save to File"
 msgstr "Сохранить в файл"
 
-#: SaveOutputDevice.py:77
+#: SaveOutputDevice.py:43
 msgctxt "@info:warning"
 msgid "There are no file types available to write with!"
 msgstr "Недоступно ни одно расширение!"
 
-#: SaveOutputDevice.py:121
+#: SaveOutputDevice.py:44
 #, python-brace-format
 msgctxt "@title:window Don't translate the XML tag <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr "<filename>{0}</filename> существует."
 
-#: SaveOutputDevice.py:121
+#: SaveOutputDevice.py:45
 #, python-brace-format
 msgctxt "@label Don't translate the XML tag <filename>!"
 msgid ""
@@ -68,24 +68,24 @@ msgstr ""
 "Файл <filename>{0}</filename> существует. Уверены, что хотите перезаписать "
 "его?"
 
-#: SaveOutputDevice.py:162
+#: SaveOutputDevice.py:46
 #, python-brace-format
 msgctxt "@info:progress Don't translate the XML tags <filename>!"
 msgid "Saving to <filename>{0}</filename>"
 msgstr "Сохранение в <filename>{0}</filename>"
 
-#: SaveOutputDevice.py:163
+#: SaveOutputDevice.py:47
 msgctxt "@info:title"
 msgid "Saving"
 msgstr "Сохранение"
 
-#: SaveOutputDevice.py:171
+#: SaveOutputDevice.py:48
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Permission denied when trying to save <filename>{0}</filename>"
 msgstr "Недостаточно прав для сохранения <filename>{0}</filename>"
 
-#: SaveOutputDevice.py:174 SaveOutputDevice.py:190
+#: SaveOutputDevice.py:49 SaveOutputDevice.py:54
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
@@ -93,33 +93,38 @@ msgstr ""
 "Не удалось сохранить файл как <filename>{0}</filename>: "
 "<message>{1}</message>"
 
-#: SaveOutputDevice.py:184
+#: SaveOutputDevice.py:50
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Saved to <filename>{0}</filename>"
 msgstr "Сохранить как <filename>{0}</filename>"
 
-#: SaveOutputDevice.py:184
+#: SaveOutputDevice.py:51
 msgctxt "@info:title"
 msgid "File saved"
 msgstr "Файл сохранен"
 
-#: SaveOutputDevice.py:185
+#: SaveOutputDevice.py:52
 msgctxt "@action:button"
 msgid "Open folder"
 msgstr "Открыть папку"
 
-#: SaveOutputDevice.py:185
-msgctxt "@info:tooltip"
+#: SaveOutputDevice.py:53
+msgctxt "@properties:tooltip"
 msgid "Open the folder containing the file"
 msgstr "Открыть папку, содержащую файл"
 
-#: SaveOutputDevice.py:190
+#: SaveOutputDevice.py:55
 msgctxt "@info:title"
 msgid "Warning"
 msgstr "Предупреждение"
 
-#: SaveOutputDevice.py:197
+#: SaveOutputDevice.py:56
+msgctxt "@info:title"
+msgid "Error"
+msgstr "Ошибка"
+
+#: SaveOutputDevice.py:57
 #, python-brace-format
 msgctxt "@info:status"
 msgid ""
@@ -129,169 +134,140 @@ msgstr ""
 "Что-то пошло не так при сохранении <filename>{0}</filename>: "
 "<message>{1}</message>"
 
-#: SaveOutputDevice.py:197
-msgctxt "@info:title"
-msgid "Error"
-msgstr "Ошибка"
+#: MKSOutputDevice.py:214
+msgctxt "@action:button"
+msgid "Yes"
+msgstr "Да"
 
-#: MKSOutputDevice.py:120
+#: MKSOutputDevice.py:215
+msgctxt "@action:button"
+msgid "No"
+msgstr "Нет"
+
+#: MKSOutputDevice.py:216 qml/MachineConfig.qml:423
+msgctxt "@action:button"
+msgid "Cancel"
+msgstr "Отменить"
+
+#: MKSOutputDevice.py:217
 msgctxt "@action:button"
 msgid "Print over TFT"
 msgstr "Печать через TFT"
 
-#: MKSOutputDevice.py:121
+#: MKSOutputDevice.py:218
 msgctxt "@properties:tooltip"
 msgid "Print over TFT"
 msgstr "Печать через TFT"
 
-#: MKSOutputDevice.py:123
+#: MKSOutputDevice.py:219
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr "Подключиться к TFT на <message>{0}</message>"
 
-#: MKSOutputDevice.py:201
+#: MKSOutputDevice.py:220
 #, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Печать на <message>{0}</message>"
 
-#: MKSOutputDevice.py:202
+#: MKSOutputDevice.py:221
 #, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Печать на <message>{0}</message>"
 
-#: MKSOutputDevice.py:279 MKSOutputDevice.py:289 MKSOutputDevice.py:299
-#: MKSOutputDevice.py:309
-msgctxt "@info:status"
-msgid "Error: command can not send"
-msgstr "Ошибка: Не удалось отправить команду"
-
-#: MKSOutputDevice.py:357 MKSOutputDevice.py:533 MKSOutputDevice.py:547
-#: MKSOutputDevice.py:708 MKSOutputDevice.py:904
-msgctxt "@info:status"
-msgid "Error: Another file is uploading, please try later."
-msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее."
-
-#: MKSOutputDevice.py:369 MKSOutputDevice.py:459 MKSOutputDevice.py:744
-#: MKSOutputDevice.py:815
+#: MKSOutputDevice.py:222
 #, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> already exists."
-msgstr "Принтер <message>{0}</message> успешно подключен."
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "<filename>{0}</filename> already exists."
+msgstr "Файл <filename>{0}</filename> существует."
 
-#: MKSOutputDevice.py:372 MKSOutputDevice.py:394 MKSOutputDevice.py:416
-#: MKSOutputDevice.py:462 MKSOutputDevice.py:484 MKSOutputDevice.py:506
-#: MKSOutputDevice.py:747 MKSOutputDevice.py:769 MKSOutputDevice.py:791
-#: MKSOutputDevice.py:818 MKSOutputDevice.py:840 MKSOutputDevice.py:862
-msgctxt "@action:button"
-msgid "Yes"
-msgstr "Да"
-
-#: MKSOutputDevice.py:373 MKSOutputDevice.py:395 MKSOutputDevice.py:417
-#: MKSOutputDevice.py:463 MKSOutputDevice.py:485 MKSOutputDevice.py:507
-#: MKSOutputDevice.py:748 MKSOutputDevice.py:770 MKSOutputDevice.py:792
-#: MKSOutputDevice.py:819 MKSOutputDevice.py:841 MKSOutputDevice.py:863
-msgctxt "@action:button"
-msgid "No"
-msgstr "Нет"
-
-#: MKSOutputDevice.py:376 MKSOutputDevice.py:466 MKSOutputDevice.py:751
-#: MKSOutputDevice.py:822
+#: MKSOutputDevice.py:223
 #, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> already exists, please rename it."
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "<filename>{0}</filename> already exists, please rename it."
 msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:391 MKSOutputDevice.py:481 MKSOutputDevice.py:766
-#: MKSOutputDevice.py:837
-msgctxt "@info:status"
-msgid "File name is too long to upload."
-msgstr "Имя файла слишком длинное для загрузки."
-
-#: MKSOutputDevice.py:398 MKSOutputDevice.py:488 MKSOutputDevice.py:773
-#: MKSOutputDevice.py:844
-msgctxt "@info:status"
-msgid "File name is too long to upload, please rename it."
-msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
-
-#: MKSOutputDevice.py:413 MKSOutputDevice.py:503 MKSOutputDevice.py:788
-#: MKSOutputDevice.py:859
+#: MKSOutputDevice.py:224
 msgctxt "@info:status"
 msgid "File name can not include chinese."
 msgstr "Имя файла не может содержать китайский."
 
-#: MKSOutputDevice.py:420 MKSOutputDevice.py:510 MKSOutputDevice.py:795
-#: MKSOutputDevice.py:866
+#: MKSOutputDevice.py:225
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
 msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:434 MKSOutputDevice.py:524 MKSOutputDevice.py:880
+#: MKSOutputDevice.py:226
 msgctxt "@info:status"
-msgid "File cannot be transferred during printing."
-msgstr "Файл не может быть передан во время печати."
+msgid "File name is too long to upload."
+msgstr "Имя файла слишком длинное для загрузки."
 
-#: MKSOutputDevice.py:568 MKSOutputDevice.py:915
+#: MKSOutputDevice.py:227
 msgctxt "@info:status"
-msgid "Uploading print job to printer"
-msgstr "Загрузка задания на принтер"
+msgid "File name is too long to upload, please rename it."
+msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:568
-msgctxt "@info:status"
-msgid "Sending Print Job"
-msgstr "Отправка задания на печать"
-
-#: MKSOutputDevice.py:568
-msgctxt "@info:status"
-msgid "Print Job"
-msgstr "Начать печать после загрузки"
-
-#: MKSOutputDevice.py:569 MKSOutputDevice.py:918 qml/MachineConfig.qml:423
-msgctxt "@action:button"
-msgid "Cancel"
-msgstr "Отменить"
-
-#: MKSOutputDevice.py:602 MKSOutputDevice.py:960 MKSOutputDevice.py:1001
-msgctxt "@info:status"
-msgid "Send file to printer failed."
-msgstr "Отправка файла на принтер завершилась неудачей."
-
-#: MKSOutputDevice.py:683 MKSOutputDevice.py:699
-msgctxt "@warning:status"
-msgid "Please prepare G-code before exporting."
-msgstr "Пожалуйста, подготовьте G-code перед отправкой."
-
-#: MKSOutputDevice.py:732
-msgctxt "@info:status"
-msgid "Now is printing. Send file to printer failed."
-msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
-
-#: MKSOutputDevice.py:913
+#: MKSOutputDevice.py:228
 msgctxt "@info:status"
 msgid "Sending file to printer"
 msgstr "Отправка файла на принтер"
 
-#: MKSOutputDevice.py:916
+#: MKSOutputDevice.py:229
+msgctxt "@info:status"
+msgid "Uploading print job to printer"
+msgstr "Загрузка задания на принтер"
+
+#: MKSOutputDevice.py:230
 msgctxt "@info:title"
 msgid "Sending Print Job"
 msgstr "Отправка задания на печать"
 
-#: MKSOutputDevice.py:916
+#: MKSOutputDevice.py:231
 msgctxt "@label"
 msgid "Print job"
 msgstr "Начать печать после загрузки"
 
-#: MKSOutputDevice.py:979
+#: MKSOutputDevice.py:232
+msgctxt "@info:status"
+msgid "File cannot be transferred during printing."
+msgstr "Файл не может быть передан во время печати."
+
+#: MKSOutputDevice.py:233
+msgctxt "@info:status"
+msgid "Send file to printer failed."
+msgstr "Отправка файла на принтер завершилась неудачей."
+
+#: MKSOutputDevice.py:234
+msgctxt "@info:status"
+msgid "Now is printing. Send file to printer failed."
+msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
+
+#: MKSOutputDevice.py:235
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr "Задание было успешно отправлено на принтер."
 
-#: MKSOutputDevice.py:1113
+#: MKSOutputDevice.py:236
+msgctxt "@warning:status"
+msgid "Please prepare G-code before exporting."
+msgstr "Пожалуйста, подготовьте G-code перед отправкой."
+
+#: MKSOutputDevice.py:237
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr "Соединение с TFT успешно"
+
+#: MKSOutputDevice.py:238
+msgctxt "@info:status"
+msgid "Error: command can not send"
+msgstr "Ошибка: Не удалось отправить команду"
+
+#: MKSOutputDevice.py:239
+msgctxt "@info:status"
+msgid "Error: Another file is uploading, please try later."
+msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее."
 
 #: qml/MonitorItem4x.qml:202
 msgctxt "@label"
