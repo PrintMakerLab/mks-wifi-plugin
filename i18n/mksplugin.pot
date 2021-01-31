@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-25 01:10+0300\n"
+"POT-Creation-Date: 2021-01-31 13:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,95 +22,96 @@ msgctxt "@action"
 msgid "MKS WiFi Connection"
 msgstr ""
 
-#: MKSOutputDevicePlugin.py:190
+#: MKSOutputDevicePlugin.py:185
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer connected successfully!"
 msgstr ""
 
-#: SaveOutputDevice.py:36
+#: SaveOutputDevice.py:31
 msgctxt "@action:button"
 msgid "Save as TFT file"
 msgstr ""
 
-#: SaveOutputDevice.py:37
+#: SaveOutputDevice.py:32
 msgctxt "@properties:tooltip"
 msgid "Save as TFT file"
 msgstr ""
 
-#: SaveOutputDevice.py:49
+#: SaveOutputDevice.py:44
 msgctxt "@title:window"
 msgid "Save to File"
 msgstr ""
 
-#: SaveOutputDevice.py:82
+#: SaveOutputDevice.py:77
 msgctxt "@info:warning"
 msgid "There are no file types available to write with!"
 msgstr ""
 
-#: SaveOutputDevice.py:126
-msgctxt "@title:window"
-msgid "File Already Exists"
+#: SaveOutputDevice.py:121
+#, python-brace-format
+msgctxt "@title:window Don't translate the XML tag <filename>!"
+msgid "<message>{0}</message> already exists."
 msgstr ""
 
-#: SaveOutputDevice.py:126
+#: SaveOutputDevice.py:121
 #, python-brace-format
 msgctxt "@label Don't translate the XML tag <filename>!"
 msgid ""
-"The file <filename>{0}</filename> already exists. Are you sure you want to "
-"overwrite it?"
+"<filename>{0}</filename> already exists. Are you sure you want to overwrite "
+"it?"
 msgstr ""
 
-#: SaveOutputDevice.py:167
+#: SaveOutputDevice.py:162
 #, python-brace-format
 msgctxt "@info:progress Don't translate the XML tags <filename>!"
 msgid "Saving to <filename>{0}</filename>"
 msgstr ""
 
-#: SaveOutputDevice.py:168
+#: SaveOutputDevice.py:163
 msgctxt "@info:title"
 msgid "Saving"
 msgstr ""
 
-#: SaveOutputDevice.py:176
+#: SaveOutputDevice.py:171
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Permission denied when trying to save <filename>{0}</filename>"
 msgstr ""
 
-#: SaveOutputDevice.py:179 SaveOutputDevice.py:195
+#: SaveOutputDevice.py:174 SaveOutputDevice.py:190
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
 msgstr ""
 
-#: SaveOutputDevice.py:189
+#: SaveOutputDevice.py:184
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Saved to <filename>{0}</filename>"
 msgstr ""
 
-#: SaveOutputDevice.py:189
+#: SaveOutputDevice.py:184
 msgctxt "@info:title"
-msgid "File Saved"
+msgid "File saved"
 msgstr ""
 
-#: SaveOutputDevice.py:190
+#: SaveOutputDevice.py:185
 msgctxt "@action:button"
-msgid "Open Folder"
+msgid "Open folder"
 msgstr ""
 
-#: SaveOutputDevice.py:190
+#: SaveOutputDevice.py:185
 msgctxt "@info:tooltip"
 msgid "Open the folder containing the file"
 msgstr ""
 
-#: SaveOutputDevice.py:195
+#: SaveOutputDevice.py:190
 msgctxt "@info:title"
 msgid "Warning"
 msgstr ""
 
-#: SaveOutputDevice.py:202
+#: SaveOutputDevice.py:197
 #, python-brace-format
 msgctxt "@info:status"
 msgid ""
@@ -118,7 +119,7 @@ msgid ""
 "message>"
 msgstr ""
 
-#: SaveOutputDevice.py:202
+#: SaveOutputDevice.py:197
 msgctxt "@info:title"
 msgid "Error"
 msgstr ""
@@ -139,145 +140,145 @@ msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:208
+#: MKSOutputDevice.py:201
 #, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:209
+#: MKSOutputDevice.py:202
 #, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:286 MKSOutputDevice.py:296 MKSOutputDevice.py:306
-#: MKSOutputDevice.py:316
+#: MKSOutputDevice.py:279 MKSOutputDevice.py:289 MKSOutputDevice.py:299
+#: MKSOutputDevice.py:309
 msgctxt "@info:status"
-msgid "Error: printing can not send"
+msgid "Error: command can not send"
 msgstr ""
 
-#: MKSOutputDevice.py:364 MKSOutputDevice.py:540 MKSOutputDevice.py:554
-#: MKSOutputDevice.py:729 MKSOutputDevice.py:933
+#: MKSOutputDevice.py:357 MKSOutputDevice.py:533 MKSOutputDevice.py:547
+#: MKSOutputDevice.py:708 MKSOutputDevice.py:904
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr ""
 
-#: MKSOutputDevice.py:376 MKSOutputDevice.py:466 MKSOutputDevice.py:773
-#: MKSOutputDevice.py:844
+#: MKSOutputDevice.py:369 MKSOutputDevice.py:459 MKSOutputDevice.py:744
+#: MKSOutputDevice.py:815
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> already exists."
 msgstr ""
 
-#: MKSOutputDevice.py:379 MKSOutputDevice.py:401 MKSOutputDevice.py:423
-#: MKSOutputDevice.py:469 MKSOutputDevice.py:491 MKSOutputDevice.py:513
-#: MKSOutputDevice.py:776 MKSOutputDevice.py:798 MKSOutputDevice.py:820
-#: MKSOutputDevice.py:847 MKSOutputDevice.py:869 MKSOutputDevice.py:891
+#: MKSOutputDevice.py:372 MKSOutputDevice.py:394 MKSOutputDevice.py:416
+#: MKSOutputDevice.py:462 MKSOutputDevice.py:484 MKSOutputDevice.py:506
+#: MKSOutputDevice.py:747 MKSOutputDevice.py:769 MKSOutputDevice.py:791
+#: MKSOutputDevice.py:818 MKSOutputDevice.py:840 MKSOutputDevice.py:862
 msgctxt "@action:button"
 msgid "Yes"
 msgstr ""
 
-#: MKSOutputDevice.py:380 MKSOutputDevice.py:402 MKSOutputDevice.py:424
-#: MKSOutputDevice.py:470 MKSOutputDevice.py:492 MKSOutputDevice.py:514
-#: MKSOutputDevice.py:777 MKSOutputDevice.py:799 MKSOutputDevice.py:821
-#: MKSOutputDevice.py:848 MKSOutputDevice.py:870 MKSOutputDevice.py:892
+#: MKSOutputDevice.py:373 MKSOutputDevice.py:395 MKSOutputDevice.py:417
+#: MKSOutputDevice.py:463 MKSOutputDevice.py:485 MKSOutputDevice.py:507
+#: MKSOutputDevice.py:748 MKSOutputDevice.py:770 MKSOutputDevice.py:792
+#: MKSOutputDevice.py:819 MKSOutputDevice.py:841 MKSOutputDevice.py:863
 msgctxt "@action:button"
 msgid "No"
 msgstr ""
 
-#: MKSOutputDevice.py:383 MKSOutputDevice.py:473 MKSOutputDevice.py:780
-#: MKSOutputDevice.py:851
+#: MKSOutputDevice.py:376 MKSOutputDevice.py:466 MKSOutputDevice.py:751
+#: MKSOutputDevice.py:822
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> already exists, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:398 MKSOutputDevice.py:488 MKSOutputDevice.py:795
-#: MKSOutputDevice.py:866
+#: MKSOutputDevice.py:391 MKSOutputDevice.py:481 MKSOutputDevice.py:766
+#: MKSOutputDevice.py:837
 msgctxt "@info:status"
 msgid "File name is too long to upload."
 msgstr ""
 
-#: MKSOutputDevice.py:405 MKSOutputDevice.py:495 MKSOutputDevice.py:802
-#: MKSOutputDevice.py:873
+#: MKSOutputDevice.py:398 MKSOutputDevice.py:488 MKSOutputDevice.py:773
+#: MKSOutputDevice.py:844
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:420 MKSOutputDevice.py:510 MKSOutputDevice.py:817
-#: MKSOutputDevice.py:888
+#: MKSOutputDevice.py:413 MKSOutputDevice.py:503 MKSOutputDevice.py:788
+#: MKSOutputDevice.py:859
 msgctxt "@info:status"
 msgid "File name can not include chinese."
 msgstr ""
 
-#: MKSOutputDevice.py:427 MKSOutputDevice.py:517 MKSOutputDevice.py:824
-#: MKSOutputDevice.py:895
+#: MKSOutputDevice.py:420 MKSOutputDevice.py:510 MKSOutputDevice.py:795
+#: MKSOutputDevice.py:866
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:441 MKSOutputDevice.py:531 MKSOutputDevice.py:909
+#: MKSOutputDevice.py:434 MKSOutputDevice.py:524 MKSOutputDevice.py:880
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
 msgstr ""
 
-#: MKSOutputDevice.py:589 MKSOutputDevice.py:944
+#: MKSOutputDevice.py:568 MKSOutputDevice.py:915
 msgctxt "@info:status"
 msgid "Uploading print job to printer"
 msgstr ""
 
-#: MKSOutputDevice.py:589
+#: MKSOutputDevice.py:568
 msgctxt "@info:status"
 msgid "Sending Print Job"
 msgstr ""
 
-#: MKSOutputDevice.py:589
+#: MKSOutputDevice.py:568
 msgctxt "@info:status"
 msgid "Print Job"
 msgstr ""
 
-#: MKSOutputDevice.py:590 MKSOutputDevice.py:947 qml/MachineConfig.qml:423
+#: MKSOutputDevice.py:569 MKSOutputDevice.py:918 qml/MachineConfig.qml:423
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr ""
 
-#: MKSOutputDevice.py:623 MKSOutputDevice.py:989 MKSOutputDevice.py:1030
+#: MKSOutputDevice.py:602 MKSOutputDevice.py:960 MKSOutputDevice.py:1001
 msgctxt "@info:status"
 msgid "Send file to printer failed."
 msgstr ""
 
-#: MKSOutputDevice.py:704 MKSOutputDevice.py:720
+#: MKSOutputDevice.py:683 MKSOutputDevice.py:699
 msgctxt "@warning:status"
 msgid "Please prepare G-code before exporting."
 msgstr ""
 
-#: MKSOutputDevice.py:761
+#: MKSOutputDevice.py:732
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
 msgstr ""
 
-#: MKSOutputDevice.py:942
+#: MKSOutputDevice.py:913
 msgctxt "@info:status"
 msgid "Sending file to printer"
 msgstr ""
 
-#: MKSOutputDevice.py:945
+#: MKSOutputDevice.py:916
 msgctxt "@info:title"
 msgid "Sending Print Job"
 msgstr ""
 
-#: MKSOutputDevice.py:945
+#: MKSOutputDevice.py:916
 msgctxt "@label"
 msgid "Print job"
 msgstr ""
 
-#: MKSOutputDevice.py:1008
+#: MKSOutputDevice.py:979
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr ""
 
-#: MKSOutputDevice.py:1142
+#: MKSOutputDevice.py:1113
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr ""
@@ -410,11 +411,10 @@ msgstr ""
 #: qml/MachineConfig.qml:87
 msgctxt "@label"
 msgid ""
-"To print directly to your printer over the network, please make sure your "
-"printer is connected to the network using a network cable or by connecting "
-"your printer to your WIFI network. If you don't connect Cura with your "
-"printer, you can still use a USB drive to transfer g-code files to your "
-"printer.\n"
+"To print directly to your printer from Cura, please make sure your printer "
+"is connected to the same WiFi network as this computer. If you don't connect "
+"your printer with Cura, you can still use SD drive to transfer g-code files "
+"to your printer.\n"
 "\n"
 "Select your printer from the list below:"
 msgstr ""
@@ -498,7 +498,7 @@ msgstr ""
 
 #: qml/MachineConfig.qml:372
 msgctxt "@title:window"
-msgid "Printer Address"
+msgid "Adding a new printer"
 msgstr ""
 
 #: qml/MachineConfig.qml:402
