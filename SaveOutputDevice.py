@@ -44,7 +44,7 @@ class SaveOutputDevice(OutputDevice):
             "file_exists_window": catalog.i18nc("@title:window Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists."),
             "file_overwrite_label": catalog.i18nc("@label Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists. Are you sure you want to overwrite it?"),
             "file_saving_progress": catalog.i18nc("@info:progress Don't translate the XML tags <filename>!", "Saving to <filename>{0}</filename>"),
-            "file_saving_title": , catalog.i18nc("@info:title", "Saving"),
+            "file_saving_title": catalog.i18nc("@info:title", "Saving"),
             "permission_denied": catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Permission denied when trying to save <filename>{0}</filename>"),
             "permission_denied2 ": catalog.i18nc("@info:status Don't translate the XML tags <filename> or <message>!", "Could not save to <filename>{0}</filename>: <message>{1}</message>"),
             "file_saved_status": catalog.i18nc("@info:status Don't translate the XML tags <filename>!", "Saved to <filename>{0}</filename>"),
