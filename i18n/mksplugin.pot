@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-31 13:21+0300\n"
+"POT-Creation-Date: 2021-01-31 13:53+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -51,7 +51,7 @@ msgstr ""
 #: SaveOutputDevice.py:121
 #, python-brace-format
 msgctxt "@title:window Don't translate the XML tag <filename>!"
-msgid "<message>{0}</message> already exists."
+msgid "<filename>{0}</filename> already exists."
 msgstr ""
 
 #: SaveOutputDevice.py:121

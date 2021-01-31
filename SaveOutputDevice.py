@@ -118,7 +118,7 @@ class SaveOutputDevice(OutputDevice):
         Logger.log("d", "Writing to [%s]..." % file_name)
 
         if os.path.exists(file_name):
-            result = QMessageBox.question(None, catalog.i18nc("@title:window Don't translate the XML tag <filename>!", "<message>{0}</message> already exists.").format(file_name[file_name.rfind("/")+1:]), catalog.i18nc("@label Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists. Are you sure you want to overwrite it?").format(file_name[file_name.rfind("/")+1:]))
+            result = QMessageBox.question(None, catalog.i18nc("@title:window Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists.").format(file_name[file_name.rfind("/")+1:]), catalog.i18nc("@label Don't translate the XML tag <filename>!", "<filename>{0}</filename> already exists. Are you sure you want to overwrite it?").format(file_name[file_name.rfind("/")+1:]))
             if result == QMessageBox.No:
                 raise OutputDeviceError.UserCanceledError()
 
