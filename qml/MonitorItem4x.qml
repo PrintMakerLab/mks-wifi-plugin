@@ -305,12 +305,14 @@ Component
 
                     Button
                     {
-                        id: fanOnButton
+                        id: sdFileButton
+
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Fan On")
-                        onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
+                        text: catalog.i18nc("@action:button", "SD Files")
+                        onClicked: sdDialog.showDialog()
 
                         onHoveredChanged:
                         {
@@ -319,7 +321,7 @@ Component
                                 base.showTooltip(
                                     base,
                                     {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Turn fan on.")
+                                    catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
                                 );
                             }
                             else
@@ -328,14 +330,17 @@ Component
                             }
                         }
                     }
+
                     Button
                     {
-                        id: fanOffButton
+                        id: uploadButton
+
+                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Fan Off")
-                        onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+                        text: catalog.i18nc("@action:button", "Send Print Job")
+                        onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
 
                         onHoveredChanged:
                         {
@@ -344,7 +349,7 @@ Component
                                 base.showTooltip(
                                     base,
                                     {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Turn fan off.")
+                                    catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
                                 );
                             }
                             else
@@ -353,16 +358,15 @@ Component
                             }
                         }
                     }
+
                     Button
                     {
-                        id: unlockMotorButton
-
-                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+                        id: moreButton
 
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Unlock Motors")
-                        onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+                        text: catalog.i18nc("@action:button", "More")
+                        onClicked: moreDialog.show()
 
                         onHoveredChanged:
                         {
@@ -371,34 +375,7 @@ Component
                                 base.showTooltip(
                                     base,
                                     {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
-                                );
-                            }
-                            else
-                            {
-                                base.hideTooltip();
-                            }
-                        }
-                    }
-                    Button
-                    {
-                        id: coolDownButton
-
-                        enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                        height: UM.Theme.getSize("setting_control").height
-                        style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Cool Down")
-                        onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
-
-                        onHoveredChanged:
-                        {
-                            if (hovered)
-                            {
-                                base.showTooltip(
-                                    base,
-                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                                    catalog.i18nc("@tooltip", "More printer commands.")
                                 );
                             }
                             else
@@ -476,62 +453,6 @@ Component
                                     base,
                                     {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
                                     catalog.i18nc("@tooltip", "Abort current print.")
-                                );
-                            }
-                            else
-                            {
-                                base.hideTooltip();
-                            }
-                        }
-                    }
-
-                    Button
-                    {
-                        id: sdFileButton
-
-                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                        height: UM.Theme.getSize("setting_control").height
-                        style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "SD Files")
-                        onClicked: sdDialog.showDialog()
-
-                        onHoveredChanged:
-                        {
-                            if (hovered)
-                            {
-                                base.showTooltip(
-                                    base,
-                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
-                                );
-                            }
-                            else
-                            {
-                                base.hideTooltip();
-                            }
-                        }
-                    }
-
-                    Button
-                    {
-                        id: uploadButton
-
-                        enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "paused" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
-                        height: UM.Theme.getSize("setting_control").height
-                        style: UM.Theme.styles.print_setup_action_button
-                        text: catalog.i18nc("@action:button", "Send Print Job")
-                        onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
-
-                        onHoveredChanged:
-                        {
-                            if (hovered)
-                            {
-                                base.showTooltip(
-                                    base,
-                                    {x: 0, y: printButtonBox.mapToItem(base, 0, 0).y},
-                                    catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
                                 );
                             }
                             else
@@ -643,6 +564,66 @@ Component
                 }
             }
         ]
+        }
+
+        UM.Dialog
+        {
+            id: moreDialog
+            signal showDialog()
+            title: catalog.i18nc("@title:window", "More")
+
+            width: buttonColumn.width + UM.Theme.getSize("default_margin").height + UM.Theme.getSize("thick_lining").height
+            height: buttonColumn.height + UM.Theme.getSize("default_margin").height + UM.Theme.getSize("thick_lining").height
+
+            Column
+            {
+                id: buttonColumn
+                spacing: UM.Theme.getSize("default_lining").height
+
+                Button
+                {
+                    id: fanOnButton
+
+                    text: catalog.i18nc("@action:button", "Fan On")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
+
+                    tooltip: catalog.i18nc("@tooltip", "Turn fan on.")
+                }
+
+                Button
+                {
+                    id: fanOffButton
+
+                    text: catalog.i18nc("@action:button", "Fan Off")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
+
+                    tooltip: catalog.i18nc("@tooltip", "Turn fan off.")
+                }
+
+                Button
+                {
+                    id: coolDownButton
+
+                    enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    text: catalog.i18nc("@action:button", "Cool Down")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
+
+                    tooltip: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                }
+
+                Button
+                {
+                    id: unlockMotorButton
+
+                    enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
+
+                    text: catalog.i18nc("@action:button", "Unlock Motors")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
+
+                    tooltip: catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
+                }
+            }
         }
     }
 }
