@@ -26,5 +26,13 @@ Using the plugin with Cura, you can:
   
  ** Notes: The MKS WiFi plugin is only available for Cura 4.5 or higher version. **
 
+## Troubleshooting ##
+
+Please [create a new GitHub issue](https://github.com/Jeredian/mks-wifi-plugin/issues/new/choose) and provide all details according to the template.
+
+## Translation ##
+
+To create new translation, or improve existing one, please check [translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Translation).
+
 ## Funding ##
  The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson")
