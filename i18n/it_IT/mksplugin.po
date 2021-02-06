@@ -1,0 +1,540 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the MKS WiFi Plugin package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: MKS WiFi Plugin\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-02-06 13:02+0300\n"
+"PO-Revision-Date: 2021-02-06 15:42+0300\n"
+"Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
+"Language-Team: \n"
+"Language: it_IT\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: MachineConfig.py:31
+msgctxt "@action"
+msgid "MKS WiFi Connection"
+msgstr "Connessione WiFi MKS"
+
+#: MKSOutputDevicePlugin.py:69
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer connected successfully!"
+msgstr "<message>{0}</message> stampante collegata correttamente!"
+
+#: SaveOutputDevice.py:40
+msgctxt "@action:button"
+msgid "Save as TFT file"
+msgstr "Salva come file TFT"
+
+#: SaveOutputDevice.py:41
+msgctxt "@properties:tooltip"
+msgid "Save as TFT file"
+msgstr "Salva come file TFT"
+
+#: SaveOutputDevice.py:42
+msgctxt "@title:window"
+msgid "Save to File"
+msgstr "Salva in file"
+
+#: SaveOutputDevice.py:43
+msgctxt "@info:warning"
+msgid "There are no file types available to write with!"
+msgstr "Non ci sono tipi di file disponibili con cui scrivere!"
+
+#: SaveOutputDevice.py:44
+#, python-brace-format
+msgctxt "@title:window Don't translate the XML tag <filename>!"
+msgid "<filename>{0}</filename> already exists."
+msgstr "<filename>{0}</filename> esiste già."
+
+#: SaveOutputDevice.py:45
+#, python-brace-format
+msgctxt "@label Don't translate the XML tag <filename>!"
+msgid ""
+"<filename>{0}</filename> already exists. Are you sure you want to overwrite "
+"it?"
+msgstr "<filename>{0}</filename> esiste già. Sovrascriverlo?"
+
+#: SaveOutputDevice.py:46
+#, python-brace-format
+msgctxt "@info:progress Don't translate the XML tags <filename>!"
+msgid "Saving to <filename>{0}</filename>"
+msgstr "Saving to <filename>{0}</filename>"
+
+#: SaveOutputDevice.py:47
+msgctxt "@info:title"
+msgid "Saving"
+msgstr "Salvataggio"
+
+#: SaveOutputDevice.py:48
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "Permission denied when trying to save <filename>{0}</filename>"
+msgstr ""
+"Autorizzazione negata durante il tentativo di salvataggio <filename>{0}</"
+"filename>"
+
+#: SaveOutputDevice.py:49 SaveOutputDevice.py:54
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
+msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
+msgstr ""
+"Impossibile salvare in <filename>{0}</filename>: <message>{1}</message>"
+
+#: SaveOutputDevice.py:50
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "Saved to <filename>{0}</filename>"
+msgstr "Salvato in <filename>{0}</filename>"
+
+#: SaveOutputDevice.py:51
+msgctxt "@info:title"
+msgid "File saved"
+msgstr "File Salvato"
+
+#: SaveOutputDevice.py:52
+msgctxt "@action:button"
+msgid "Open folder"
+msgstr "Apri Cartella"
+
+#: SaveOutputDevice.py:53
+msgctxt "@properties:tooltip"
+msgid "Open the folder containing the file"
+msgstr "Apri la cartella contenente il file"
+
+#: SaveOutputDevice.py:55
+msgctxt "@info:title"
+msgid "Warning"
+msgstr "Attenzione"
+
+#: SaveOutputDevice.py:56
+msgctxt "@info:title"
+msgid "Error"
+msgstr "Errore"
+
+#: SaveOutputDevice.py:57
+#, python-brace-format
+msgctxt "@info:status"
+msgid ""
+"Something went wrong saving to <filename>{0}</filename>: <message>{1}</"
+"message>"
+msgstr ""
+"Qualcosa è andato storto durante il salvataggio in <filename>{0}</filename>: "
+"<message>{1}</message>"
+
+#: MKSOutputDevice.py:214
+msgctxt "@action:button"
+msgid "Yes"
+msgstr "Si"
+
+#: MKSOutputDevice.py:215
+msgctxt "@action:button"
+msgid "No"
+msgstr "No"
+
+#: MKSOutputDevice.py:216 qml/MachineConfig.qml:423
+msgctxt "@action:button"
+msgid "Cancel"
+msgstr "Cancel"
+
+#: MKSOutputDevice.py:217
+msgctxt "@action:button"
+msgid "Print over TFT"
+msgstr "Stampa su TFT"
+
+#: MKSOutputDevice.py:218
+msgctxt "@properties:tooltip"
+msgid "Print over TFT"
+msgstr "Stampa su TFT"
+
+#: MKSOutputDevice.py:219
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "Connected to TFT on <message>{0}</message>"
+msgstr "Collegato a TFT su <message>{0}</message>"
+
+#: MKSOutputDevice.py:220
+#, python-brace-format
+msgctxt "@action:button Don't translate the XML tags <message>!"
+msgid "Print over <message>{0}</message>"
+msgstr "Stampa sopra <message>{0}</message>"
+
+#: MKSOutputDevice.py:221
+#, python-brace-format
+msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
+msgid "Print over <message>{0}</message>"
+msgstr "Stampa sopra <message>{0}</message>"
+
+#: MKSOutputDevice.py:222
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "<filename>{0}</filename> already exists."
+msgstr "<filename>{0}</filename> esiste già."
+
+#: MKSOutputDevice.py:223
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <filename>!"
+msgid "<filename>{0}</filename> already exists, please rename it."
+msgstr "<filename>{0}</filename> esiste già, per favore rinominalo."
+
+#: MKSOutputDevice.py:224
+msgctxt "@info:status"
+msgid "File name can not include chinese."
+msgstr "Il nome del file non può includere il cinese."
+
+#: MKSOutputDevice.py:225
+msgctxt "@info:status"
+msgid "File name can not include chinese, please rename it."
+msgstr "Il nome del file non può includere il cinese, per favore rinominalo."
+
+#: MKSOutputDevice.py:226
+msgctxt "@info:status"
+msgid "File name is too long to upload."
+msgstr "Il nome del file è troppo lungo per essere caricato."
+
+#: MKSOutputDevice.py:227
+msgctxt "@info:status"
+msgid "File name is too long to upload, please rename it."
+msgstr ""
+"Il nome del file è troppo lungo per essere caricato, per favore rinominalo."
+
+#: MKSOutputDevice.py:228
+msgctxt "@info:status"
+msgid "Sending file to printer"
+msgstr "Invio file alla stampante"
+
+#: MKSOutputDevice.py:229
+msgctxt "@info:status"
+msgid "Uploading print job to printer"
+msgstr "Caricamento file di stampa alla stampante"
+
+#: MKSOutputDevice.py:230
+msgctxt "@info:title"
+msgid "Sending Print Job"
+msgstr "Invio Stampa"
+
+#: MKSOutputDevice.py:231
+msgctxt "@label"
+msgid "Print job"
+msgstr "Lavoro di stampa"
+
+#: MKSOutputDevice.py:232
+msgctxt "@info:status"
+msgid "File cannot be transferred during printing."
+msgstr "Il file non può essere trasferito durante la stampa."
+
+#: MKSOutputDevice.py:233
+msgctxt "@info:status"
+msgid "Send file to printer failed."
+msgstr "Invio file alla stampante non riuscito."
+
+#: MKSOutputDevice.py:234
+msgctxt "@info:status"
+msgid "Now is printing. Send file to printer failed."
+msgstr "Adesso sta stampando. Invio file alla stampante non riuscito."
+
+#: MKSOutputDevice.py:235
+msgctxt "@info:status"
+msgid "Print job was successfully sent to the printer."
+msgstr "Il lavoro di stampa è stato inviato con successo alla stampante."
+
+#: MKSOutputDevice.py:236
+msgctxt "@warning:status"
+msgid "Please prepare G-code before exporting."
+msgstr "Si prega di preparare il G-code prima di esportare."
+
+#: MKSOutputDevice.py:237
+msgctxt "@info:status"
+msgid "TFT Connect succeed"
+msgstr "TFT connesso"
+
+#: MKSOutputDevice.py:238
+msgctxt "@info:status"
+msgid "Error: command can not send"
+msgstr "Errore: impossibile inviare il comando"
+
+#: MKSOutputDevice.py:239
+msgctxt "@info:status"
+msgid "Error: Another file is uploading, please try later."
+msgstr "Errore: è in corso il caricamento di un altro file, riprova più tardi."
+
+#: qml/MonitorItem4x.qml:202
+msgctxt "@label"
+msgid "E0"
+msgstr "E0"
+
+#: qml/MonitorItem4x.qml:240
+msgctxt "@label"
+msgid "E1"
+msgstr "E1"
+
+#: qml/MonitorItem4x.qml:314
+msgctxt "@action:button"
+msgid "SD Files"
+msgstr "File su SD"
+
+#: qml/MonitorItem4x.qml:324
+msgctxt "@tooltip"
+msgid "Browse SD card in 3D printer."
+msgstr "Sfoglia la scheda SD nella stampante 3D."
+
+#: qml/MonitorItem4x.qml:342
+msgctxt "@action:button"
+msgid "Send Print Job"
+msgstr "Invia stampa"
+
+#: qml/MonitorItem4x.qml:352
+msgctxt "@tooltip"
+msgid "Select and send G-Code file to 3D printer."
+msgstr "Seleziona e invia il file G-Code alla stampante 3D."
+
+#: qml/MonitorItem4x.qml:368
+msgctxt "@action:button"
+msgid "More"
+msgstr "Altro"
+
+#: qml/MonitorItem4x.qml:378
+msgctxt "@tooltip"
+msgid "More printer commands."
+msgstr "Altri comandi della stampante."
+
+#: qml/MonitorItem4x.qml:413
+msgctxt "@action:button"
+msgid "Pause"
+msgstr "Pausa"
+
+#: qml/MonitorItem4x.qml:415
+msgctxt "@action:button"
+msgid "Resume"
+msgstr "Riprendi"
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Pause print."
+msgstr "Metti in pausa la stampa."
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Resume print."
+msgstr "Riprendi la stampa."
+
+#: qml/MonitorItem4x.qml:445
+msgctxt "@action:button"
+msgid "Abort Print"
+msgstr "Interrompi stampa"
+
+#: qml/MonitorItem4x.qml:455
+msgctxt "@tooltip"
+msgid "Abort current print."
+msgstr "Annulla la stampa corrente."
+
+#: qml/MonitorItem4x.qml:477
+msgctxt "@title:window"
+msgid "Open file(s)"
+msgstr "Apri file"
+
+#: qml/MonitorItem4x.qml:532
+msgctxt "@action:button"
+msgid "Delete"
+msgstr "Elimina"
+
+#: qml/MonitorItem4x.qml:546
+msgctxt "@action:button"
+msgid "Print"
+msgstr "Stampa"
+
+#: qml/MonitorItem4x.qml:559 qml/MachineConfig.qml:126
+msgctxt "@action:button"
+msgid "Refresh"
+msgstr "Aggiorna"
+
+#: qml/MonitorItem4x.qml:573
+msgctxt "@title:window"
+msgid "More"
+msgstr "Altro"
+
+#: qml/MonitorItem4x.qml:587
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr "Fan On"
+
+#: qml/MonitorItem4x.qml:590
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr "Accendi la ventola."
+
+#: qml/MonitorItem4x.qml:597
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr "Fan Off"
+
+#: qml/MonitorItem4x.qml:600
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr "Spegni la ventola."
+
+#: qml/MonitorItem4x.qml:609
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr "Raffredda"
+
+#: qml/MonitorItem4x.qml:612
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr "Raffreddare il piatto e hot-end."
+
+#: qml/MonitorItem4x.qml:621
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr "Sblocca i motori"
+
+#: qml/MonitorItem4x.qml:624
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr "Sblocca i motori della stampante 3D."
+
+#: qml/MachineConfig.qml:77
+msgctxt "@title:window"
+msgid "Connect to Networked Printer"
+msgstr "Connetti a stampante ni rete"
+
+#: qml/MachineConfig.qml:87
+msgctxt "@label"
+msgid ""
+"To print directly to your printer from Cura, please make sure your printer "
+"is connected to the same WiFi network as this computer. If you don't connect "
+"your printer with Cura, you can still use SD drive to transfer g-code files "
+"to your printer.\n"
+"\n"
+"Select your printer from the list below:"
+msgstr ""
+"Per stampare direttamente sulla stampante da Cura, assicurati che la "
+"stampante sia collegata alla stessa rete WiFi del computer. Se non colleghi "
+"la stampante a Cura, puoi comunque utilizzare l'unità SD per trasferire i "
+"file g-code sulla stampante.\n"
+"\n"
+"Seleziona la tua stampante dall'elenco seguente:"
+
+#: qml/MachineConfig.qml:97
+msgctxt "@action:button"
+msgid "Add"
+msgstr "Aggiungi"
+
+#: qml/MachineConfig.qml:107
+msgctxt "@action:button"
+msgid "Edit"
+msgstr "Modifica"
+
+#: qml/MachineConfig.qml:118
+msgctxt "@action:button"
+msgid "Remove"
+msgstr "Elimina"
+
+#: qml/MachineConfig.qml:216
+msgctxt "@label"
+msgid ""
+"If your printer is not listed, read the <a href='%1'>network printing "
+"troubleshooting guide</a>"
+msgstr ""
+"Se la tua stampante non è elencata, leggi il <a href='%1'>guida alla "
+"risoluzione dei problemi di stampa in rete</a>"
+
+#: qml/MachineConfig.qml:243
+msgctxt "@label"
+msgid "Type"
+msgstr "Tipo"
+
+#: qml/MachineConfig.qml:255
+msgctxt "@label Printer name"
+msgid "Ultimaker 3"
+msgstr "Ultimaker 3"
+
+#: qml/MachineConfig.qml:258
+msgctxt "@label Printer name"
+msgid "Ultimaker 3 Extended"
+msgstr "Ultimaker 3 Extended"
+
+#: qml/MachineConfig.qml:261
+msgctxt "@label Printer name"
+msgid "TFT WIFI"
+msgstr "TFT WIFI"
+
+#: qml/MachineConfig.qml:274
+msgctxt "@label"
+msgid "Firmware version"
+msgstr "Versione Firmware"
+
+#: qml/MachineConfig.qml:286
+msgctxt "@label"
+msgid "Address"
+msgstr "Indirizzo"
+
+#: qml/MachineConfig.qml:308
+msgctxt "@label"
+msgid "This printer is not set up to host a group of Ultimaker 3 printers."
+msgstr ""
+"Questa stampante non è configurata per ospitare un gruppo di stampanti "
+"Ultimaker 3."
+
+#: qml/MachineConfig.qml:312
+msgctxt "@label"
+msgid "This printer is the host for a group of %1 Ultimaker 3 printers."
+msgstr "Questa stampante è l'host per un gruppo di %1 stampanti Ultimaker 3."
+
+#: qml/MachineConfig.qml:322
+msgctxt "@label"
+msgid "The printer at this address has not yet responded."
+msgstr "La stampante a questo indirizzo non risponde."
+
+#: qml/MachineConfig.qml:329 qml/MKSConnectBtn.qml:70
+msgctxt "@action:button"
+msgid "Connect"
+msgstr "Connetti"
+
+#: qml/MachineConfig.qml:347
+msgctxt "@action:button"
+msgid "Disconnect"
+msgstr "Disconetti"
+
+#: qml/MachineConfig.qml:372
+msgctxt "@title:window"
+msgid "Adding a new printer"
+msgstr "Aggiungi una nuova stampante"
+
+#: qml/MachineConfig.qml:402
+msgctxt "@alabel"
+msgid "Enter the IP address or hostname of your printer on the network."
+msgstr "Immettere l'indirizzo IP o l'hostname della stampante in rete."
+
+#: qml/MachineConfig.qml:432
+msgctxt "@action:button"
+msgid "OK"
+msgstr "OK"
+
+#: qml/MKSConnectBtn.qml:61
+msgctxt "@action:button"
+msgid "Request Access"
+msgstr "Richiesta di accesso"
+
+#: qml/MKSConnectBtn.qml:62
+msgctxt "@info:tooltip"
+msgid "Send access request to the printer"
+msgstr "Invia richiesta di accesso alla stampante"
+
+#: qml/MKSConnectBtn.qml:71
+msgctxt "@info:tooltip"
+msgid "Connect to a printer"
+msgstr "Collegati a una stampante"
+
+#: qml/MKSConnectBtn.qml:81
+msgctxt "@action:button"
+msgid "Close"
+msgstr "Chiudi"
