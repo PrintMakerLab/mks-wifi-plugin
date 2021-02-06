@@ -1,6 +1,6 @@
-# Russian translations for MKS WiFi Plugin package
-# Английские переводы для пакета MKS WiFi Plugin.
-# Copyright (C) 2021 THE MKS WiFi Plugin'S COPYRIGHT HOLDER
+# Chinese translations for MKS WiFi package
+# MKS WiFi 软件包的简体中文翻译.
+# Copyright (C) 2021 THE MKS WiFi'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the MKS WiFi Plugin package.
 # Василий Елькин <elkin.vasily@gmail.com>, 2021.
 #
@@ -8,19 +8,18 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 00:53+0300\n"
-"PO-Revision-Date: 2021-02-06 15:39+0800\n"
+"POT-Creation-Date: 2021-02-06 13:02+0300\n"
+"PO-Revision-Date: 2021-02-06 15:00+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
-"Language-Team: Russian <gnu@d07.ru>\n"
-"Language: ru\n"
+"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Language: ru\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Language: zh\n"
 "X-Source-Language: en\n"
-"X-Generator: Poedit 1.5.7\n"
+"X-Generator: Poedit 2.4.2\n"
 
 #: MachineConfig.py:31
 msgctxt "@action"
@@ -28,6 +27,7 @@ msgid "MKS WiFi Connection"
 msgstr "MKS WiFi连接"
 
 #: MKSOutputDevicePlugin.py:69
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer connected successfully!"
 msgstr "<message>{0}</message> 打印机连接成功！"
@@ -53,11 +53,13 @@ msgid "There are no file types available to write with!"
 msgstr "没有可写入的文件类型！"
 
 #: SaveOutputDevice.py:44
+#, python-brace-format
 msgctxt "@title:window Don't translate the XML tag <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr "<filename>{0}</filename> 已经存在。"
 
 #: SaveOutputDevice.py:45
+#, python-brace-format
 msgctxt "@label Don't translate the XML tag <filename>!"
 msgid ""
 "<filename>{0}</filename> already exists. Are you sure you want to overwrite "
@@ -65,6 +67,7 @@ msgid ""
 msgstr "文件<filename>{0}</filename> 已经存在了。你是否确认覆盖它？"
 
 #: SaveOutputDevice.py:46
+#, python-brace-format
 msgctxt "@info:progress Don't translate the XML tags <filename>!"
 msgid "Saving to <filename>{0}</filename>"
 msgstr "保存到 <filename>{0}</filename>"
@@ -75,16 +78,19 @@ msgid "Saving"
 msgstr "正在保存"
 
 #: SaveOutputDevice.py:48
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Permission denied when trying to save <filename>{0}</filename>"
 msgstr "没有权限去保存 <filename>{0}</filename>"
 
 #: SaveOutputDevice.py:49 SaveOutputDevice.py:54
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
 msgstr "不能保存到 <filename>{0}</filename>: <message>{1}</message>"
 
 #: SaveOutputDevice.py:50
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "Saved to <filename>{0}</filename>"
 msgstr "保存到 <filename>{0}</filename>"
@@ -115,6 +121,7 @@ msgid "Error"
 msgstr "错误"
 
 #: SaveOutputDevice.py:57
+#, python-brace-format
 msgctxt "@info:status"
 msgid ""
 "Something went wrong saving to <filename>{0}</filename>: <message>{1}</"
@@ -147,26 +154,31 @@ msgid "Print over TFT"
 msgstr "通过Robin/TFT打印"
 
 #: MKSOutputDevice.py:219
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr "已连接到Robin/TFT<message>{0}</message>"
 
 #: MKSOutputDevice.py:220
+#, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "通过<message>{0}</message>打印"
 
 #: MKSOutputDevice.py:221
+#, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "通过<message>{0}</message>打印"
 
 #: MKSOutputDevice.py:222
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr "文件<filename>{0}</filename>已经存在。"
 
 #: MKSOutputDevice.py:223
+#, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists, please rename it."
 msgstr "文件<message>{0}</message>已经存在，请重新命名。"
@@ -261,115 +273,130 @@ msgctxt "@label"
 msgid "E1"
 msgstr "E1"
 
-#: qml/MonitorItem4x.qml:312
-msgctxt "@action:button"
-msgid "Fan On"
-msgstr "打开风扇"
-
-#: qml/MonitorItem4x.qml:322
-msgctxt "@tooltip"
-msgid "Turn fan on."
-msgstr "打开风扇。"
-
-#: qml/MonitorItem4x.qml:337
-msgctxt "@action:button"
-msgid "Fan Off"
-msgstr "关闭风扇"
-
-#: qml/MonitorItem4x.qml:347
-msgctxt "@tooltip"
-msgid "Turn fan off."
-msgstr "关闭风扇。"
-
-#: qml/MonitorItem4x.qml:364
-msgctxt "@action:button"
-msgid "Unlock Motors"
-msgstr "解锁电机"
-
-#: qml/MonitorItem4x.qml:374
-msgctxt "@tooltip"
-msgid "Unlock 3D printer motors."
-msgstr "解锁3D打印机电机。"
-
-#: qml/MonitorItem4x.qml:391
-msgctxt "@action:button"
-msgid "Cool Down"
-msgstr "冷却"
-
-#: qml/MonitorItem4x.qml:401
-msgctxt "@tooltip"
-msgid "Cool down heated bed and exptuder."
-msgstr "冷却热床和加热头。"
-
-#: qml/MonitorItem4x.qml:436
-msgctxt "@action:button"
-msgid "Pause"
-msgstr "暂停"
-
-#: qml/MonitorItem4x.qml:438
-msgctxt "@action:button"
-msgid "Resume"
-msgstr "恢复"
-
-#: qml/MonitorItem4x.qml:450
-msgctxt "@tooltip"
-msgid "Pause print."
-msgstr "暂停打印。"
-
-#: qml/MonitorItem4x.qml:450
-msgctxt "@tooltip"
-msgid "Resume print."
-msgstr "恢复打印。"
-
-#: qml/MonitorItem4x.qml:468
-msgctxt "@action:button"
-msgid "Abort Print"
-msgstr "终止打印"
-
-#: qml/MonitorItem4x.qml:478
-msgctxt "@tooltip"
-msgid "Abort current print."
-msgstr "终止目前打印。"
-
-#: qml/MonitorItem4x.qml:496
+#: qml/MonitorItem4x.qml:314
 msgctxt "@action:button"
 msgid "SD Files"
 msgstr "SD卡文件"
 
-#: qml/MonitorItem4x.qml:506
+#: qml/MonitorItem4x.qml:324
 msgctxt "@tooltip"
 msgid "Browse SD card in 3D printer."
 msgstr "浏览3D打印机SD卡上的文件。"
 
-#: qml/MonitorItem4x.qml:524
+#: qml/MonitorItem4x.qml:342
 msgctxt "@action:button"
 msgid "Send Print Job"
 msgstr "发送打印文件"
 
-#: qml/MonitorItem4x.qml:534
+#: qml/MonitorItem4x.qml:352
 msgctxt "@tooltip"
 msgid "Select and send G-Code file to 3D printer."
 msgstr "选择并发送Gcode文件到3D打印机。"
 
-#: qml/MonitorItem4x.qml:556
+#: qml/MonitorItem4x.qml:368
+msgctxt "@action:button"
+msgid "More"
+msgstr "更多"
+
+#: qml/MonitorItem4x.qml:378
+msgctxt "@tooltip"
+msgid "More printer commands."
+msgstr "更多打印机命令。"
+
+#: qml/MonitorItem4x.qml:413
+msgctxt "@action:button"
+msgid "Pause"
+msgstr "暂停"
+
+#: qml/MonitorItem4x.qml:415
+msgctxt "@action:button"
+msgid "Resume"
+msgstr "恢复"
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Pause print."
+msgstr "暂停打印。"
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Resume print."
+msgstr "恢复打印。"
+
+#: qml/MonitorItem4x.qml:445
+msgctxt "@action:button"
+msgid "Abort Print"
+msgstr "终止打印"
+
+#: qml/MonitorItem4x.qml:455
+msgctxt "@tooltip"
+msgid "Abort current print."
+msgstr "终止目前打印。"
+
+#: qml/MonitorItem4x.qml:477
 msgctxt "@title:window"
 msgid "Open file(s)"
 msgstr "打开文件"
 
-#: qml/MonitorItem4x.qml:611
+#: qml/MonitorItem4x.qml:532
 msgctxt "@action:button"
 msgid "Delete"
 msgstr "删除"
 
-#: qml/MonitorItem4x.qml:625
+#: qml/MonitorItem4x.qml:546
 msgctxt "@action:button"
 msgid "Print"
 msgstr "打印"
 
-#: qml/MonitorItem4x.qml:638 qml/MachineConfig.qml:126
+#: qml/MonitorItem4x.qml:559 qml/MachineConfig.qml:126
 msgctxt "@action:button"
 msgid "Refresh"
 msgstr "刷新"
+
+#: qml/MonitorItem4x.qml:573
+msgctxt "@title:window"
+msgid "More"
+msgstr "更多"
+
+#: qml/MonitorItem4x.qml:587
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr "打开风扇"
+
+#: qml/MonitorItem4x.qml:590
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr "打开风扇。"
+
+#: qml/MonitorItem4x.qml:597
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr "关闭风扇"
+
+#: qml/MonitorItem4x.qml:600
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr "关闭风扇。"
+
+#: qml/MonitorItem4x.qml:609
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr "冷却"
+
+#: qml/MonitorItem4x.qml:612
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr "冷却热床和加热头。"
+
+#: qml/MonitorItem4x.qml:621
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr "解锁电机"
+
+#: qml/MonitorItem4x.qml:624
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr "解锁3D打印机电机。"
 
 #: qml/MachineConfig.qml:77
 msgctxt "@title:window"
