@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-01 00:53+0300\n"
+"POT-Creation-Date: 2021-02-06 13:02+0300\n"
 "PO-Revision-Date: 2021-01-31 13:39+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
@@ -279,115 +279,130 @@ msgctxt "@label"
 msgid "E1"
 msgstr "E1"
 
-#: qml/MonitorItem4x.qml:312
-msgctxt "@action:button"
-msgid "Fan On"
-msgstr "Включить обдув"
-
-#: qml/MonitorItem4x.qml:322
-msgctxt "@tooltip"
-msgid "Turn fan on."
-msgstr "Включить вентилятор обдува."
-
-#: qml/MonitorItem4x.qml:337
-msgctxt "@action:button"
-msgid "Fan Off"
-msgstr "Выключить обдув"
-
-#: qml/MonitorItem4x.qml:347
-msgctxt "@tooltip"
-msgid "Turn fan off."
-msgstr "Выключить вентилятор обдува."
-
-#: qml/MonitorItem4x.qml:364
-msgctxt "@action:button"
-msgid "Unlock Motors"
-msgstr "Разблокировать моторы"
-
-#: qml/MonitorItem4x.qml:374
-msgctxt "@tooltip"
-msgid "Unlock 3D printer motors."
-msgstr "Разблокировать моторы 3D принтера."
-
-#: qml/MonitorItem4x.qml:391
-msgctxt "@action:button"
-msgid "Cool Down"
-msgstr "Охладить"
-
-#: qml/MonitorItem4x.qml:401
-msgctxt "@tooltip"
-msgid "Cool down heated bed and exptuder."
-msgstr "Отключить нагрев стола и экструдера."
-
-#: qml/MonitorItem4x.qml:436
-msgctxt "@action:button"
-msgid "Pause"
-msgstr "Остановить"
-
-#: qml/MonitorItem4x.qml:438
-msgctxt "@action:button"
-msgid "Resume"
-msgstr "Продолжить"
-
-#: qml/MonitorItem4x.qml:450
-msgctxt "@tooltip"
-msgid "Pause print."
-msgstr "Приостановить печать."
-
-#: qml/MonitorItem4x.qml:450
-msgctxt "@tooltip"
-msgid "Resume print."
-msgstr "Продолжить печать."
-
-#: qml/MonitorItem4x.qml:468
-msgctxt "@action:button"
-msgid "Abort Print"
-msgstr "Прервать печать"
-
-#: qml/MonitorItem4x.qml:478
-msgctxt "@tooltip"
-msgid "Abort current print."
-msgstr "Прервать текущую печать."
-
-#: qml/MonitorItem4x.qml:496
+#: qml/MonitorItem4x.qml:314
 msgctxt "@action:button"
 msgid "SD Files"
 msgstr "Файлы SD"
 
-#: qml/MonitorItem4x.qml:506
+#: qml/MonitorItem4x.qml:324
 msgctxt "@tooltip"
 msgid "Browse SD card in 3D printer."
 msgstr "Обзор SD-карты в вашем принтере."
 
-#: qml/MonitorItem4x.qml:524
+#: qml/MonitorItem4x.qml:342
 msgctxt "@action:button"
 msgid "Send Print Job"
 msgstr "Отправить на печать"
 
-#: qml/MonitorItem4x.qml:534
+#: qml/MonitorItem4x.qml:352
 msgctxt "@tooltip"
 msgid "Select and send G-Code file to 3D printer."
 msgstr "Выбрать и отправить файл G-Code на #D принтер."
 
-#: qml/MonitorItem4x.qml:556
+#: qml/MonitorItem4x.qml:368
+msgctxt "@action:button"
+msgid "More"
+msgstr "Еще"
+
+#: qml/MonitorItem4x.qml:378
+msgctxt "@tooltip"
+msgid "More printer commands."
+msgstr "Дополнительные команды принтера."
+
+#: qml/MonitorItem4x.qml:413
+msgctxt "@action:button"
+msgid "Pause"
+msgstr "Остановить"
+
+#: qml/MonitorItem4x.qml:415
+msgctxt "@action:button"
+msgid "Resume"
+msgstr "Продолжить"
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Pause print."
+msgstr "Приостановить печать."
+
+#: qml/MonitorItem4x.qml:427
+msgctxt "@tooltip"
+msgid "Resume print."
+msgstr "Продолжить печать."
+
+#: qml/MonitorItem4x.qml:445
+msgctxt "@action:button"
+msgid "Abort Print"
+msgstr "Прервать печать"
+
+#: qml/MonitorItem4x.qml:455
+msgctxt "@tooltip"
+msgid "Abort current print."
+msgstr "Прервать текущую печать."
+
+#: qml/MonitorItem4x.qml:477
 msgctxt "@title:window"
 msgid "Open file(s)"
 msgstr "Открыть файл(ы)"
 
-#: qml/MonitorItem4x.qml:611
+#: qml/MonitorItem4x.qml:532
 msgctxt "@action:button"
 msgid "Delete"
 msgstr "Удалить"
 
-#: qml/MonitorItem4x.qml:625
+#: qml/MonitorItem4x.qml:546
 msgctxt "@action:button"
 msgid "Print"
 msgstr "Печать"
 
-#: qml/MonitorItem4x.qml:638 qml/MachineConfig.qml:126
+#: qml/MonitorItem4x.qml:559 qml/MachineConfig.qml:126
 msgctxt "@action:button"
 msgid "Refresh"
 msgstr "Обновить"
+
+#: qml/MonitorItem4x.qml:573
+msgctxt "@title:window"
+msgid "More"
+msgstr "Еще"
+
+#: qml/MonitorItem4x.qml:587
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr "Включить обдув"
+
+#: qml/MonitorItem4x.qml:590
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr "Включить вентилятор обдува."
+
+#: qml/MonitorItem4x.qml:597
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr "Выключить обдув"
+
+#: qml/MonitorItem4x.qml:600
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr "Выключить вентилятор обдува."
+
+#: qml/MonitorItem4x.qml:609
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr "Охладить"
+
+#: qml/MonitorItem4x.qml:612
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr "Отключить нагрев стола и экструдера."
+
+#: qml/MonitorItem4x.qml:621
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr "Разблокировать моторы"
+
+#: qml/MonitorItem4x.qml:624
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr "Разблокировать моторы 3D принтера."
 
 #: qml/MachineConfig.qml:77
 msgctxt "@title:window"
