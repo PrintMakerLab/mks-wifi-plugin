@@ -30,15 +30,15 @@ def getRect():
     return result
 
 def add_leading_zeros(rgb):
-    strHex = "%x" % rgb
-    strHexLen = len(strHex)
-    if strHexLen == 3:
-        strHex = '0' + strHex[0:3]
-    elif strHexLen == 2:
-        strHex = '00' + strHex[0:2]
-    elif strHexLen == 1:
-        strHex = '000' + strHex[0:1]
-    return strHex
+    str_hex = "%x" % rgb
+    str_hex_len = len(str_hex)
+    if str_hex_len == 3:
+        str_hex = '0' + str_hex[0:3]
+    elif str_hex_len == 2:
+        str_hex = '00' + str_hex[0:2]
+    elif str_hex_len == 1:
+        str_hex = '000' + str_hex[0:1]
+    return str_hex
 
 def add_screenshot_str(img, width, height, img_type):
     result = ""
@@ -53,12 +53,12 @@ def add_screenshot_str(img, width, height, img_type):
             g = pixel_color.green() >> 2
             b = pixel_color.blue() >> 3
             rgb = (r << 11) | (g << 5) | b
-            strHex = add_leading_zeros(rgb)
-            if strHex[2:4] != '':
-                result += strHex[2:4]
+            str_hex = add_leading_zeros(rgb)
+            if str_hex[2:4] != '':
+                result += str_hex[2:4]
                 datasize += 2
-            if strHex[0:2] != '':
-                result += strHex[0:2]
+            if str_hex[0:2] != '':
+                result += str_hex[0:2]
                 datasize += 2
             if datasize >= 50:
                 datasize = 0
