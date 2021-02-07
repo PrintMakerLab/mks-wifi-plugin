@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-06 13:02+0300\n"
+"POT-Creation-Date: 2021-02-07 17:28+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -134,7 +134,7 @@ msgctxt "@action:button"
 msgid "No"
 msgstr ""
 
-#: MKSOutputDevice.py:216 qml/MachineConfig.qml:423
+#: MKSOutputDevice.py:216 qml/MachineConfig.qml:475 qml/MachineConfig.qml:577
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr ""
@@ -462,44 +462,85 @@ msgctxt "@label"
 msgid "Address"
 msgstr ""
 
-#: qml/MachineConfig.qml:308
+#: qml/MachineConfig.qml:298 qml/MachineConfig.qml:511
+msgctxt "@label"
+msgid "Screenshot support"
+msgstr ""
+
+#: qml/MachineConfig.qml:304
+msgctxt "@label"
+msgid "Yes"
+msgstr ""
+
+#: qml/MachineConfig.qml:304
+msgctxt "@label"
+msgid "No"
+msgstr ""
+
+#: qml/MachineConfig.qml:310 qml/MachineConfig.qml:533
+msgctxt "@label"
+msgid "Simage"
+msgstr ""
+
+#: qml/MachineConfig.qml:326 qml/MachineConfig.qml:551
+msgctxt "@label"
+msgid "Gimage"
+msgstr ""
+
+#: qml/MachineConfig.qml:352
 msgctxt "@label"
 msgid "This printer is not set up to host a group of Ultimaker 3 printers."
 msgstr ""
 
-#: qml/MachineConfig.qml:312
+#: qml/MachineConfig.qml:356
 msgctxt "@label"
 msgid "This printer is the host for a group of %1 Ultimaker 3 printers."
 msgstr ""
 
-#: qml/MachineConfig.qml:322
+#: qml/MachineConfig.qml:366
 msgctxt "@label"
 msgid "The printer at this address has not yet responded."
 msgstr ""
 
-#: qml/MachineConfig.qml:329 qml/MKSConnectBtn.qml:70
+#: qml/MachineConfig.qml:374 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
 msgstr ""
 
-#: qml/MachineConfig.qml:347
+#: qml/MachineConfig.qml:392
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr ""
 
-#: qml/MachineConfig.qml:372
+#: qml/MachineConfig.qml:408
+msgctxt "@action:button"
+msgid "Image settings"
+msgstr ""
+
+#: qml/MachineConfig.qml:424
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr ""
 
-#: qml/MachineConfig.qml:402
+#: qml/MachineConfig.qml:454
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr ""
 
-#: qml/MachineConfig.qml:432
+#: qml/MachineConfig.qml:483 qml/MachineConfig.qml:585
 msgctxt "@action:button"
 msgid "OK"
+msgstr ""
+
+#: qml/MachineConfig.qml:518 qml/MachineConfig.qml:522
+msgctxt "@label"
+msgid "None"
+msgstr ""
+
+#: qml/MachineConfig.qml:518 qml/MachineConfig.qml:545
+#: qml/MachineConfig.qml:563
+msgctxt "@label"
+msgid "Custom"
 msgstr ""
 
 #: qml/MKSConnectBtn.qml:61
