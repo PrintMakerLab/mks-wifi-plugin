@@ -177,19 +177,10 @@ class SaveOutputDevice(OutputDevice):
                 return None
 
             # Adding screeshot section
-            image = utils.take_screenshot()
+            screenshot_string = utils.add_screenshot()
 
-            if image:
-                global_container_stack = Application.getInstance().getGlobalContainerStack()
-                if global_container_stack:
-                    meta_data = global_container_stack.getMetaData()
-                    if "mks_simage" in meta_data:
-                        stream.write(utils.add_screenshot(image, int(global_container_stack.getMetaDataEntry("mks_simage")), int(global_container_stack.getMetaDataEntry("mks_simage")), ";simage:"))
-                    if "mks_gimage" in meta_data:
-                        stream.write(utils.add_screenshot(image, int(global_container_stack.getMetaDataEntry("mks_gimage")), int(global_container_stack.getMetaDataEntry("mks_gimage")), ";;gimage:"))
-                    stream.write("\r")
-            else:
-                Logger.log("d", "Skipping adding screenshot")
+            if screenshot_string != "":
+                stream.write(screenshot_string)
             # End of screeshot section
 
             job = WriteFileJob(file_writer, stream, nodes, mode)

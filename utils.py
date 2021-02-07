@@ -29,7 +29,7 @@ def getRect():
     result = max((right - left), (front - back))
     return result
 
-def add_screenshot(img, width, height, img_type):
+def add_screenshot_str(img, width, height, img_type):
     result = ""
     b_image = img.scaled(width, height, Qt.KeepAspectRatio)
     img_size = b_image.size()
@@ -67,3 +67,21 @@ def add_screenshot(img, width, height, img_type):
 def take_screenshot():
     cut_image = Snapshot.snapshot(width = 900, height = 900)
     return cut_image
+
+def add_screenshot():
+    image = take_screenshot()
+    screenshot_string = ""
+    if image:
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_simage" in meta_data:
+                simage = int(global_container_stack.getMetaDataEntry("mks_simage"))
+                screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
+            if "mks_gimage" in meta_data:
+                gimage = int(global_container_stack.getMetaDataEntry("mks_gimage"))
+                screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
+            screenshot_string += "\r"
+    else:
+        Logger.log("d", "Skipping adding screenshot")
+    return screenshot_string
