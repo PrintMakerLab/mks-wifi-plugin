@@ -572,17 +572,21 @@ Component
             signal showDialog()
             title: catalog.i18nc("@title:window", "More")
 
-            width: buttonColumn.width + UM.Theme.getSize("default_margin").height + UM.Theme.getSize("thick_lining").height
-            height: buttonColumn.height + UM.Theme.getSize("default_margin").height + UM.Theme.getSize("thick_lining").height
+            width: 200 * screenScaleFactor
+            height: 120 * screenScaleFactor
 
             Column
             {
                 id: buttonColumn
                 spacing: UM.Theme.getSize("default_lining").height
 
+                anchors.fill: parent
+
                 Button
                 {
                     id: fanOnButton
+
+                    width: parent.width
 
                     text: catalog.i18nc("@action:button", "Fan On")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
@@ -594,6 +598,8 @@ Component
                 {
                     id: fanOffButton
 
+                    width: parent.width
+
                     text: catalog.i18nc("@action:button", "Fan Off")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
 
@@ -603,6 +609,8 @@ Component
                 Button
                 {
                     id: coolDownButton
+
+                    width: parent.width
 
                     enabled: connectedDevice != null && connectedDevice.getProperty("manual") == "true" && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
@@ -615,6 +623,8 @@ Component
                 Button
                 {
                     id: unlockMotorButton
+
+                    width: parent.width
 
                     enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 

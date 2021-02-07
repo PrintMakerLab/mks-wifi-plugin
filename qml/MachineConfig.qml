@@ -504,6 +504,8 @@ Cura.MachineAction
             width: parent.width
             columns: 2
 
+            spacing: UM.Theme.getSize("default_lining").height
+
             Label
             {
                 width: Math.round(parent.width * 0.5)
