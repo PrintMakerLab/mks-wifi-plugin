@@ -166,7 +166,7 @@ class MachineConfig(MachineAction):
     @pyqtSlot(str)
     def setKey(self, key):
         Logger.log(
-            "d", "MKS Plugin Plugin the network key of the active machine to %s", key)
+            "d", "MKS WiFi Plugin the network key of the active machine to %s", key)
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
@@ -178,7 +178,7 @@ class MachineConfig(MachineAction):
                 global_container_stack.removeMetaDataEntry(
                     "network_authentication_key")
             else:
-                Logger.log("d", "MKS Plugin Plugin add dataEntry")
+                Logger.log("d", "MKS WiFi Plugin add dataEntry")
                 global_container_stack.setMetaDataEntry("mks_network_key", key)
 
         if self._network_plugin:
@@ -187,6 +187,53 @@ class MachineConfig(MachineAction):
             preferences = Application.getInstance().getPreferences()
             preferences.addPreference("mkswifi/stopupdate", "True")
             self._network_plugin.reCheckConnections()
+
+    @pyqtSlot(result=bool)
+    def supportScreenshot(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_simage" in meta_data or "mks_gimage" in meta_data:
+                return True
+        return False
+
+    @pyqtSlot(result=str)
+    def getSimage(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_simage" in meta_data:
+                return global_container_stack.getMetaDataEntry("mks_simage")
+        return ""
+
+    @pyqtSlot(result=str)
+    def getGimage(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_gimage" in meta_data:
+                return global_container_stack.getMetaDataEntry("mks_gimage")
+        return ""
+
+    @pyqtSlot(str)
+    def setSimage(self, simage):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if simage != "":
+                global_container_stack.setMetaDataEntry("mks_simage", simage)
+            else:
+                global_container_stack.setMetaDataEntry("mks_simage", None) 
+                global_container_stack.removeMetaDataEntry("mks_simage")  
+    
+    @pyqtSlot(str)
+    def setGimage(self, gimage):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if gimage != "":
+                global_container_stack.setMetaDataEntry("mks_gimage", gimage)
+            else:
+                global_container_stack.setMetaDataEntry("mks_gimage", None) 
+                global_container_stack.removeMetaDataEntry("mks_gimage")         
 
     @pyqtSlot()
     def printtest(self):

@@ -177,15 +177,10 @@ class SaveOutputDevice(OutputDevice):
                 return None
 
             # Adding screeshot section
-            image = utils.take_screenshot()
+            screenshot_string = utils.add_screenshot()
 
-            if image and utils.printer_supports_screenshots(Application.getInstance().getGlobalContainerStack().getName()):
-                stream.write(utils.add_screenshot(image, 100, 100, ";simage:"))
-                stream.write(utils.add_screenshot(
-                    image, 200, 200, ";;gimage:"))
-                stream.write("\r")
-            else:
-                Logger.log("d", "Skipping adding screenshot")
+            if screenshot_string != "":
+                stream.write(screenshot_string)
             # End of screeshot section
 
             job = WriteFileJob(file_writer, stream, nodes, mode)

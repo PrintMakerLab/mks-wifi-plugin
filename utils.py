@@ -29,12 +29,18 @@ def getRect():
     result = max((right - left), (front - back))
     return result
 
-def printer_supports_screenshots(printer_name):
-    # printers in denylist sometimes ram the nozzle downwards at the end of a print
-    denylist = ["FLSUN QQ-S"]
-    return not (printer_name in denylist)
+def add_leading_zeros(rgb):
+    str_hex = "%x" % rgb
+    str_hex_len = len(str_hex)
+    if str_hex_len == 3:
+        str_hex = '0' + str_hex[0:3]
+    elif str_hex_len == 2:
+        str_hex = '00' + str_hex[0:2]
+    elif str_hex_len == 1:
+        str_hex = '000' + str_hex[0:1]
+    return str_hex
 
-def add_screenshot(img, width, height, img_type):
+def add_screenshot_str(img, width, height, img_type):
     result = ""
     b_image = img.scaled(width, height, Qt.KeepAspectRatio)
     img_size = b_image.size()
@@ -47,18 +53,12 @@ def add_screenshot(img, width, height, img_type):
             g = pixel_color.green() >> 2
             b = pixel_color.blue() >> 3
             rgb = (r << 11) | (g << 5) | b
-            strHex = "%x" % rgb
-            if len(strHex) == 3:
-                strHex = '0' + strHex[0:3]
-            elif len(strHex) == 2:
-                strHex = '00' + strHex[0:2]
-            elif len(strHex) == 1:
-                strHex = '000' + strHex[0:1]
-            if strHex[2:4] != '':
-                result += strHex[2:4]
+            str_hex = add_leading_zeros(rgb)
+            if str_hex[2:4] != '':
+                result += str_hex[2:4]
                 datasize += 2
-            if strHex[0:2] != '':
-                result += strHex[0:2]
+            if str_hex[0:2] != '':
+                result += str_hex[0:2]
                 datasize += 2
             if datasize >= 50:
                 datasize = 0
@@ -72,3 +72,21 @@ def add_screenshot(img, width, height, img_type):
 def take_screenshot():
     cut_image = Snapshot.snapshot(width = 900, height = 900)
     return cut_image
+
+def add_screenshot():
+    image = take_screenshot()
+    screenshot_string = ""
+    if image:
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_simage" in meta_data:
+                simage = int(global_container_stack.getMetaDataEntry("mks_simage"))
+                screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
+            if "mks_gimage" in meta_data:
+                gimage = int(global_container_stack.getMetaDataEntry("mks_gimage"))
+                screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
+            screenshot_string += "\r"
+    else:
+        Logger.log("d", "Skipping adding screenshot")
+    return screenshot_string

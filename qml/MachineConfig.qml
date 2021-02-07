@@ -19,7 +19,7 @@ Cura.MachineAction
     property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
     property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
 
-    property var currentLanguage: UM.Preferences.getValue("general/language")
+    property var printerSupportScreenshots: manager.supportScreenshot()
 
     Connections
     {
@@ -291,6 +291,50 @@ Cura.MachineAction
                         wrapMode: Text.WordWrap
                         text: base.selectedPrinter ? base.selectedPrinter.ipAddress : ""
                     }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: catalog.i18nc("@label", "Screenshot support")
+                    }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: printerSupportScreenshots ? catalog.i18nc("@label", "Yes") : catalog.i18nc("@label", "No")
+                    }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: catalog.i18nc("@label", "Simage")
+
+                        visible:printerSupportScreenshots
+                    }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: printerSupportScreenshots ? manager.getSimage() : ""
+
+                        visible: printerSupportScreenshots
+                    }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: catalog.i18nc("@label", "Gimage")
+
+                        visible: printerSupportScreenshots
+                    }
+                    Label
+                    {
+                        width: Math.round(parent.width * 0.5)
+                        wrapMode: Text.WordWrap
+                        text: printerSupportScreenshots ? manager.getGimage() : ""
+
+                        visible:printerSupportScreenshots
+                    }
                 }
 
                 Label
@@ -321,7 +365,8 @@ Cura.MachineAction
                     visible: base.selectedPrinter != null && !base.completeProperties
                     text: catalog.i18nc("@label", "The printer at this address has not yet responded." )
                 }
-                Row{
+                Row
+                {
                     spacing: 10
                     Button
                     {
@@ -344,7 +389,7 @@ Cura.MachineAction
                     Button
                     {
                         id: unconnectbtn
-                        text: catalog.i18nc("@action:button", "Disconnect") //currentLanguage == "zh_CN" ? "断开" : "Disconnect"
+                        text: catalog.i18nc("@action:button", "Disconnect")
                         enabled: {
                             if (base.selectedPrinter && base.completeProperties) {
                                 if (connectedDevice != null) {
@@ -356,6 +401,13 @@ Cura.MachineAction
                             return false
                         }
                         onClicked: unconnectToPrinter()
+                    }
+                    Button
+                    {
+                        id: screenshotbtn
+                        text: catalog.i18nc("@action:button", "Image settings")
+
+                        onClicked: screenshotDialog.show()
                     }
                 }
 
@@ -428,7 +480,6 @@ Cura.MachineAction
                 }
             },
             Button {
-                id: btnOk
                 text: catalog.i18nc("@action:button", "OK")
                 onClicked:
                 {
@@ -436,6 +487,109 @@ Cura.MachineAction
                     manualPrinterDialog.hide()
                 }
                 enabled: manualPrinterDialog.addressText.trim() != ""
+                isDefault: true
+            }
+        ]
+    }
+
+    UM.Dialog
+    {
+        id: screenshotDialog
+
+        width: 300 * screenScaleFactor
+        height: 130 * screenScaleFactor
+
+        Grid
+        {
+            width: parent.width
+            columns: 2
+
+            spacing: UM.Theme.getSize("default_lining").height
+
+            Label
+            {
+                width: Math.round(parent.width * 0.5)
+                wrapMode: Text.WordWrap
+                text: catalog.i18nc("@label", "Screenshot support")
+            }
+            ComboBox
+            {
+                id: variantComboBox
+                width: Math.round(parent.width * 0.5)
+
+                model: [catalog.i18nc("@label", "None"), catalog.i18nc("@label", "Custom")]
+
+                onCurrentIndexChanged:
+                {
+                    if (variantComboBox.currentText == catalog.i18nc("@label", "None"))
+                    {
+                        simageTextInput.text = ""
+                        gimageTextInput.text = ""
+                    }
+                }
+            }
+            Label
+            {
+                width: Math.round(parent.width * 0.5)
+                wrapMode: Text.WordWrap
+                text: catalog.i18nc("@label", "Simage")
+            }
+            TextField
+            {
+                id: simageTextInput
+                width: Math.round(parent.width * 0.5)
+                maximumLength: 5
+                validator: RegExpValidator
+                {
+                    regExp: /[0-9]*/
+                }
+
+                enabled: variantComboBox.currentText == catalog.i18nc("@label", "Custom") ? true : false
+            }
+            Label
+            {
+                width: Math.round(parent.width * 0.5)
+                wrapMode: Text.WordWrap
+                text: catalog.i18nc("@label", "Gimage")
+            }
+            TextField
+            {
+                id: gimageTextInput
+                width: Math.round(parent.width * 0.5)
+                maximumLength: 5
+                validator: RegExpValidator
+                {
+                    regExp: /[0-9]*/
+                }
+
+                enabled: variantComboBox.currentText == catalog.i18nc("@label", "Custom") ? true : false
+            }
+        }
+
+        onAccepted:
+        {
+            manager.setSimage(simageTextInput.text)
+            manager.setGimage(gimageTextInput.text)
+
+            printerSupportScreenshots = manager.supportScreenshot()
+        }
+
+        rightButtons: [
+            Button {
+                text: catalog.i18nc("@action:button","Cancel")
+                onClicked:
+                {
+                    screenshotDialog.reject()
+                    screenshotDialog.hide()
+                }
+            },
+            Button {
+                text: catalog.i18nc("@action:button", "OK")
+                onClicked:
+                {
+                    screenshotDialog.accept()
+                    screenshotDialog.hide()
+                }
                 isDefault: true
             }
         ]
