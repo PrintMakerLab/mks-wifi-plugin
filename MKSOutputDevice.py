@@ -784,13 +784,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             single_string_file_data = ""
             # Adding screeshot section
             self._screenShot = utils.take_screenshot()
-            if self._screenShot and utils.printer_supports_screenshots(
-                    global_container_stack.getName()):
-                single_string_file_data += utils.add_screenshot(
-                    self._screenShot, 100, 100, ";simage:")
-                single_string_file_data += utils.add_screenshot(
-                    self._screenShot, 200, 200, ";;gimage:")
-                single_string_file_data += "\r"
+            if self._screenShot:
+                if global_container_stack:
+                    meta_data = global_container_stack.getMetaData()
+                    if "mks_simage" in meta_data:
+                        single_string_file_data += utils.add_screenshot(self._screenShot, int(global_container_stack.getMetaDataEntry("mks_simage")), int(global_container_stack.getMetaDataEntry("mks_simage")), ";simage:")
+                    if "mks_gimage" in meta_data:
+                        single_string_file_data += utils.add_screenshot(self._screenShot, int(global_container_stack.getMetaDataEntry("mks_gimage")), int(global_container_stack.getMetaDataEntry("mks_gimage")), ";;gimage:")
+                    single_string_file_data += "\r"
             else:
                 Logger.log("d", "Skipping screenshot in MKSOutputDevice.py")
             # End of screeshot section
