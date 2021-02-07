@@ -29,6 +29,17 @@ def getRect():
     result = max((right - left), (front - back))
     return result
 
+def add_leading_zeros(rgb):
+    strHex = "%x" % rgb
+    strHexLen = len(strHex)
+    if strHexLen == 3:
+        strHex = '0' + strHex[0:3]
+    elif strHexLen == 2:
+        strHex = '00' + strHex[0:2]
+    elif strHexLen == 1:
+        strHex = '000' + strHex[0:1]
+    return strHex
+
 def add_screenshot_str(img, width, height, img_type):
     result = ""
     b_image = img.scaled(width, height, Qt.KeepAspectRatio)
@@ -42,13 +53,7 @@ def add_screenshot_str(img, width, height, img_type):
             g = pixel_color.green() >> 2
             b = pixel_color.blue() >> 3
             rgb = (r << 11) | (g << 5) | b
-            strHex = "%x" % rgb
-            if len(strHex) == 3:
-                strHex = '0' + strHex[0:3]
-            elif len(strHex) == 2:
-                strHex = '00' + strHex[0:2]
-            elif len(strHex) == 1:
-                strHex = '000' + strHex[0:1]
+            strHex = add_leading_zeros(rgb)
             if strHex[2:4] != '':
                 result += strHex[2:4]
                 datasize += 2
