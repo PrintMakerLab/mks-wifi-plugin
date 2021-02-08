@@ -9,14 +9,15 @@ msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-02-07 17:28+0300\n"
-"PO-Revision-Date: 2021-01-31 13:39+0300\n"
+"PO-Revision-Date: 2021-02-08 21:59+0400\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Language: ru\n"
 "X-Source-Language: en\n"
 "X-Generator: Poedit 2.4.2\n"
@@ -90,8 +91,8 @@ msgstr "Недостаточно прав для сохранения <filename>
 msgctxt "@info:status Don't translate the XML tags <filename> or <message>!"
 msgid "Could not save to <filename>{0}</filename>: <message>{1}</message>"
 msgstr ""
-"Не удалось сохранить файл как <filename>{0}</filename>: "
-"<message>{1}</message>"
+"Не удалось сохранить файл как <filename>{0}</filename>: <message>{1}</"
+"message>"
 
 #: SaveOutputDevice.py:50
 #, python-brace-format
@@ -128,11 +129,11 @@ msgstr "Ошибка"
 #, python-brace-format
 msgctxt "@info:status"
 msgid ""
-"Something went wrong saving to <filename>{0}</filename>: "
-"<message>{1}</message>"
+"Something went wrong saving to <filename>{0}</filename>: <message>{1}</"
+"message>"
 msgstr ""
-"Что-то пошло не так при сохранении <filename>{0}</filename>: "
-"<message>{1}</message>"
+"Что-то пошло не так при сохранении <filename>{0}</filename>: <message>{1}</"
+"message>"
 
 #: MKSOutputDevice.py:214
 msgctxt "@action:button"
@@ -187,7 +188,7 @@ msgstr "Файл <filename>{0}</filename> существует."
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists, please rename it."
-msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его."
+msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его:"
 
 #: MKSOutputDevice.py:224
 msgctxt "@info:status"
@@ -197,7 +198,7 @@ msgstr "Имя файла не может содержать китайский.
 #: MKSOutputDevice.py:225
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
-msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его."
+msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его:"
 
 #: MKSOutputDevice.py:226
 msgctxt "@info:status"
@@ -207,7 +208,7 @@ msgstr "Имя файла слишком длинное для загрузки.
 #: MKSOutputDevice.py:227
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
-msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
+msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его:"
 
 #: MKSOutputDevice.py:228
 msgctxt "@info:status"
@@ -282,22 +283,23 @@ msgstr "E1"
 #: qml/MonitorItem4x.qml:314
 msgctxt "@action:button"
 msgid "SD Files"
-msgstr "Файлы SD"
+msgstr "Файлы на SD"
 
 #: qml/MonitorItem4x.qml:324
 msgctxt "@tooltip"
 msgid "Browse SD card in 3D printer."
-msgstr "Обзор SD-карты в вашем принтере."
+msgstr ""
+"Обзор, редактирование, удаление и печать файлов с SD-карты в вашем принтере."
 
 #: qml/MonitorItem4x.qml:342
 msgctxt "@action:button"
 msgid "Send Print Job"
-msgstr "Отправить на печать"
+msgstr "Отправить файл на печать"
 
 #: qml/MonitorItem4x.qml:352
 msgctxt "@tooltip"
 msgid "Select and send G-Code file to 3D printer."
-msgstr "Выбрать и отправить файл G-Code на #D принтер."
+msgstr "Выбрать и отправить G-Code файл на 3D принтер."
 
 #: qml/MonitorItem4x.qml:368
 msgctxt "@action:button"
@@ -342,7 +344,7 @@ msgstr "Прервать текущую печать."
 #: qml/MonitorItem4x.qml:477
 msgctxt "@title:window"
 msgid "Open file(s)"
-msgstr "Открыть файл(ы)"
+msgstr "Выберите файл"
 
 #: qml/MonitorItem4x.qml:532
 msgctxt "@action:button"
@@ -387,7 +389,7 @@ msgstr "Выключить вентилятор обдува."
 #: qml/MonitorItem4x.qml:609
 msgctxt "@action:button"
 msgid "Cool Down"
-msgstr "Охладить"
+msgstr "Отключить нагрев"
 
 #: qml/MonitorItem4x.qml:612
 msgctxt "@tooltip"
