@@ -297,7 +297,7 @@ msgstr "Отправить на печать"
 #: qml/MonitorItem4x.qml:352
 msgctxt "@tooltip"
 msgid "Select and send G-Code file to 3D printer."
-msgstr "Выбрать и отправить файл G-Code на #D принтер."
+msgstr "Выбрать и отправить файл G-Code на 3D принтер."
 
 #: qml/MonitorItem4x.qml:368
 msgctxt "@action:button"
