@@ -572,8 +572,10 @@ Component
             signal showDialog()
             title: catalog.i18nc("@title:window", "More")
 
-            width: 200 * screenScaleFactor
-            height: 120 * screenScaleFactor
+            minimumWidth: 200 * screenScaleFactor
+            minimumHeight: 120 * screenScaleFactor
+            width: minimumWidth
+            height: minimumHeight
 
             Column
             {

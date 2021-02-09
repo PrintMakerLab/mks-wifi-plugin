@@ -496,8 +496,10 @@ Cura.MachineAction
     {
         id: screenshotDialog
 
-        width: 300 * screenScaleFactor
-        height: 130 * screenScaleFactor
+        minimumWidth: 300 * screenScaleFactor
+        minimumHeight: 130 * screenScaleFactor
+        width: minimumWidth
+        height: minimumHeight
 
         Grid
         {
