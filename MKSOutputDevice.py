@@ -58,6 +58,49 @@ catalog = i18nCatalog("mksplugin")
 if catalog.hasTranslationLoaded():
     Logger.log("i", "MKS WiFi Plugin translation loaded!")
 
+class YesNoDialog(QDialog):
+    def __init__(self, parent = None):
+        super(YesNoDialog, self).__init__(parent)
+
+        self.yes_cliked = False
+
+        self.line_edit = QLineEdit()
+        self.content = QLabel("")
+
+        vlayout = QVBoxLayout()
+        hlayout = QHBoxLayout()
+        yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
+        yesbtn.clicked.connect(self.yes_click)
+        nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
+        nobtn.clicked.connect(self.no_click)
+        hlayout.addWidget(yesbtn)
+        hlayout.addWidget(nobtn)
+
+        vlayout.addWidget(self.content)
+        vlayout.addWidget(self.line_edit)
+        vlayout.addLayout(hlayout)
+
+        self.setLayout(vlayout)
+
+    def init_dialog(self, filename, label, title):
+        self.line_edit.setText(filename)
+        self.content.setText(label)
+        self.setWindowTitle(title)        
+
+    def get_filename(self):
+        return self.line_edit.text()
+
+    def yes_click(self):
+    	self.yes_cliked = True
+    	self.accept()
+
+    def no_click(self):
+    	self.yes_cliked = False
+    	self.line_edit.setText("")
+    	self.reject()
+
+    def accepted(self):
+    	return self.yes_cliked
 
 class UnifiedConnectionState(IntEnum):
     try:
@@ -210,8 +253,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def init_translations(self):
         self._translations = {
-            "button_yes": catalog.i18nc("@action:button", "Yes"),
-            "button_no": catalog.i18nc("@action:button", "No"),
             "button_cancel": catalog.i18nc("@action:button", "Cancel"),
             "print_over_tft_action_button": catalog.i18nc("@action:button", "Print over TFT"),
             "print_over_tft_tooltip": catalog.i18nc("@properties:tooltip", "Print over TFT"),
@@ -402,73 +443,52 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             preferences.setValue(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():
-                self.show_upload_dialog(filename)
+                filename = self.check_valid_filepath(filename)
+                if self.isBusy():
+                    self.isBusy_error_message()
+                    return
+                self.uploadfunc(filename)
 
-    def show_upload_dialog(self, filename):
-        Logger.log("d", "selectfile:" + filename)
-        if filename[filename.rfind("/") + 1:] in self.sdFiles:
-            self.show_exists_dialog(filename,
-                                    lambda: self.uploadfunc(filename))
-            return
-        if len(filename[filename.rfind("/") + 1:]) >= 30:
-            self.show_to_long_dialog(filename,
-                                     lambda: self.renameupload(filename))
-            return
-        if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
-            self.show_contains_chinese_dialog(
-                filename, lambda: self.renameupload(filename))
-            return
-        if self.isBusy():
-            self.isBusy_error_message()
-            return
-        self.uploadfunc(filename)
+    def show_dialog(self, filename, label, title):
+        dialog = YesNoDialog()
+        dialog.init_dialog(filename, label, title)
+        dialog.exec_()
+        new_filename = ""
+        if dialog.accepted():
+        	new_filename = dialog.get_filename()
+        dialog.close()
+        return new_filename
 
-    def show_dialog(self, filename, label, title, yesbtn, nobtn):
-        if self._mdialog:
-            self._mdialog.close()
-        self._mdialog = QDialog()
-        content = QLabel(label)
-        self._mfilename = QLineEdit()
-        self._mfilename.setText(filename[filename.rfind("/") + 1:])
-        dialogvbox = QVBoxLayout()
-        dialoghbox = QHBoxLayout()
-        dialoghbox.addWidget(yesbtn)
-        dialoghbox.addWidget(nobtn)
-        dialogvbox.addWidget(content)
-        dialogvbox.addWidget(self._mfilename)
-        dialogvbox.addLayout(dialoghbox)
-        self._mdialog.setWindowTitle(title)
-        self._mdialog.setLayout(dialogvbox)
-        self._mdialog.exec_()
-
-    def show_exists_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations.get("button_yes"))
-        yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations.get("button_no"))
-        nobtn.clicked.connect(self.closeMDialog)
+    def show_exists_dialog(self, filename):
         title = self._translations.get("file_exists_title").format(
             filename[filename.rfind("/") + 1:])
         label = self._translations.get("file_exists_label").format(
             filename[filename.rfind("/") + 1:])
-        self.show_dialog(filename, label, title, yesbtn, nobtn)
+        return self.show_dialog(filename, label, title)
 
-    def show_contains_chinese_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations.get("button_yes"))
-        yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations.get("button_no"))
-        nobtn.clicked.connect(self.closeMDialog)
+    def show_contains_chinese_dialog(self, filename):
         title = self._translations.get("file_include_chinese_title")
         label = self._translations.get("file_include_chinese_label")
-        self.show_dialog(filename, label, title, yesbtn, nobtn)
+        return self.show_dialog(filename, label, title)
 
-    def show_to_long_dialog(self, filename, yes_clicked):
-        yesbtn = QPushButton(self._translations.get("button_yes"))
-        yesbtn.clicked.connect(yes_clicked)
-        nobtn = QPushButton(self._translations.get("button_no"))
-        nobtn.clicked.connect(self.closeMDialog)
+    def show_to_long_dialog(self, filename):
         title = self._translations.get("file_too_long_title")
         label = self._translations.get("file_too_long_label")
-        self.show_dialog(filename, label, title, yesbtn, nobtn)
+        return self.show_dialog(filename, label, title)
+
+    def check_valid_filename(self, filename):
+        if filename in self.sdFiles:
+            filename = self.check_valid_filename(self.show_exists_dialog(filename))
+        if len(filename) >= 30:
+            filename = self.check_valid_filename(self.show_to_long_dialog(filename))
+        if self.is_contains_chinese(filename):
+            filename = self.check_valid_filename(self.show_contains_chinese_dialog(filename))
+        return filename
+
+    def check_valid_filepath(self, filepath):
+    	filename = filepath[filepath.rfind("/") + 1:]
+    	filename = self.check_valid_filename(filename);
+    	return filepath[:filepath.rfind("/")] + "/" + filename
 
     def show_error_message(self, message):
         if self._error_message is not None:
@@ -510,38 +530,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def is_contains_chinese(self, strs):
         return False
 
-    def closeMDialog(self):
-        if self._mdialog:
-            self._mdialog.close()
-
-    def renameupload(self, filename):
-        if self._mfilename and ".g" in self._mfilename.text().lower():
-            filename = filename[:filename.
-                                rfind("/")] + "/" + self._mfilename.text()
-            if self._mfilename.text() in self.sdFiles:
-                self.show_exists_dialog(filename,
-                                        lambda: self.uploadfunc(filename))
-                return
-            if len(filename[filename.rfind("/") + 1:]) >= 30:
-                self.show_to_long_dialog(filename,
-                                         lambda: self.renameupload(filename))
-                return
-            if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
-                self.show_contains_chinese_dialog(
-                    filename, lambda: self.renameupload(filename))
-                return
-            if self.isBusy():
-                self.isBusy_error_message()
-                return
-            self._mdialog.close()
-            if self._progress_message:
-                self.show_error_message(self._translations.get("error_2"))
-            else:
-                self.uploadfunc(filename)
-
     def uploadfunc(self, filename):
-        if self._mdialog:
-            self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
@@ -723,35 +712,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if job_name == "":
             job_name = "cura_file"
         filename = "%s.gcode" % job_name
-        if filename in self.sdFiles:
-            self.show_exists_dialog(filename, self.recheckfilename)
-            return
-        if len(filename[filename.rfind("/") + 1:]) >= 30:
-            self.show_to_long_dialog(filename, self.recheckfilename)
-            return
-        if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
-            self.show_contains_chinese_dialog(filename, self.recheckfilename)
-            return
-        self._startPrint(filename)
 
-    def recheckfilename(self):
-        if self._mfilename and ".g" in self._mfilename.text().lower():
-            filename = self._mfilename.text()
-            if filename in self.sdFiles:
-                self.show_exists_dialog(filename, self.recheckfilename)
-                return
-            if len(filename[filename.rfind("/") + 1:]) >= 30:
-                self.show_to_long_dialog(filename, self.recheckfilename)
-                return
-            if self.is_contains_chinese(filename[filename.rfind("/") + 1:]):
-                self.show_contains_chinese_dialog(filename,
-                                                  self.recheckfilename)
-                return
-            if self.isBusy():
-                self.isBusy_error_message()
-                return
-            self._mdialog.close()
-            self._startPrint(filename)
+        filename = self.check_valid_filename(filename);
+
+        if self.isBusy():
+            self.isBusy_error_message()
+            return
+        if filename != "":
+        	self._startPrint(filename)
 
     def _messageBoxCallback(self, button):
         if button == QMessageBox.Yes:
@@ -761,8 +729,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 "PrepareStage")
 
     def _startPrint(self, file_name="cura_file.gcode"):
-        if self._mdialog:
-            self._mdialog.close()
         preferences = Application.getInstance().getPreferences()
         global_container_stack = CuraApplication.getInstance(
         ).getGlobalContainerStack()
