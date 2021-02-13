@@ -396,9 +396,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
-            filename, _ = QFileDialog.getOpenFileName(
-                None, "choose file", preferences.getValue(Constants.SAVE_PATH),
-                "Gcode(*.gcode;*.g;*.goc)")
+            filename, _ = QFileDialog.getOpenFileName(None, catalog.i18nc("@info:title", "Choose file"), preferences.getValue(Constants.SAVE_PATH), catalog.i18nc("@label", "G-code") + "(*.gcode *.g *.goc);;" + catalog.i18nc("@label", "All") + "(*.*)")
             preferences.setValue(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():
