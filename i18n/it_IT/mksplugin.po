@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-07 17:28+0300\n"
+"POT-Creation-Date: 2021-02-13 19:01+0300\n"
 "PO-Revision-Date: 2021-02-07 17:51+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: \n"
@@ -130,141 +130,156 @@ msgstr ""
 "Qualcosa è andato storto durante il salvataggio in <filename>{0}</filename>: "
 "<message>{1}</message>"
 
-#: MKSOutputDevice.py:214
+#: MKSOutputDevice.py:213
 msgctxt "@action:button"
 msgid "Yes"
 msgstr "Si"
 
-#: MKSOutputDevice.py:215
+#: MKSOutputDevice.py:214
 msgctxt "@action:button"
 msgid "No"
 msgstr "No"
 
-#: MKSOutputDevice.py:216 qml/MachineConfig.qml:475 qml/MachineConfig.qml:577
+#: MKSOutputDevice.py:215 qml/MachineConfig.qml:475 qml/MachineConfig.qml:581
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Cancel"
 
-#: MKSOutputDevice.py:217
+#: MKSOutputDevice.py:216
 msgctxt "@action:button"
 msgid "Print over TFT"
 msgstr "Stampa su TFT"
 
-#: MKSOutputDevice.py:218
+#: MKSOutputDevice.py:217
 msgctxt "@properties:tooltip"
 msgid "Print over TFT"
 msgstr "Stampa su TFT"
 
-#: MKSOutputDevice.py:219
+#: MKSOutputDevice.py:218
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr "Collegato a TFT su <message>{0}</message>"
 
-#: MKSOutputDevice.py:220
+#: MKSOutputDevice.py:219
 #, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Stampa sopra <message>{0}</message>"
 
-#: MKSOutputDevice.py:221
+#: MKSOutputDevice.py:220
 #, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Stampa sopra <message>{0}</message>"
 
-#: MKSOutputDevice.py:222
+#: MKSOutputDevice.py:221
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr "<filename>{0}</filename> esiste già."
 
-#: MKSOutputDevice.py:223
+#: MKSOutputDevice.py:222
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists, please rename it."
 msgstr "<filename>{0}</filename> esiste già, per favore rinominalo."
 
-#: MKSOutputDevice.py:224
+#: MKSOutputDevice.py:223
 msgctxt "@info:status"
 msgid "File name can not include chinese."
 msgstr "Il nome del file non può includere il cinese."
 
-#: MKSOutputDevice.py:225
+#: MKSOutputDevice.py:224
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
 msgstr "Il nome del file non può includere il cinese, per favore rinominalo."
 
-#: MKSOutputDevice.py:226
+#: MKSOutputDevice.py:225
 msgctxt "@info:status"
 msgid "File name is too long to upload."
 msgstr "Il nome del file è troppo lungo per essere caricato."
 
-#: MKSOutputDevice.py:227
+#: MKSOutputDevice.py:226
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
 msgstr ""
 "Il nome del file è troppo lungo per essere caricato, per favore rinominalo."
 
-#: MKSOutputDevice.py:228
+#: MKSOutputDevice.py:227
 msgctxt "@info:status"
 msgid "Sending file to printer"
 msgstr "Invio file alla stampante"
 
-#: MKSOutputDevice.py:229
+#: MKSOutputDevice.py:228
 msgctxt "@info:status"
 msgid "Uploading print job to printer"
 msgstr "Caricamento file di stampa alla stampante"
 
-#: MKSOutputDevice.py:230
+#: MKSOutputDevice.py:229
 msgctxt "@info:title"
 msgid "Sending Print Job"
 msgstr "Invio Stampa"
 
-#: MKSOutputDevice.py:231
+#: MKSOutputDevice.py:230
 msgctxt "@label"
 msgid "Print job"
 msgstr "Lavoro di stampa"
 
-#: MKSOutputDevice.py:232
+#: MKSOutputDevice.py:231
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
 msgstr "Il file non può essere trasferito durante la stampa."
 
-#: MKSOutputDevice.py:233
+#: MKSOutputDevice.py:232
 msgctxt "@info:status"
 msgid "Send file to printer failed."
 msgstr "Invio file alla stampante non riuscito."
 
-#: MKSOutputDevice.py:234
+#: MKSOutputDevice.py:233
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
 msgstr "Adesso sta stampando. Invio file alla stampante non riuscito."
 
-#: MKSOutputDevice.py:235
+#: MKSOutputDevice.py:234
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr "Il lavoro di stampa è stato inviato con successo alla stampante."
 
-#: MKSOutputDevice.py:236
+#: MKSOutputDevice.py:235
 msgctxt "@warning:status"
 msgid "Please prepare G-code before exporting."
 msgstr "Si prega di preparare il G-code prima di esportare."
 
-#: MKSOutputDevice.py:237
+#: MKSOutputDevice.py:236
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr "TFT connesso"
 
-#: MKSOutputDevice.py:238
+#: MKSOutputDevice.py:237
 msgctxt "@info:status"
 msgid "Error: command can not send"
 msgstr "Errore: impossibile inviare il comando"
 
-#: MKSOutputDevice.py:239
+#: MKSOutputDevice.py:238
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr "Errore: è in corso il caricamento di un altro file, riprova più tardi."
+
+#: MKSOutputDevice.py:399
+msgctxt "@info:title"
+msgid "Choose file"
+msgstr ""
+
+#: MKSOutputDevice.py:399
+msgctxt "@label"
+msgid "G-code"
+msgstr ""
+
+#: MKSOutputDevice.py:399
+msgctxt "@label"
+msgid "All"
+msgstr ""
 
 #: qml/MonitorItem4x.qml:202
 msgctxt "@label"
@@ -361,42 +376,42 @@ msgctxt "@title:window"
 msgid "More"
 msgstr "Altro"
 
-#: qml/MonitorItem4x.qml:587
+#: qml/MonitorItem4x.qml:593
 msgctxt "@action:button"
 msgid "Fan On"
 msgstr "Fan On"
 
-#: qml/MonitorItem4x.qml:590
+#: qml/MonitorItem4x.qml:596
 msgctxt "@tooltip"
 msgid "Turn fan on."
 msgstr "Accendi la ventola."
 
-#: qml/MonitorItem4x.qml:597
+#: qml/MonitorItem4x.qml:605
 msgctxt "@action:button"
 msgid "Fan Off"
 msgstr "Fan Off"
 
-#: qml/MonitorItem4x.qml:600
+#: qml/MonitorItem4x.qml:608
 msgctxt "@tooltip"
 msgid "Turn fan off."
 msgstr "Spegni la ventola."
 
-#: qml/MonitorItem4x.qml:609
+#: qml/MonitorItem4x.qml:619
 msgctxt "@action:button"
 msgid "Cool Down"
 msgstr "Raffredda"
 
-#: qml/MonitorItem4x.qml:612
+#: qml/MonitorItem4x.qml:622
 msgctxt "@tooltip"
 msgid "Cool down heated bed and exptuder."
 msgstr "Raffreddare il piatto e hot-end."
 
-#: qml/MonitorItem4x.qml:621
+#: qml/MonitorItem4x.qml:633
 msgctxt "@action:button"
 msgid "Unlock Motors"
 msgstr "Sblocca i motori"
 
-#: qml/MonitorItem4x.qml:624
+#: qml/MonitorItem4x.qml:636
 msgctxt "@tooltip"
 msgid "Unlock 3D printer motors."
 msgstr "Sblocca i motori della stampante 3D."
@@ -477,7 +492,7 @@ msgctxt "@label"
 msgid "Address"
 msgstr "Indirizzo"
 
-#: qml/MachineConfig.qml:298 qml/MachineConfig.qml:511
+#: qml/MachineConfig.qml:298 qml/MachineConfig.qml:515
 msgctxt "@label"
 msgid "Screenshot support"
 msgstr "Supporto per immagini"
@@ -492,12 +507,12 @@ msgctxt "@label"
 msgid "No"
 msgstr "No"
 
-#: qml/MachineConfig.qml:310 qml/MachineConfig.qml:533
+#: qml/MachineConfig.qml:310 qml/MachineConfig.qml:537
 msgctxt "@label"
 msgid "Simage"
 msgstr "Simage"
 
-#: qml/MachineConfig.qml:326 qml/MachineConfig.qml:551
+#: qml/MachineConfig.qml:326 qml/MachineConfig.qml:555
 msgctxt "@label"
 msgid "Gimage"
 msgstr "Gimage"
@@ -544,18 +559,18 @@ msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr "Immettere l'indirizzo IP o l'hostname della stampante in rete."
 
-#: qml/MachineConfig.qml:483 qml/MachineConfig.qml:585
+#: qml/MachineConfig.qml:483 qml/MachineConfig.qml:589
 msgctxt "@action:button"
 msgid "OK"
 msgstr "OK"
 
-#: qml/MachineConfig.qml:518 qml/MachineConfig.qml:522
+#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:526
 msgctxt "@label"
 msgid "None"
 msgstr "Nessuna"
 
-#: qml/MachineConfig.qml:518 qml/MachineConfig.qml:545
-#: qml/MachineConfig.qml:563
+#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:549
+#: qml/MachineConfig.qml:567
 msgctxt "@label"
 msgid "Custom"
 msgstr "Personalizzata"
