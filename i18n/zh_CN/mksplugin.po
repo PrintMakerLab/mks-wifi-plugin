@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-13 19:01+0300\n"
+"POT-Creation-Date: 2021-02-13 19:15+0300\n"
 "PO-Revision-Date: 2021-02-07 17:48+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -263,17 +263,17 @@ msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr "错误：另外一个文件正在传送，请稍后再试。"
 
-#: MKSOutputDevice.py:399
+#: MKSOutputDevice.py:239
 msgctxt "@info:title"
 msgid "Choose file"
 msgstr ""
 
-#: MKSOutputDevice.py:399
+#: MKSOutputDevice.py:240
 msgctxt "@label"
 msgid "G-code"
 msgstr ""
 
-#: MKSOutputDevice.py:399
+#: MKSOutputDevice.py:241
 msgctxt "@label"
 msgid "All"
 msgstr ""

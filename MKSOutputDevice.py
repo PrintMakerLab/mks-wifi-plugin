@@ -236,6 +236,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             "connected": catalog.i18nc("@info:status", "TFT Connect succeed"),
             "error_1": catalog.i18nc("@info:status", "Error: command can not send"),
             "error_2": catalog.i18nc("@info:status", "Error: Another file is uploading, please try later."),
+            "choose_file": catalog.i18nc("@info:title", "Choose file"),
+            "gcode": catalog.i18nc("@label", "G-code"),
+            "all": catalog.i18nc("@label", "All"),
         }
 
     def _onOutputDevicesChanged(self):
@@ -396,7 +399,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
-            filename, _ = QFileDialog.getOpenFileName(None, catalog.i18nc("@info:title", "Choose file"), preferences.getValue(Constants.SAVE_PATH), catalog.i18nc("@label", "G-code") + "(*.gcode *.g *.goc);;" + catalog.i18nc("@label", "All") + "(*.*)")
+            filename, _ = QFileDialog.getOpenFileName(None, self._translations.get("choose_file"), preferences.getValue(Constants.SAVE_PATH), self._translations.get("gcode") + "(*.gcode *.g *.goc);;" + self._translations.get("all") + "(*.*)")
             preferences.setValue(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():
