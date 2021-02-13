@@ -973,7 +973,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._createPrinterList()
             printer = self.printers[0]
             while self._socket.canReadLine():
-
                 s = str(self._socket.readLine().data(),
                         encoding=sys.getfilesystemencoding())
                 Logger.log("d", "mks recv: " + s)
@@ -1090,19 +1089,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                         self.sdFiles.append(s)
                     continue
                 if s.startswith("Upload"):
-                    tipsname = self._translations.get("file_send_failed")
-                    if self._application.getPreferences().getValue(
-                            "general/language") == "zh_CN":
-                        tipsname = "发送文件失败"
-                    else:
-                        tipsname = self._translations.get("file_send_failed")
                     if self._progress_message is not None:
                         self._progress_message.hide()
                         self._progress_message = None
                     if self._error_message is not None:
                         self._error_message.hide()
                         self._error_message = None
-                    self._error_message = Message(tipsname)
+                    self._error_message = Message(self._translations.get("file_send_failed"))
                     self._error_message.show()
                     self._update_timer.start()
                     continue
