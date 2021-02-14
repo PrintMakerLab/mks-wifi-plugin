@@ -945,7 +945,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self.isBusy() and info.rfind("/") != -1:
             self._printing_filename = info[info.rfind("/") + 1:info.rfind(";")]
         else:
-            self._printing_filename = "" 
+            self._printing_filename = ""
         self.printer_get_print_job().updateName(self._printing_filename)
 
     def printer_update_printing_time(self, info):
@@ -954,21 +954,19 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             mms = tm.split(":")
             self._printing_time = int(mms[0]) * 3600 + int(mms[1]) * 60 + int(mms[2])
         else:
-            self._printing_time = 0
-        print_job = self.printer_get_print_job()
-        print_job.updateTimeElapsed(self._printing_time)
+            self._printing_time = 0 
+        self.printer_get_print_job().updateTimeElapsed(self._printing_time)
 
-    def printer_update_totaltime(self, info): #TODO: take a look at this function
+    def printer_update_totaltime(self, info):
         totaltime = 0
         if self.isBusy():
-            self._printing_progress = float(info[info.find("M27") + len("M27"):len(s)].replace(" ", ""))
-            totaltime = self._printing_time / self._printing_progress * 100
+            self._printing_progress = int(info[info.find("M27") + len("M27"):len(info)].replace(" ", ""))
+            totaltime = int(self._printing_time / self._printing_progress * 100)
+            Logger.log("i", totaltime)
         else:
             self._printing_progress = 0
-            totaltime = self._printing_time * 100
-        print_job = self.printer_get_print_job()
-        print_job.updateTimeTotal(self._printing_time) #TODO: something may be wrong here
-        print_job.updateTimeElapsed(self._printing_time * 2 - totaltime) #TODO: something may be wrong here
+            totaltime = self._printing_time
+        self.printer_get_print_job().updateTimeTotal(totaltime)
 
     def printer_file_list_parse(self, info):
         if 'Begin file list' in info:
