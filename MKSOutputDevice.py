@@ -882,6 +882,121 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._ischanging = True
         self._sendCommand("M24")
 
+    def printer_set_connect(self):
+        self._sendCommand("M20")
+        self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
+        self.setConnectionText(self._translations.get("connected"))
+
+    def get_current_temp(self, temp):
+        return float(temp[0:temp.find("/")])
+
+    def get_target_temp(self, temp):
+        return float(temp[temp.find("/") + 1:len(temp)])
+
+    def printer_info_update(self, info):
+        printer = self.printers[0]
+        t0_temp = info[info.find("T0:") + len("T0:"):info.find("T1:")]
+        t1_temp = info[info.find("T1:") + len("T1:"):info.find("@:")]
+        bed_temp = info[info.find("B:") + len("B:"):info.find("T0:")]
+        printer.updateBedTemperature(self.get_current_temp(bed_temp))
+        printer.updateTargetBedTemperature(self.get_target_temp(bed_temp))
+        extruder0 = printer.extruders[0]
+        extruder0.updateHotendTemperature(self.get_current_temp(t0_temp))
+        extruder0.updateTargetHotendTemperature(self.get_target_temp(t0_temp))
+        if self._number_of_extruders > 1:
+            extruder1 = printer.extruders[1]
+            extruder1.updateHotendTemperature(self.get_current_temp(t1_temp))
+            extruder1.updateTargetHotendTemperature(self.get_target_temp(t1_temp))
+
+    def printer_get_print_job(self):
+        printer = self.printers[0]
+        if printer.activePrintJob is None:
+            print_job = PrintJobOutputModel(output_controller=self._output_controller)
+            printer.updateActivePrintJob(print_job)
+        else:
+            print_job = printer.activePrintJob
+        return print_job
+
+    def printer_update_state(self, info):
+        printer = self.printers[0]
+        job_state = "offline"
+        if "IDLE" in info:
+            self._isPrinting = False
+            self._isPause = False
+            job_state = 'idle'
+            printer.acceptsCommands = True
+        elif "PRINTING" in info:
+            self._isPrinting = True
+            self._isPause = False
+            job_state = 'printing'
+            printer.acceptsCommands = False
+        elif "PAUSE" in info:
+            self._isPrinting = False
+            self._isPause = True
+            job_state = 'paused'
+            printer.acceptsCommands = False
+        print_job = self.printer_get_print_job()
+        print_job.updateState(job_state)
+        printer.updateState(job_state)
+        if self._isPrinting:
+            self._ischanging = False
+
+    def printer_update_printing_filename(self, info):
+        if self.isBusy() and info.rfind("/") != -1:
+            self._printing_filename = info[info.rfind("/") + 1:info.rfind(";")]
+        else:
+            self._printing_filename = "" 
+        self.printer_get_print_job().updateName(self._printing_filename)
+
+    def printer_update_printing_time(self, info):
+        if self.isBusy():
+            tm = info[info.find("M992") + len("M992"):len(info)].replace(" ", "")
+            mms = tm.split(":")
+            self._printing_time = int(mms[0]) * 3600 + int(mms[1]) * 60 + int(mms[2])
+        else:
+            self._printing_time = 0
+        print_job = self.printer_get_print_job()
+        print_job.updateTimeElapsed(self._printing_time)
+
+    def printer_update_totaltime(self, info): #TODO: take a look at this function
+        totaltime = 0
+        if self.isBusy():
+            self._printing_progress = float(info[info.find("M27") + len("M27"):len(s)].replace(" ", ""))
+            totaltime = self._printing_time / self._printing_progress * 100
+        else:
+            self._printing_progress = 0
+            totaltime = self._printing_time * 100
+        print_job = self.printer_get_print_job()
+        print_job.updateTimeTotal(self._printing_time) #TODO: something may be wrong here
+        print_job.updateTimeElapsed(self._printing_time * 2 - totaltime) #TODO: something may be wrong here
+
+    def printer_file_list_parse(self, info):
+        if 'Begin file list' in info:
+            self._sdFileList = True
+            self.sdFiles = []
+            self.last_update_time = time.time()
+            return True
+        if 'End file list' in info:
+            self._sdFileList = False
+            return True
+        if self._sdFileList:
+            filename = info.replace("\n", "").replace("\r", "")
+            if filename.lower().endswith("gcode") or filename.lower().endswith("gco") or filename.lower.endswith("g"):
+                self.sdFiles.append(filename)
+            return True
+        return False
+
+    def printer_upload_routine(self):
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
+        if self._error_message is not None:
+            self._error_message.hide()
+            self._error_message = None
+        self._error_message = Message(self._translations.get("file_send_failed"))
+        self._error_message.show()
+        self._update_timer.start()
+
     def on_read(self):
         if not self._socket:
             self.disconnect()
@@ -890,139 +1005,32 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if not self._isConnect:
                 self._isConnect = True
             if self._connection_state != UnifiedConnectionState.Connected:
-                self._sendCommand("M20")
-                self.setConnectionState(
-                    cast(ConnectionState, UnifiedConnectionState.Connected))
-                self.setConnectionText(self._translations.get("connected"))
+                self.printer_set_connect()
             if not self._printers:
                 self._createPrinterList()
-            printer = self.printers[0]
             while self._socket.canReadLine():
-                s = str(self._socket.readLine().data(),
-                        encoding=sys.getfilesystemencoding())
-                Logger.log("d", "mks recv: " + s)
+                s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
                 s = s.replace("\r", "").replace("\n", "")
+                Logger.log("d", "mks recv: " + s)
                 if "T" in s and "B" in s and "T0" in s:
-                    t0_temp = s[s.find("T0:") + len("T0:"):s.find("T1:")]
-                    t1_temp = s[s.find("T1:") + len("T1:"):s.find("@:")]
-                    bed_temp = s[s.find("B:") + len("B:"):s.find("T0:")]
-                    t0_nowtemp = float(t0_temp[0:t0_temp.find("/")])
-                    t0_targettemp = float(t0_temp[t0_temp.find("/") +
-                                                  1:len(t0_temp)])
-                    t1_nowtemp = float(t1_temp[0:t1_temp.find("/")])
-                    t1_targettemp = float(t1_temp[t1_temp.find("/") +
-                                                  1:len(t1_temp)])
-                    bed_nowtemp = float(bed_temp[0:bed_temp.find("/")])
-                    bed_targettemp = float(bed_temp[bed_temp.find("/") +
-                                                    1:len(bed_temp)])
-                    printer.updateBedTemperature(bed_nowtemp)
-                    printer.updateTargetBedTemperature(bed_targettemp)
-                    extruder0 = printer.extruders[0]
-                    extruder0.updateTargetHotendTemperature(t0_targettemp)
-                    extruder0.updateHotendTemperature(t0_nowtemp)
-                    if self._number_of_extruders > 1:
-                        extruder1 = printer.extruders[1]
-                        extruder1.updateTargetHotendTemperature(t1_targettemp)
-                        extruder1.updateHotendTemperature(t1_nowtemp)
+                    self.printer_info_update(s)
                     continue
-                if printer.activePrintJob is None:
-                    print_job = PrintJobOutputModel(
-                        output_controller=self._output_controller)
-                    printer.updateActivePrintJob(print_job)
-                else:
-                    print_job = printer.activePrintJob
                 if s.startswith("M997"):
-                    job_state = "offline"
-                    if "IDLE" in s:
-                        self._isPrinting = False
-                        self._isPause = False
-                        job_state = 'idle'
-                        printer.acceptsCommands = True
-                    elif "PRINTING" in s:
-                        self._isPrinting = True
-                        self._isPause = False
-                        job_state = 'printing'
-                        printer.acceptsCommands = False
-                    elif "PAUSE" in s:
-                        self._isPrinting = False
-                        self._isPause = True
-                        job_state = 'paused'
-                        printer.acceptsCommands = False
-                    print_job.updateState(job_state)
-                    printer.updateState(job_state)
-                    if self._isPrinting:
-                        self._ischanging = False
-                    # self._updateJobState(job_state)
+                    self.printer_update_state(s)
                     continue
                 if s.startswith("M994"):
-                    if self.isBusy() and s.rfind("/") != -1:
-                        self._printing_filename = s[s.rfind("/") +
-                                                    1:s.rfind(";")]
-                    else:
-                        self._printing_filename = ""
-                    print_job.updateName(self._printing_filename)
-                    # self.setJobName(self._printing_filename)
+                    self.printer_update_printing_filename(s)
                     continue
                 if s.startswith("M992"):
-                    if self.isBusy():
-                        tm = s[s.find("M992") + len("M992"):len(s)].replace(
-                            " ", "")
-                        mms = tm.split(":")
-                        self._printing_time = int(mms[0]) * 3600 + int(
-                            mms[1]) * 60 + int(mms[2])
-                    else:
-                        self._printing_time = 0
-                    # Logger.log("d", self._printing_time)
-                    print_job.updateTimeElapsed(self._printing_time)
+                    self.printer_update_printing_time(s)
                     continue
                 if s.startswith("M27"):
-                    if self._application.getVersion().split(".")[0] < "4":
-                        if self.isBusy():
-                            self._printing_progress = float(
-                                s[s.find("M27") + len("M27"):len(s)].replace(
-                                    " ", ""))
-                            totaltime = 100 / self._printing_progress * self._printing_time
-                        else:
-                            self._printing_progress = 0
-                            totaltime = self._printing_time * 100
-                        print_job.updateTimeTotal(totaltime)
-                    else:
-                        if self.isBusy():
-                            self._printing_progress = float(
-                                s[s.find("M27") + len("M27"):len(s)].replace(
-                                    " ", ""))
-                            totaltime = self._printing_time / self._printing_progress * 100
-                        else:
-                            self._printing_progress = 0
-                            totaltime = self._printing_time * 100
-                        print_job.updateTimeTotal(self._printing_time)
-                        print_job.updateTimeElapsed(self._printing_time * 2 -
-                                                    totaltime)
+                    self.printer_update_totaltime(s)
                     continue
-                if 'Begin file list' in s:
-                    self._sdFileList = True
-                    self.sdFiles = []
-                    self.last_update_time = time.time()
-                    continue
-                if 'End file list' in s:
-                    self._sdFileList = False
-                    continue
-                if self._sdFileList:
-                    s = s.replace("\n", "").replace("\r", "")
-                    if s.lower().endswith("gcode") or s.lower().endswith(
-                            "gco") or s.lower.endswith("g"):
-                        self.sdFiles.append(s)
+                if self.printer_file_list_parse(s):
                     continue
                 if s.startswith("Upload"):
-                    if self._progress_message is not None:
-                        self._progress_message.hide()
-                        self._progress_message = None
-                    if self._error_message is not None:
-                        self._error_message.hide()
-                        self._error_message = None
-                    self._error_message = Message(self._translations.get("file_send_failed"))
-                    self._error_message.show()
-                    self._update_timer.start()
+                    self.printer_upload_routine()
                     continue
         except Exception as e:
             print(e)
