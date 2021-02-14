@@ -19,7 +19,7 @@ from UM.Settings.InstanceContainer import InstanceContainer
 from cura.Machines.ContainerTree import ContainerTree
 
 from PyQt5.QtQuick import QQuickView
-from PyQt5.QtWidgets import QFileDialog, QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt5.QtWidgets import QFileDialog
 
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 
@@ -47,7 +47,7 @@ if TYPE_CHECKING:
     from UM.FileHandler.FileHandler import FileHandler  # For typing.
 
 from UM.Resources import Resources
-from . import Constants
+from . import Constants, MKSDialog
 
 Resources.addSearchPath(
     os.path.join(os.path.abspath(
@@ -57,50 +57,6 @@ catalog = i18nCatalog("mksplugin")
 
 if catalog.hasTranslationLoaded():
     Logger.log("i", "MKS WiFi Plugin translation loaded!")
-
-class YesNoDialog(QDialog):
-    def __init__(self, parent = None):
-        super(YesNoDialog, self).__init__(parent)
-
-        self.yes_cliked = False
-
-        self.line_edit = QLineEdit()
-        self.content = QLabel("")
-
-        vlayout = QVBoxLayout()
-        hlayout = QHBoxLayout()
-        yesbtn = QPushButton(catalog.i18nc("@action:button", "Yes"))
-        yesbtn.clicked.connect(self.yes_click)
-        nobtn = QPushButton(catalog.i18nc("@action:button", "No"))
-        nobtn.clicked.connect(self.no_click)
-        hlayout.addWidget(yesbtn)
-        hlayout.addWidget(nobtn)
-
-        vlayout.addWidget(self.content)
-        vlayout.addWidget(self.line_edit)
-        vlayout.addLayout(hlayout)
-
-        self.setLayout(vlayout)
-
-    def init_dialog(self, filename, label, title):
-        self.line_edit.setText(filename)
-        self.content.setText(label)
-        self.setWindowTitle(title)        
-
-    def get_filename(self):
-        return self.line_edit.text()
-
-    def yes_click(self):
-    	self.yes_cliked = True
-    	self.accept()
-
-    def no_click(self):
-    	self.yes_cliked = False
-    	self.line_edit.setText("")
-    	self.reject()
-
-    def accepted(self):
-    	return self.yes_cliked
 
 class UnifiedConnectionState(IntEnum):
     try:
@@ -447,10 +403,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 if self.isBusy():
                     self.isBusy_error_message()
                     return
-                self.uploadfunc(filename)
+                if self._progress_message:
+                    self.show_error_message(self._translations.get("error_2"))
+                else:
+                    self.uploadfunc(filename)
 
     def show_dialog(self, filename, label, title):
-        dialog = YesNoDialog()
+        dialog = MKSDialog.MKSDialog()
         dialog.init_dialog(filename, label, title)
         dialog.exec_()
         new_filename = ""
