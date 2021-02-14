@@ -942,7 +942,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._ischanging = False
 
     def printer_update_printing_filename(self, info):
-        printer = self.printers[0]
         if self.isBusy() and info.rfind("/") != -1:
             self._printing_filename = info[info.rfind("/") + 1:info.rfind(";")]
         else:
@@ -950,7 +949,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.printer_get_print_job().updateName(self._printing_filename)
 
     def printer_update_printing_time(self, info):
-        printer = self.printers[0]
         if self.isBusy():
             tm = info[info.find("M992") + len("M992"):len(info)].replace(" ", "")
             mms = tm.split(":")
@@ -961,7 +959,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         print_job.updateTimeElapsed(self._printing_time)
 
     def printer_update_totaltime(self, info): #TODO: take a look at this function
-        printer = self.printers[0]
         totaltime = 0
         if self.isBusy():
             self._printing_progress = float(info[info.find("M27") + len("M27"):len(s)].replace(" ", ""))
