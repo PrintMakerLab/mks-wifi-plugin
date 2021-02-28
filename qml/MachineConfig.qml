@@ -20,6 +20,7 @@ Cura.MachineAction
     property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
 
     property var printerSupportScreenshots: manager.supportScreenshot()
+    property var printerScreenshotSizesList: manager.getScreenshotOptions()
 
     Connections
     {
@@ -519,14 +520,14 @@ Cura.MachineAction
                 id: variantComboBox
                 width: Math.round(parent.width * 0.5)
 
-                model: [catalog.i18nc("@label", "None"), catalog.i18nc("@label", "Custom")]
+                model: printerScreenshotSizesList
 
                 onCurrentIndexChanged:
                 {
-                    if (variantComboBox.currentText == catalog.i18nc("@label", "None"))
-                    {
-                        simageTextInput.text = ""
-                        gimageTextInput.text = ""
+                    if (variantComboBox.currentText != catalog.i18nc("@label", "Custom")){
+                        var settings = manager.getScreenshotSettings(variantComboBox.currentText)
+                        simageTextInput.text = settings.simage
+                        gimageTextInput.text = settings.gimage
                     }
                 }
             }
