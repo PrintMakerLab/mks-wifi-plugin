@@ -519,14 +519,14 @@ Cura.MachineAction
                 id: variantComboBox
                 width: Math.round(parent.width * 0.5)
 
-                model: [catalog.i18nc("@label", "None"), catalog.i18nc("@label", "Custom")]
+                model: manager.getScreenshotOptions()
 
                 onCurrentIndexChanged:
                 {
-                    if (variantComboBox.currentText == catalog.i18nc("@label", "None"))
-                    {
-                        simageTextInput.text = ""
-                        gimageTextInput.text = ""
+                    if (variantComboBox.currentText != catalog.i18nc("@label", "Custom")){
+                        var settings = manager.getScreenshotSettings(variantComboBox.currentText)
+                        simageTextInput.text = settings.simage
+                        gimageTextInput.text = settings.gimage
                     }
                 }
             }
