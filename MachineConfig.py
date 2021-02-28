@@ -58,7 +58,7 @@ class MachineConfig(MachineAction):
             with open(screenshot_file_path, encoding="utf-8") as screenshot_file:
                 self.screenshot_info = json.load(screenshot_file)
         except Exception as e:
-            self.screenshot_info = [{ "index": 0, "label": "None", "simage": "", "gimage": "" }]
+            self.screenshot_info = []
             Logger.logException(
                 "w", "Could not get information for the screenshot options: " + str(e))
 
@@ -212,7 +212,10 @@ class MachineConfig(MachineAction):
     @pyqtSlot(result="QVariantList")
     def getScreenshotOptions(self):
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
-        result = [option["label"] for option in options]
+        result = []
+        result.append(catalog.i18nc("@label", "None"))
+        for option in options:
+        	result.append(option["label"])
         result.append(catalog.i18nc("@label", "Custom"))
         return result
 

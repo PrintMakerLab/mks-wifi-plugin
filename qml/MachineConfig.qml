@@ -20,6 +20,7 @@ Cura.MachineAction
     property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
 
     property var printerSupportScreenshots: manager.supportScreenshot()
+    property var printerScreenshotSizesList: manager.getScreenshotOptions()
 
     Connections
     {
@@ -519,7 +520,7 @@ Cura.MachineAction
                 id: variantComboBox
                 width: Math.round(parent.width * 0.5)
 
-                model: manager.getScreenshotOptions()
+                model: printerScreenshotSizesList
 
                 onCurrentIndexChanged:
                 {
