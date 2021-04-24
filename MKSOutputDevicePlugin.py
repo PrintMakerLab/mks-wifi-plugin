@@ -145,10 +145,10 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def reCheckConnections(self):
         active_machine = Application.getInstance().getGlobalContainerStack()
-        Logger.log("d", "GlobalContainerStack change %s" %
-                   active_machine.getMetaDataEntry("mks_network_key"))
         if not active_machine:
             return
+        Logger.log("d", "GlobalContainerStack change %s" %
+                   active_machine.getMetaDataEntry("mks_network_key"))
         for key in self._printers:
             if key == active_machine.getMetaDataEntry("mks_network_key"):
                 if not self._printers[key].isConnected():

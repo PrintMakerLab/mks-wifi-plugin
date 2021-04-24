@@ -1,16 +1,17 @@
 {
     "name": "MKS Plugin Connection",
     "author": "Makerbase, Jeredian, Elkin-Vasily",
-    "version": "1.2.1",
+    "version": "1.2.2-dev",
     "minimum_cura_version": "4.5",
-    "maximum_cura_version": "4.8",
+    "maximum_cura_version": "4.9",
     "description": "Сonnect to MKS Robin WiFi/MKS TFT WiFi in Cura",
     "api": "7.1.0",
     "supported_sdk_versions": [
         "7.1.0",
         "7.2.0",
         "7.3.0",
-        "7.4.0"
+        "7.4.0",
+        "7.5.0"
     ],
     "i18n-catalog": "mksplugin"
 }

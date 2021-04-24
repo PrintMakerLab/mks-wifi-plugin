@@ -248,7 +248,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._socket = None
         self._socket = QTcpSocket()
         self._socket.connectToHost(self._address, self._port)
-        global_container_stack = CuraApplication.getInstance(
+        global_container_stack = Application.getInstance(
         ).getGlobalContainerStack()
         self.setShortDescription(
             self._translations.get("print_over_action_button").format(
@@ -1085,6 +1085,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def _onGlobalContainerChanged(self) -> None:
         self._global_container_stack = Application.getInstance(
         ).getGlobalContainerStack()
+        if not self._global_container_stack:
+            return
         definitions = self._global_container_stack.definition.findDefinitions(
             key="cooling")
         Logger.log("d", definitions[0].label)
