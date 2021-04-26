@@ -381,9 +381,9 @@ Cura.MachineAction
                                     }else{
                                         return false
                                     }
-                                }                                
+                                }
                             }
-                            return true                    
+                            return true
                         }
                         onClicked: connectToPrinter()
                     }
@@ -397,7 +397,7 @@ Cura.MachineAction
                                     if (connectedDevice.address == base.selectedPrinter.ipAddress) {
                                         return true
                                     }
-                                }                                
+                                }
                             }
                             return false
                         }
@@ -515,19 +515,24 @@ Cura.MachineAction
                 wrapMode: Text.WordWrap
                 text: catalog.i18nc("@label", "Screenshot support")
             }
-            ComboBox
+            Cura.ComboBox
             {
                 id: variantComboBox
                 width: Math.round(parent.width * 0.5)
-
+                textRole: "key"
                 model: printerScreenshotSizesList
 
                 onCurrentIndexChanged:
                 {
-                    if (variantComboBox.currentText != catalog.i18nc("@label", "Custom")){
-                        var settings = manager.getScreenshotSettings(variantComboBox.currentText)
+                    var currentValue = model[variantComboBox.currentIndex].key
+                    if (currentValue != catalog.i18nc("@label", "Custom")){
+                        var settings = manager.getScreenshotSettings(currentValue)
                         simageTextInput.text = settings.simage
                         gimageTextInput.text = settings.gimage
+                    }
+                    else {
+                        simageTextInput.text = ""
+                        gimageTextInput.text = ""
                     }
                 }
             }
