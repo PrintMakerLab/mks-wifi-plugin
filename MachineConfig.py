@@ -51,7 +51,7 @@ class MachineConfig(MachineAction):
             Logger.logException(
                 "w", "Could not get version information for the plugin: " + str(e))
 
-        # Try to get screenshot settings from screenshot.json 
+        # Try to get screenshot settings from screenshot.json
         screenshot_file_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "config", "screenshot.json")
         try:
@@ -62,7 +62,6 @@ class MachineConfig(MachineAction):
             Logger.logException(
                 "w", "Could not get information for the screenshot options: " + str(e))
 
-        
         self._user_agent = ("%s/%s %s/%s" % (
             self._application.getApplicationName(),
             self._application.getVersion(),
@@ -213,13 +212,14 @@ class MachineConfig(MachineAction):
     def getScreenshotOptions(self):
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
         result = []
-        result.append(catalog.i18nc("@label", "None"))
+        result.append({"key": catalog.i18nc("@label", "None"), "value": 0})
         for option in options:
-        	result.append(option["label"])
-        result.append(catalog.i18nc("@label", "Custom"))
+            result.append({"key": option["label"], "value": option["index"]+1})
+        result.append({"key": catalog.i18nc(
+            "@label", "Custom"), "value": len(options)+1})
         return result
 
-    @pyqtSlot(str,result="QVariant")
+    @pyqtSlot(str, result="QVariant")
     def getScreenshotSettings(self, label):
         result = {"simage": "", "gimage": ''}
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
@@ -255,9 +255,9 @@ class MachineConfig(MachineAction):
             if simage != "":
                 global_container_stack.setMetaDataEntry("mks_simage", simage)
             else:
-                global_container_stack.setMetaDataEntry("mks_simage", None) 
-                global_container_stack.removeMetaDataEntry("mks_simage")  
-    
+                global_container_stack.setMetaDataEntry("mks_simage", None)
+                global_container_stack.removeMetaDataEntry("mks_simage")
+
     @pyqtSlot(str)
     def setGimage(self, gimage):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
@@ -265,8 +265,8 @@ class MachineConfig(MachineAction):
             if gimage != "":
                 global_container_stack.setMetaDataEntry("mks_gimage", gimage)
             else:
-                global_container_stack.setMetaDataEntry("mks_gimage", None) 
-                global_container_stack.removeMetaDataEntry("mks_gimage")         
+                global_container_stack.setMetaDataEntry("mks_gimage", None)
+                global_container_stack.removeMetaDataEntry("mks_gimage")
 
     @pyqtSlot()
     def printtest(self):

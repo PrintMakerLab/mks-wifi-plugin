@@ -381,9 +381,9 @@ Cura.MachineAction
                                     }else{
                                         return false
                                     }
-                                }                                
+                                }
                             }
-                            return true                    
+                            return true
                         }
                         onClicked: connectToPrinter()
                     }
@@ -397,7 +397,7 @@ Cura.MachineAction
                                     if (connectedDevice.address == base.selectedPrinter.ipAddress) {
                                         return true
                                     }
-                                }                                
+                                }
                             }
                             return false
                         }
@@ -515,11 +515,11 @@ Cura.MachineAction
                 wrapMode: Text.WordWrap
                 text: catalog.i18nc("@label", "Screenshot support")
             }
-            ComboBox
+            Cura.ComboBox
             {
                 id: variantComboBox
                 width: Math.round(parent.width * 0.5)
-
+                textRole: "key"
                 model: printerScreenshotSizesList
 
                 onCurrentIndexChanged:
