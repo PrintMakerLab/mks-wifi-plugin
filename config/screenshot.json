@@ -1,6 +1,6 @@
 [
-    { "index": 0, "label": "Default", "simage": "100", "gimage": "200" },
-    { "index": 1, "label": "FLSUN QQ-S", "simage": "", "gimage": "" },
-    { "index": 2, "label": "Flying Bear", "simage": "50", "gimage": "200" },
-    { "index": 3, "label": "Two Trees Sapphire", "simage": "100", "gimage": "200" }
+    { "index": 1, "label": "Default", "simage": "100", "gimage": "200" },
+    { "index": 2, "label": "FLSUN QQ-S", "simage": "", "gimage": "" },
+    { "index": 3, "label": "Flying Bear", "simage": "50", "gimage": "200" },
+    { "index": 4, "label": "Two Trees Sapphire", "simage": "100", "gimage": "200" }
 ]
