@@ -524,10 +524,15 @@ Cura.MachineAction
 
                 onCurrentIndexChanged:
                 {
-                    if (variantComboBox.currentText != catalog.i18nc("@label", "Custom")){
-                        var settings = manager.getScreenshotSettings(variantComboBox.currentText)
+                    var currentValue = model[variantComboBox.currentIndex].key
+                    if (currentValue != catalog.i18nc("@label", "Custom")){
+                        var settings = manager.getScreenshotSettings(currentValue)
                         simageTextInput.text = settings.simage
                         gimageTextInput.text = settings.gimage
+                    }
+                    else {
+                        simageTextInput.text = ""
+                        gimageTextInput.text = ""
                     }
                 }
             }
