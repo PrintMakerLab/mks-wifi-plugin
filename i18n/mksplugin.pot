@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-13 19:15+0300\n"
+"POT-Creation-Date: 2021-05-26 15:24+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,15 +17,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: MachineConfig.py:31
+#: MachineConfig.py:30
 msgctxt "@action"
-msgid "MKS WiFi Connection"
+msgid "MKS WiFi Plugin"
+msgstr ""
+
+#: MachineConfig.py:282 qml/MachineConfig.qml:410 qml/MachineConfig.qml:452
+#: qml/MachineConfig.qml:488
+msgctxt "@label"
+msgid "Custom"
 msgstr ""
 
 #: MKSOutputDevicePlugin.py:69
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer connected successfully!"
+msgstr ""
+
+#: MKSDialog.py:41
+msgctxt "@action:button"
+msgid "Yes"
+msgstr ""
+
+#: MKSDialog.py:42
+msgctxt "@action:button"
+msgid "No"
 msgstr ""
 
 #: SaveOutputDevice.py:40
@@ -124,152 +140,142 @@ msgid ""
 "message>"
 msgstr ""
 
-#: MKSOutputDevice.py:213
-msgctxt "@action:button"
-msgid "Yes"
-msgstr ""
-
-#: MKSOutputDevice.py:214
-msgctxt "@action:button"
-msgid "No"
-msgstr ""
-
-#: MKSOutputDevice.py:215 qml/MachineConfig.qml:475 qml/MachineConfig.qml:581
+#: MKSOutputDevice.py:212 qml/MachineConfig.qml:605
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr ""
 
-#: MKSOutputDevice.py:216
+#: MKSOutputDevice.py:213
 msgctxt "@action:button"
 msgid "Print over TFT"
 msgstr ""
 
-#: MKSOutputDevice.py:217
+#: MKSOutputDevice.py:214
 msgctxt "@properties:tooltip"
 msgid "Print over TFT"
 msgstr ""
 
-#: MKSOutputDevice.py:218
+#: MKSOutputDevice.py:215
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:219
+#: MKSOutputDevice.py:216
 #, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:220
+#: MKSOutputDevice.py:217
 #, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr ""
 
-#: MKSOutputDevice.py:221
+#: MKSOutputDevice.py:218
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr ""
 
-#: MKSOutputDevice.py:222
+#: MKSOutputDevice.py:219
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:223
+#: MKSOutputDevice.py:220
 msgctxt "@info:status"
 msgid "File name can not include chinese."
 msgstr ""
 
-#: MKSOutputDevice.py:224
+#: MKSOutputDevice.py:221
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:225
+#: MKSOutputDevice.py:222
 msgctxt "@info:status"
 msgid "File name is too long to upload."
 msgstr ""
 
-#: MKSOutputDevice.py:226
+#: MKSOutputDevice.py:223
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
 msgstr ""
 
-#: MKSOutputDevice.py:227
+#: MKSOutputDevice.py:224
 msgctxt "@info:status"
 msgid "Sending file to printer"
 msgstr ""
 
-#: MKSOutputDevice.py:228
+#: MKSOutputDevice.py:225
 msgctxt "@info:status"
 msgid "Uploading print job to printer"
 msgstr ""
 
-#: MKSOutputDevice.py:229
+#: MKSOutputDevice.py:226
 msgctxt "@info:title"
 msgid "Sending Print Job"
 msgstr ""
 
-#: MKSOutputDevice.py:230
+#: MKSOutputDevice.py:227
 msgctxt "@label"
 msgid "Print job"
 msgstr ""
 
-#: MKSOutputDevice.py:231
+#: MKSOutputDevice.py:228
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
 msgstr ""
 
-#: MKSOutputDevice.py:232
+#: MKSOutputDevice.py:229
 msgctxt "@info:status"
 msgid "Send file to printer failed."
 msgstr ""
 
-#: MKSOutputDevice.py:233
+#: MKSOutputDevice.py:230
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
 msgstr ""
 
-#: MKSOutputDevice.py:234
+#: MKSOutputDevice.py:231
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr ""
 
-#: MKSOutputDevice.py:235
+#: MKSOutputDevice.py:232
 msgctxt "@warning:status"
 msgid "Please prepare G-code before exporting."
 msgstr ""
 
-#: MKSOutputDevice.py:236
+#: MKSOutputDevice.py:233
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr ""
 
-#: MKSOutputDevice.py:237
+#: MKSOutputDevice.py:234
 msgctxt "@info:status"
 msgid "Error: command can not send"
 msgstr ""
 
-#: MKSOutputDevice.py:238
+#: MKSOutputDevice.py:235
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr ""
 
-#: MKSOutputDevice.py:239
+#: MKSOutputDevice.py:236
 msgctxt "@info:title"
 msgid "Choose file"
 msgstr ""
 
-#: MKSOutputDevice.py:240
+#: MKSOutputDevice.py:237
 msgctxt "@label"
 msgid "G-code"
 msgstr ""
 
-#: MKSOutputDevice.py:241
+#: MKSOutputDevice.py:238
 msgctxt "@label"
 msgid "All"
 msgstr ""
@@ -359,7 +365,7 @@ msgctxt "@action:button"
 msgid "Print"
 msgstr ""
 
-#: qml/MonitorItem4x.qml:559 qml/MachineConfig.qml:126
+#: qml/MonitorItem4x.qml:559
 msgctxt "@action:button"
 msgid "Refresh"
 msgstr ""
@@ -409,153 +415,84 @@ msgctxt "@tooltip"
 msgid "Unlock 3D printer motors."
 msgstr ""
 
+#: qml/MachineConfig.qml:76
+msgctxt "@title:tab"
+msgid "Network settings"
+msgstr ""
+
 #: qml/MachineConfig.qml:77
-msgctxt "@title:window"
-msgid "Connect to Networked Printer"
+msgctxt "@title:tab"
+msgid "Preview settings"
 msgstr ""
 
-#: qml/MachineConfig.qml:87
+#: qml/MachineConfig.qml:147
 msgctxt "@label"
-msgid ""
-"To print directly to your printer from Cura, please make sure your printer "
-"is connected to the same WiFi network as this computer. If you don't connect "
-"your printer with Cura, you can still use SD drive to transfer g-code files "
-"to your printer.\n"
-"\n"
-"Select your printer from the list below:"
+msgid "WiFi support"
 msgstr ""
 
-#: qml/MachineConfig.qml:97
+#: qml/MachineConfig.qml:182
 msgctxt "@action:button"
 msgid "Add"
 msgstr ""
 
-#: qml/MachineConfig.qml:107
+#: qml/MachineConfig.qml:195
 msgctxt "@action:button"
 msgid "Edit"
 msgstr ""
 
-#: qml/MachineConfig.qml:118
+#: qml/MachineConfig.qml:208
 msgctxt "@action:button"
 msgid "Remove"
 msgstr ""
 
-#: qml/MachineConfig.qml:216
-msgctxt "@label"
-msgid ""
-"If your printer is not listed, read the <a href='%1'>network printing "
-"troubleshooting guide</a>"
-msgstr ""
-
-#: qml/MachineConfig.qml:243
-msgctxt "@label"
-msgid "Type"
-msgstr ""
-
-#: qml/MachineConfig.qml:255
-msgctxt "@label Printer name"
-msgid "Ultimaker 3"
-msgstr ""
-
-#: qml/MachineConfig.qml:258
-msgctxt "@label Printer name"
-msgid "Ultimaker 3 Extended"
-msgstr ""
-
-#: qml/MachineConfig.qml:261
-msgctxt "@label Printer name"
-msgid "TFT WIFI"
-msgstr ""
-
-#: qml/MachineConfig.qml:274
-msgctxt "@label"
-msgid "Firmware version"
-msgstr ""
-
-#: qml/MachineConfig.qml:286
-msgctxt "@label"
-msgid "Address"
-msgstr ""
-
-#: qml/MachineConfig.qml:298 qml/MachineConfig.qml:515
-msgctxt "@label"
-msgid "Screenshot support"
-msgstr ""
-
-#: qml/MachineConfig.qml:304
-msgctxt "@label"
-msgid "Yes"
-msgstr ""
-
-#: qml/MachineConfig.qml:304
-msgctxt "@label"
-msgid "No"
-msgstr ""
-
-#: qml/MachineConfig.qml:310 qml/MachineConfig.qml:537
-msgctxt "@label"
-msgid "Simage"
-msgstr ""
-
-#: qml/MachineConfig.qml:326 qml/MachineConfig.qml:555
-msgctxt "@label"
-msgid "Gimage"
-msgstr ""
-
-#: qml/MachineConfig.qml:352
-msgctxt "@label"
-msgid "This printer is not set up to host a group of Ultimaker 3 printers."
-msgstr ""
-
-#: qml/MachineConfig.qml:356
-msgctxt "@label"
-msgid "This printer is the host for a group of %1 Ultimaker 3 printers."
-msgstr ""
-
-#: qml/MachineConfig.qml:366
-msgctxt "@label"
-msgid "The printer at this address has not yet responded."
-msgstr ""
-
-#: qml/MachineConfig.qml:374 qml/MKSConnectBtn.qml:70
+#: qml/MachineConfig.qml:290 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
 msgstr ""
 
-#: qml/MachineConfig.qml:392
+#: qml/MachineConfig.qml:317
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr ""
 
-#: qml/MachineConfig.qml:408
-msgctxt "@action:button"
-msgid "Image settings"
+#: qml/MachineConfig.qml:359
+msgctxt "@label"
+msgid "Screenshot support"
 msgstr ""
 
-#: qml/MachineConfig.qml:424
+#: qml/MachineConfig.qml:388
+msgctxt "@label"
+msgid "Printer model"
+msgstr ""
+
+#: qml/MachineConfig.qml:428
+msgctxt "@label"
+msgid "Simage"
+msgstr ""
+
+#: qml/MachineConfig.qml:464
+msgctxt "@label"
+msgid "Gimage"
+msgstr ""
+
+#: qml/MachineConfig.qml:513
+msgctxt "@label"
+msgid "MKS WiFi Plugin active for this printer"
+msgstr ""
+
+#: qml/MachineConfig.qml:554
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr ""
 
-#: qml/MachineConfig.qml:454
+#: qml/MachineConfig.qml:584
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr ""
 
-#: qml/MachineConfig.qml:483 qml/MachineConfig.qml:589
+#: qml/MachineConfig.qml:613
 msgctxt "@action:button"
 msgid "OK"
-msgstr ""
-
-#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:526
-msgctxt "@label"
-msgid "None"
-msgstr ""
-
-#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:549
-#: qml/MachineConfig.qml:567
-msgctxt "@label"
-msgid "Custom"
 msgstr ""
 
 #: qml/MKSConnectBtn.qml:61
