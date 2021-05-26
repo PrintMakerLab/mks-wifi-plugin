@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-26 15:24+0300\n"
-"PO-Revision-Date: 2021-05-26 15:33+0300\n"
+"POT-Creation-Date: 2021-05-27 00:03+0300\n"
+"PO-Revision-Date: 2021-05-27 00:04+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
@@ -27,8 +27,8 @@ msgctxt "@action"
 msgid "MKS WiFi Plugin"
 msgstr "Плагин MKS WiFi"
 
-#: MachineConfig.py:282 qml/MachineConfig.qml:410 qml/MachineConfig.qml:452
-#: qml/MachineConfig.qml:488
+#: MachineConfig.py:279 qml/MachineConfig.qml:409 qml/MachineConfig.qml:451
+#: qml/MachineConfig.qml:487
 msgctxt "@label"
 msgid "Custom"
 msgstr "Своё"
@@ -151,7 +151,7 @@ msgstr ""
 "Что-то пошло не так при сохранении <filename>{0}</filename>: <message>{1}</"
 "message>"
 
-#: MKSOutputDevice.py:212 qml/MachineConfig.qml:605
+#: MKSOutputDevice.py:212 qml/MachineConfig.qml:604
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Отменить"
@@ -436,72 +436,72 @@ msgctxt "@title:tab"
 msgid "Preview settings"
 msgstr "Настройка изображения"
 
-#: qml/MachineConfig.qml:147
+#: qml/MachineConfig.qml:146
 msgctxt "@label"
 msgid "WiFi support"
 msgstr "Поддержка WiFi"
 
-#: qml/MachineConfig.qml:182
+#: qml/MachineConfig.qml:181
 msgctxt "@action:button"
 msgid "Add"
 msgstr "Добавить"
 
-#: qml/MachineConfig.qml:195
+#: qml/MachineConfig.qml:194
 msgctxt "@action:button"
 msgid "Edit"
 msgstr "Править"
 
-#: qml/MachineConfig.qml:208
+#: qml/MachineConfig.qml:207
 msgctxt "@action:button"
 msgid "Remove"
 msgstr "Удалить"
 
-#: qml/MachineConfig.qml:290 qml/MKSConnectBtn.qml:70
+#: qml/MachineConfig.qml:289 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
 msgstr "Подключить"
 
-#: qml/MachineConfig.qml:317
+#: qml/MachineConfig.qml:316
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr "Отключить"
 
-#: qml/MachineConfig.qml:359
+#: qml/MachineConfig.qml:358
 msgctxt "@label"
 msgid "Screenshot support"
 msgstr "Поддержка изображений"
 
-#: qml/MachineConfig.qml:388
+#: qml/MachineConfig.qml:387
 msgctxt "@label"
 msgid "Printer model"
 msgstr "Модель принтера"
 
-#: qml/MachineConfig.qml:428
+#: qml/MachineConfig.qml:427
 msgctxt "@label"
 msgid "Simage"
 msgstr "Simage"
 
-#: qml/MachineConfig.qml:464
+#: qml/MachineConfig.qml:463
 msgctxt "@label"
 msgid "Gimage"
 msgstr "Gimage"
 
-#: qml/MachineConfig.qml:513
+#: qml/MachineConfig.qml:512
 msgctxt "@label"
-msgid "MKS WiFi Plugin active for this printer"
+msgid "MKS WiFi Plugin is active for this printer"
 msgstr "Включить плагин MKS WiFi для этого принтера"
 
-#: qml/MachineConfig.qml:554
+#: qml/MachineConfig.qml:553
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr "Добавление нового принтера"
 
-#: qml/MachineConfig.qml:584
+#: qml/MachineConfig.qml:583
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr "Введите IP-адрес или имя хоста вашего принтера."
 
-#: qml/MachineConfig.qml:613
+#: qml/MachineConfig.qml:612
 msgctxt "@action:button"
 msgid "OK"
 msgstr "Ок"

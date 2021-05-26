@@ -200,9 +200,6 @@ class MachineConfig(MachineAction):
 
     @pyqtSlot(result=bool)
     def pluginEnabled(self):
-
-        Logger.log("d", Application.getInstance().getGlobalContainerStack().getMetaData()) # TODO: remove this after debug
-
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
@@ -219,7 +216,7 @@ class MachineConfig(MachineAction):
             if "mks_support" in meta_data:
                 Logger.log("d", "Already ON")
                 return
-            global_container_stack.setMetaDataEntry("mks_support", "yes")
+            global_container_stack.setMetaDataEntry("mks_support", "true")
 
     @pyqtSlot()
     def pluginDisable(self):

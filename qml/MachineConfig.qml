@@ -103,7 +103,6 @@ Cura.MachineAction
             Item
             {
                 id: networkTab
-                // UM.I18nCatalog { id: catalog; name: "cura" }
 
                 property int columnWidth: ((parent.width - 2 * UM.Theme.getSize("default_margin").width) / 2) | 0
                 property int columnSpacing: 3 * screenScaleFactor
@@ -510,7 +509,7 @@ Cura.MachineAction
         {
             width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
             wrapMode: Text.WordWrap
-            text: catalog.i18nc("@label", "MKS WiFi Plugin active for this printer")
+            text: catalog.i18nc("@label", "MKS WiFi Plugin is active for this printer")
         }
         Cura.CheckBox
         {
