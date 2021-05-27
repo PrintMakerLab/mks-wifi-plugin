@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-02-13 19:15+0300\n"
-"PO-Revision-Date: 2021-01-31 13:39+0300\n"
+"POT-Creation-Date: 2021-05-27 00:03+0300\n"
+"PO-Revision-Date: 2021-05-27 00:04+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
@@ -22,16 +22,32 @@ msgstr ""
 "X-Source-Language: en\n"
 "X-Generator: Poedit 2.4.2\n"
 
-#: MachineConfig.py:31
+#: MachineConfig.py:30
 msgctxt "@action"
-msgid "MKS WiFi Connection"
-msgstr "Подключение MKS WiFi"
+msgid "MKS WiFi Plugin"
+msgstr "Плагин MKS WiFi"
+
+#: MachineConfig.py:279 qml/MachineConfig.qml:409 qml/MachineConfig.qml:451
+#: qml/MachineConfig.qml:487
+msgctxt "@label"
+msgid "Custom"
+msgstr "Своё"
 
 #: MKSOutputDevicePlugin.py:69
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer connected successfully!"
 msgstr "Принтер <message>{0}</message> успешно подключен!"
+
+#: MKSDialog.py:41
+msgctxt "@action:button"
+msgid "Yes"
+msgstr "Да"
+
+#: MKSDialog.py:42
+msgctxt "@action:button"
+msgid "No"
+msgstr "Нет"
 
 #: SaveOutputDevice.py:40
 msgctxt "@action:button"
@@ -135,152 +151,142 @@ msgstr ""
 "Что-то пошло не так при сохранении <filename>{0}</filename>: <message>{1}</"
 "message>"
 
-#: MKSOutputDevice.py:213
-msgctxt "@action:button"
-msgid "Yes"
-msgstr "Да"
-
-#: MKSOutputDevice.py:214
-msgctxt "@action:button"
-msgid "No"
-msgstr "Нет"
-
-#: MKSOutputDevice.py:215 qml/MachineConfig.qml:475 qml/MachineConfig.qml:581
+#: MKSOutputDevice.py:212 qml/MachineConfig.qml:604
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Отменить"
 
-#: MKSOutputDevice.py:216
+#: MKSOutputDevice.py:213
 msgctxt "@action:button"
 msgid "Print over TFT"
 msgstr "Печать через TFT"
 
-#: MKSOutputDevice.py:217
+#: MKSOutputDevice.py:214
 msgctxt "@properties:tooltip"
 msgid "Print over TFT"
 msgstr "Печать через TFT"
 
-#: MKSOutputDevice.py:218
+#: MKSOutputDevice.py:215
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "Connected to TFT on <message>{0}</message>"
 msgstr "Подключиться к TFT на <message>{0}</message>"
 
-#: MKSOutputDevice.py:219
+#: MKSOutputDevice.py:216
 #, python-brace-format
 msgctxt "@action:button Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Печать на <message>{0}</message>"
 
-#: MKSOutputDevice.py:220
+#: MKSOutputDevice.py:217
 #, python-brace-format
 msgctxt "@properties:tooltip Don't translate the XML tags <message>!"
 msgid "Print over <message>{0}</message>"
 msgstr "Печать на <message>{0}</message>"
 
-#: MKSOutputDevice.py:221
+#: MKSOutputDevice.py:218
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists."
 msgstr "Файл <filename>{0}</filename> существует."
 
-#: MKSOutputDevice.py:222
+#: MKSOutputDevice.py:219
 #, python-brace-format
 msgctxt "@info:status Don't translate the XML tags <filename>!"
 msgid "<filename>{0}</filename> already exists, please rename it."
 msgstr "Файл <message>{0}</message> существует, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:223
+#: MKSOutputDevice.py:220
 msgctxt "@info:status"
 msgid "File name can not include chinese."
 msgstr "Имя файла не может содержать китайский."
 
-#: MKSOutputDevice.py:224
+#: MKSOutputDevice.py:221
 msgctxt "@info:status"
 msgid "File name can not include chinese, please rename it."
 msgstr "Имя файла не может содержать китайский, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:225
+#: MKSOutputDevice.py:222
 msgctxt "@info:status"
 msgid "File name is too long to upload."
 msgstr "Имя файла слишком длинное для загрузки."
 
-#: MKSOutputDevice.py:226
+#: MKSOutputDevice.py:223
 msgctxt "@info:status"
 msgid "File name is too long to upload, please rename it."
 msgstr "Имя файла слишком длинное для загрузки, пожалуйста переименуйте его."
 
-#: MKSOutputDevice.py:227
+#: MKSOutputDevice.py:224
 msgctxt "@info:status"
 msgid "Sending file to printer"
 msgstr "Отправка файла на принтер"
 
-#: MKSOutputDevice.py:228
+#: MKSOutputDevice.py:225
 msgctxt "@info:status"
 msgid "Uploading print job to printer"
 msgstr "Загрузка задания на принтер"
 
-#: MKSOutputDevice.py:229
+#: MKSOutputDevice.py:226
 msgctxt "@info:title"
 msgid "Sending Print Job"
 msgstr "Отправка задания на печать"
 
-#: MKSOutputDevice.py:230
+#: MKSOutputDevice.py:227
 msgctxt "@label"
 msgid "Print job"
 msgstr "Начать печать после загрузки"
 
-#: MKSOutputDevice.py:231
+#: MKSOutputDevice.py:228
 msgctxt "@info:status"
 msgid "File cannot be transferred during printing."
 msgstr "Файл не может быть передан во время печати."
 
-#: MKSOutputDevice.py:232
+#: MKSOutputDevice.py:229
 msgctxt "@info:status"
 msgid "Send file to printer failed."
 msgstr "Отправка файла на принтер завершилась неудачей."
 
-#: MKSOutputDevice.py:233
+#: MKSOutputDevice.py:230
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
 msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
 
-#: MKSOutputDevice.py:234
+#: MKSOutputDevice.py:231
 msgctxt "@info:status"
 msgid "Print job was successfully sent to the printer."
 msgstr "Задание было успешно отправлено на принтер."
 
-#: MKSOutputDevice.py:235
+#: MKSOutputDevice.py:232
 msgctxt "@warning:status"
 msgid "Please prepare G-code before exporting."
 msgstr "Пожалуйста, подготовьте G-code перед отправкой."
 
-#: MKSOutputDevice.py:236
+#: MKSOutputDevice.py:233
 msgctxt "@info:status"
 msgid "TFT Connect succeed"
 msgstr "Соединение с TFT успешно"
 
-#: MKSOutputDevice.py:237
+#: MKSOutputDevice.py:234
 msgctxt "@info:status"
 msgid "Error: command can not send"
 msgstr "Ошибка: Не удалось отправить команду"
 
-#: MKSOutputDevice.py:238
+#: MKSOutputDevice.py:235
 msgctxt "@info:status"
 msgid "Error: Another file is uploading, please try later."
 msgstr "Ошибка: Сейчас загружается другой файл, пожалуйста попробуйте позднее."
 
-#: MKSOutputDevice.py:239
+#: MKSOutputDevice.py:236
 msgctxt "@info:title"
 msgid "Choose file"
 msgstr "Выбор файла"
 
-#: MKSOutputDevice.py:240
+#: MKSOutputDevice.py:237
 msgctxt "@label"
 msgid "G-code"
 msgstr "G-код"
 
-#: MKSOutputDevice.py:241
+#: MKSOutputDevice.py:238
 msgctxt "@label"
 msgid "All"
 msgstr "Все"
@@ -370,7 +376,7 @@ msgctxt "@action:button"
 msgid "Print"
 msgstr "Печать"
 
-#: qml/MonitorItem4x.qml:559 qml/MachineConfig.qml:126
+#: qml/MonitorItem4x.qml:559
 msgctxt "@action:button"
 msgid "Refresh"
 msgstr "Обновить"
@@ -420,162 +426,85 @@ msgctxt "@tooltip"
 msgid "Unlock 3D printer motors."
 msgstr "Разблокировать моторы 3D принтера."
 
+#: qml/MachineConfig.qml:76
+msgctxt "@title:tab"
+msgid "Network settings"
+msgstr "Сетевые настройки"
+
 #: qml/MachineConfig.qml:77
-msgctxt "@title:window"
-msgid "Connect to Networked Printer"
-msgstr "Соединение с сетевым принтером"
+msgctxt "@title:tab"
+msgid "Preview settings"
+msgstr "Настройка изображения"
 
-#: qml/MachineConfig.qml:87
+#: qml/MachineConfig.qml:146
 msgctxt "@label"
-msgid ""
-"To print directly to your printer from Cura, please make sure your printer "
-"is connected to the same WiFi network as this computer. If you don't connect "
-"your printer with Cura, you can still use SD drive to transfer g-code files "
-"to your printer.\n"
-"\n"
-"Select your printer from the list below:"
-msgstr ""
-"Для печати на принтере из Cura убедитесь, что принтер подключен к той же "
-"сети WiFi что и этот компьютер. Если вы не подключите ваш принтер к Cura, вы "
-"все еще сможете использовать SD-накопитель для переноса g-code файлов на "
-"принтер.\n"
-"\n"
-"Выберите ваш принтер из списка ниже:"
+msgid "WiFi support"
+msgstr "Поддержка WiFi"
 
-#: qml/MachineConfig.qml:97
+#: qml/MachineConfig.qml:181
 msgctxt "@action:button"
 msgid "Add"
 msgstr "Добавить"
 
-#: qml/MachineConfig.qml:107
+#: qml/MachineConfig.qml:194
 msgctxt "@action:button"
 msgid "Edit"
 msgstr "Править"
 
-#: qml/MachineConfig.qml:118
+#: qml/MachineConfig.qml:207
 msgctxt "@action:button"
 msgid "Remove"
 msgstr "Удалить"
 
-#: qml/MachineConfig.qml:216
-msgctxt "@label"
-msgid ""
-"If your printer is not listed, read the <a href='%1'>network printing "
-"troubleshooting guide</a>"
-msgstr ""
-"Если вашего принтера нет в списке, прочтите <a href='%1'>руководство по "
-"решению проблем с сетевой печатью</a>"
-
-#: qml/MachineConfig.qml:243
-msgctxt "@label"
-msgid "Type"
-msgstr "Тип"
-
-#: qml/MachineConfig.qml:255
-msgctxt "@label Printer name"
-msgid "Ultimaker 3"
-msgstr "Ultimaker 3"
-
-#: qml/MachineConfig.qml:258
-msgctxt "@label Printer name"
-msgid "Ultimaker 3 Extended"
-msgstr "Ultimaker 3 Extended"
-
-#: qml/MachineConfig.qml:261
-msgctxt "@label Printer name"
-msgid "TFT WIFI"
-msgstr "TFT WIFI"
-
-#: qml/MachineConfig.qml:274
-msgctxt "@label"
-msgid "Firmware version"
-msgstr "Версия прошивки"
-
-#: qml/MachineConfig.qml:286
-msgctxt "@label"
-msgid "Address"
-msgstr "Адрес"
-
-#: qml/MachineConfig.qml:298 qml/MachineConfig.qml:515
-msgctxt "@label"
-msgid "Screenshot support"
-msgstr "Поддержка изображений"
-
-#: qml/MachineConfig.qml:304
-msgctxt "@label"
-msgid "Yes"
-msgstr "Да"
-
-#: qml/MachineConfig.qml:304
-msgctxt "@label"
-msgid "No"
-msgstr "Нет"
-
-#: qml/MachineConfig.qml:310 qml/MachineConfig.qml:537
-msgctxt "@label"
-msgid "Simage"
-msgstr "Simage"
-
-#: qml/MachineConfig.qml:326 qml/MachineConfig.qml:555
-msgctxt "@label"
-msgid "Gimage"
-msgstr "Gimage"
-
-#: qml/MachineConfig.qml:352
-msgctxt "@label"
-msgid "This printer is not set up to host a group of Ultimaker 3 printers."
-msgstr "Принтер не настроен быть хостом группы принтеров Ultimaker 3."
-
-#: qml/MachineConfig.qml:356
-msgctxt "@label"
-msgid "This printer is the host for a group of %1 Ultimaker 3 printers."
-msgstr "Принтер является хостом группы %1 принтеров Ultimaker 3."
-
-#: qml/MachineConfig.qml:366
-msgctxt "@label"
-msgid "The printer at this address has not yet responded."
-msgstr "Принтер с этим адресом пока не отвечает."
-
-#: qml/MachineConfig.qml:374 qml/MKSConnectBtn.qml:70
+#: qml/MachineConfig.qml:289 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
 msgstr "Подключить"
 
-#: qml/MachineConfig.qml:392
+#: qml/MachineConfig.qml:316
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr "Отключить"
 
-#: qml/MachineConfig.qml:408
-msgctxt "@action:button"
-msgid "Image settings"
-msgstr "Настройка изображения"
+#: qml/MachineConfig.qml:358
+msgctxt "@label"
+msgid "Screenshot support"
+msgstr "Поддержка изображений"
 
-#: qml/MachineConfig.qml:424
+#: qml/MachineConfig.qml:387
+msgctxt "@label"
+msgid "Printer model"
+msgstr "Модель принтера"
+
+#: qml/MachineConfig.qml:427
+msgctxt "@label"
+msgid "Simage"
+msgstr "Simage"
+
+#: qml/MachineConfig.qml:463
+msgctxt "@label"
+msgid "Gimage"
+msgstr "Gimage"
+
+#: qml/MachineConfig.qml:512
+msgctxt "@label"
+msgid "MKS WiFi Plugin is active for this printer"
+msgstr "Включить плагин MKS WiFi для этого принтера"
+
+#: qml/MachineConfig.qml:553
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr "Добавление нового принтера"
 
-#: qml/MachineConfig.qml:454
+#: qml/MachineConfig.qml:583
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr "Введите IP-адрес или имя хоста вашего принтера."
 
-#: qml/MachineConfig.qml:483 qml/MachineConfig.qml:589
+#: qml/MachineConfig.qml:612
 msgctxt "@action:button"
 msgid "OK"
 msgstr "Ок"
-
-#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:526
-msgctxt "@label"
-msgid "None"
-msgstr "Нет"
-
-#: qml/MachineConfig.qml:522 qml/MachineConfig.qml:549
-#: qml/MachineConfig.qml:567
-msgctxt "@label"
-msgid "Custom"
-msgstr "Своё"
 
 #: qml/MKSConnectBtn.qml:61
 msgctxt "@action:button"
