@@ -115,7 +115,7 @@ Cura.MachineAction
                 property string machineStackId: Cura.MachineManager.activeMachine.id
 
                 property var forceUpdateFunction: manager.forceUpdate
-  
+
                 Column
                 {
                     id: networkUpperBlock
@@ -160,7 +160,6 @@ Cura.MachineAction
                                     disconnectPrinter();
                                     manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                                 }
-                                addressField1.text = manager.getCurrentIP()
                             }
 
                             enabled: mksSupport.checked
@@ -183,7 +182,7 @@ Cura.MachineAction
                             onClicked:
                             {
                                 manualPrinterDialog.showDialog("", "");
-                            }                            
+                            }
                         }
 
                         Button
@@ -330,7 +329,7 @@ Cura.MachineAction
                             onClicked: disconnectPrinter()
                         }
                     }
-                }  
+                }
             }
 
             Item
@@ -441,11 +440,11 @@ Cura.MachineAction
                         }
 
                         text: manager.getSimage()
-                        
+
                         onEditingFinished: {
                             manager.setSimage(simageTextInput.text)
                         }
-                        
+
                         enabled: {
                             if (mksScreenshotSupport.checked) {
                                 if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
@@ -477,11 +476,11 @@ Cura.MachineAction
                         }
 
                         text: manager.getGimage()
-                        
+
                         onEditingFinished: {
                             manager.setGimage(gimageTextInput.text)
                         }
-                        
+
                         enabled: {
                             if (mksScreenshotSupport.checked) {
                                 if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
@@ -526,7 +525,7 @@ Cura.MachineAction
                 }
             }
         }
-    }    
+    }
 
     UM.TabRow
     {
