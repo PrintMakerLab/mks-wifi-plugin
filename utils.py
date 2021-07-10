@@ -6,6 +6,7 @@ from UM.Application import Application
 from UM.Scene.Iterator.DepthFirstIterator import DepthFirstIterator
 from cura.Snapshot import Snapshot
 from PyQt5.QtCore import Qt
+from UM.Logger import Logger
 import os
 
 
@@ -85,7 +86,7 @@ def add_screenshot():
                 screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
             if "mks_gimage" in meta_data:
                 gimage = int(global_container_stack.getMetaDataEntry("mks_gimage"))
-                screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
+                screenshot_string += add_screenshot_str(image, gimage, gimage, ";gimage:")
             screenshot_string += "\r"
     else:
         Logger.log("d", "Skipping adding screenshot")
