@@ -106,15 +106,10 @@ Cura.MachineAction
 
                 property int columnWidth: ((parent.width - 2 * UM.Theme.getSize("default_margin").width) / 2) | 0
                 property int columnSpacing: 3 * screenScaleFactor
-                property int propertyStoreIndex: manager ? manager.storeContainerIndex : 1  // definition_changes
 
                 property int labelWidth: (columnWidth * 2 / 3 - UM.Theme.getSize("default_margin").width * 2) | 0
                 property int controlWidth: (columnWidth / 3) | 0
                 property var labelFont: UM.Theme.getFont("default")
-
-                property string machineStackId: Cura.MachineManager.activeMachine.id
-
-                property var forceUpdateFunction: manager.forceUpdate
 
                 Column
                 {
