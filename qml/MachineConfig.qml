@@ -106,16 +106,11 @@ Cura.MachineAction
 
                 property int columnWidth: ((parent.width - 2 * UM.Theme.getSize("default_margin").width) / 2) | 0
                 property int columnSpacing: 3 * screenScaleFactor
-                property int propertyStoreIndex: manager ? manager.storeContainerIndex : 1  // definition_changes
 
                 property int labelWidth: (columnWidth * 2 / 3 - UM.Theme.getSize("default_margin").width * 2) | 0
                 property int controlWidth: (columnWidth / 3) | 0
                 property var labelFont: UM.Theme.getFont("default")
 
-                property string machineStackId: Cura.MachineManager.activeMachine.id
-
-                property var forceUpdateFunction: manager.forceUpdate
-  
                 Column
                 {
                     id: networkUpperBlock
@@ -160,7 +155,6 @@ Cura.MachineAction
                                     disconnectPrinter();
                                     manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                                 }
-                                addressField1.text = manager.getCurrentIP()
                             }
 
                             enabled: mksSupport.checked
@@ -183,7 +177,7 @@ Cura.MachineAction
                             onClicked:
                             {
                                 manualPrinterDialog.showDialog("", "");
-                            }                            
+                            }
                         }
 
                         Button
@@ -330,7 +324,7 @@ Cura.MachineAction
                             onClicked: disconnectPrinter()
                         }
                     }
-                }  
+                }
             }
 
             Item
@@ -441,11 +435,11 @@ Cura.MachineAction
                         }
 
                         text: manager.getSimage()
-                        
+
                         onEditingFinished: {
                             manager.setSimage(simageTextInput.text)
                         }
-                        
+
                         enabled: {
                             if (mksScreenshotSupport.checked) {
                                 if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
@@ -477,11 +471,11 @@ Cura.MachineAction
                         }
 
                         text: manager.getGimage()
-                        
+
                         onEditingFinished: {
                             manager.setGimage(gimageTextInput.text)
                         }
-                        
+
                         enabled: {
                             if (mksScreenshotSupport.checked) {
                                 if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
@@ -526,7 +520,7 @@ Cura.MachineAction
                 }
             }
         }
-    }    
+    }
 
     UM.TabRow
     {
