@@ -152,9 +152,49 @@ Cura.MachineAction
                             onCheckedChanged: {
                                 if (!mksWifiSupport.checked) {
                                     manager.setCurrentIP("")
+                                    manager.setMaxFilenameLen("")
                                     disconnectPrinter();
                                     manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                                 }
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row
+                    {
+                        id: maxFilenameLenRow
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        Label
+                        {
+                            width: Math.round(parent.width * 0.5)
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Maximum file name lenght (0..255)")
+                            font: UM.Theme.getFont("default")
+                            color: UM.Theme.getColor("text")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.TextField
+                        {
+                            id: maxFilenameLenInput
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 3
+                            validator: RegExpValidator
+                            {
+                                regExp: /^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
+                            }
+
+                            text: manager.getMaxFilenameLen()
+
+                            onEditingFinished: {
+                                manager.setMaxFilenameLen(maxFilenameLenInput.text)
                             }
 
                             enabled: mksSupport.checked
@@ -212,7 +252,7 @@ Cura.MachineAction
                     {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 3
+                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 4
 
                         enabled: mksWifiSupport.checked;
 

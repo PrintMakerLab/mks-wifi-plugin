@@ -225,6 +225,8 @@ class MachineConfig(MachineAction):
         if global_container_stack:
             global_container_stack.setMetaDataEntry("mks_support", None)
             global_container_stack.removeMetaDataEntry("mks_support")
+            global_container_stack.setMetaDataEntry("mks_max_filename_len", None)
+            global_container_stack.removeMetaDataEntry("mks_max_filename_len")
             global_container_stack.setMetaDataEntry("mks_screenshot_index", None)
             global_container_stack.removeMetaDataEntry("mks_screenshot_index")
             global_container_stack.setMetaDataEntry("mks_simage", None)
@@ -262,6 +264,25 @@ class MachineConfig(MachineAction):
             else:
                 global_container_stack.setMetaDataEntry("mks_current_ip", None)
                 global_container_stack.removeMetaDataEntry("mks_current_ip")
+    
+    @pyqtSlot(result=str)
+    def getMaxFilenameLen(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_max_filename_len" in meta_data:
+                return global_container_stack.getMetaDataEntry("mks_max_filename_len")
+        return ""
+
+    @pyqtSlot(str)
+    def setMaxFilenameLen(self, filename_len):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if filename_len != "":
+                global_container_stack.setMetaDataEntry("mks_max_filename_len", filename_len)
+            else:
+                global_container_stack.setMetaDataEntry("mks_max_filename_len", None)
+                global_container_stack.removeMetaDataEntry("mks_max_filename_len")
 
     @pyqtSlot(result=bool)
     def supportScreenshot(self):

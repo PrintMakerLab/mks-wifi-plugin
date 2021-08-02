@@ -436,10 +436,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         label = self._translations.get("file_too_long_label")
         return self.show_dialog(filename, label, title)
 
+    def get_max_filename_len(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if "mks_max_filename_len" in meta_data:
+                return int(global_container_stack.getMetaDataEntry("mks_max_filename_len"))
+        return 30
+
     def check_valid_filename(self, filename):
         if filename in self.sdFiles:
             filename = self.check_valid_filename(self.show_exists_dialog(filename))
-        if len(filename) >= 30:
+        if len(filename) >= self.get_max_filename_len():
             filename = self.check_valid_filename(self.show_to_long_dialog(filename))
         if self.is_contains_chinese(filename):
             filename = self.check_valid_filename(self.show_contains_chinese_dialog(filename))
@@ -704,7 +712,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self.show_progress_message(preferences)
             self._last_file_name = file_name
             Logger.log(
-                "d", "mks: " + file_name + Application.getInstance().
+                "d", "mks file name: " + file_name + " original file name: " + Application.getInstance().
                 getPrintInformation().jobName.strip())
             
             # Adding screeshot section
