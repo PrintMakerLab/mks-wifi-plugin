@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-05-27 00:03+0300\n"
+"POT-Creation-Date: 2021-08-04 18:13+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,8 +22,8 @@ msgctxt "@action"
 msgid "MKS WiFi Plugin"
 msgstr ""
 
-#: MachineConfig.py:279 qml/MachineConfig.qml:409 qml/MachineConfig.qml:451
-#: qml/MachineConfig.qml:487
+#: MachineConfig.py:300 qml/MachineConfig.qml:451 qml/MachineConfig.qml:495
+#: qml/MachineConfig.qml:533
 msgctxt "@label"
 msgid "Custom"
 msgstr ""
@@ -140,7 +140,7 @@ msgid ""
 "message>"
 msgstr ""
 
-#: MKSOutputDevice.py:212 qml/MachineConfig.qml:604
+#: MKSOutputDevice.py:212 qml/MachineConfig.qml:650
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr ""
@@ -425,72 +425,77 @@ msgctxt "@title:tab"
 msgid "Preview settings"
 msgstr ""
 
-#: qml/MachineConfig.qml:146
+#: qml/MachineConfig.qml:143
 msgctxt "@label"
 msgid "WiFi support"
 msgstr ""
 
-#: qml/MachineConfig.qml:181
+#: qml/MachineConfig.qml:182
+msgctxt "@label"
+msgid "Maximum file name length (0..255, 30 by default)"
+msgstr ""
+
+#: qml/MachineConfig.qml:219
 msgctxt "@action:button"
 msgid "Add"
 msgstr ""
 
-#: qml/MachineConfig.qml:194
+#: qml/MachineConfig.qml:232
 msgctxt "@action:button"
 msgid "Edit"
 msgstr ""
 
-#: qml/MachineConfig.qml:207
+#: qml/MachineConfig.qml:245
 msgctxt "@action:button"
 msgid "Remove"
 msgstr ""
 
-#: qml/MachineConfig.qml:289 qml/MKSConnectBtn.qml:70
+#: qml/MachineConfig.qml:327 qml/MKSConnectBtn.qml:70
 msgctxt "@action:button"
 msgid "Connect"
 msgstr ""
 
-#: qml/MachineConfig.qml:316
+#: qml/MachineConfig.qml:354
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr ""
 
-#: qml/MachineConfig.qml:358
+#: qml/MachineConfig.qml:398
 msgctxt "@label"
 msgid "Screenshot support"
 msgstr ""
 
-#: qml/MachineConfig.qml:387
+#: qml/MachineConfig.qml:429
 msgctxt "@label"
 msgid "Printer model"
 msgstr ""
 
-#: qml/MachineConfig.qml:427
+#: qml/MachineConfig.qml:471
 msgctxt "@label"
 msgid "Simage"
 msgstr ""
 
-#: qml/MachineConfig.qml:463
+#: qml/MachineConfig.qml:509
 msgctxt "@label"
 msgid "Gimage"
 msgstr ""
 
-#: qml/MachineConfig.qml:512
+#: qml/MachineConfig.qml:558
 msgctxt "@label"
 msgid "MKS WiFi Plugin is active for this printer"
 msgstr ""
 
-#: qml/MachineConfig.qml:553
+#: qml/MachineConfig.qml:599
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr ""
 
-#: qml/MachineConfig.qml:583
+#: qml/MachineConfig.qml:629
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr ""
 
-#: qml/MachineConfig.qml:612
+#: qml/MachineConfig.qml:658
 msgctxt "@action:button"
 msgid "OK"
 msgstr ""

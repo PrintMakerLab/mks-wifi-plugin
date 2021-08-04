@@ -137,6 +137,8 @@ Cura.MachineAction
                         Label
                         {
                             width: Math.round(parent.width * 0.5)
+                            height: mksWifiSupport.height
+                            verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "WiFi support")
                             font: UM.Theme.getFont("default")
@@ -152,9 +154,51 @@ Cura.MachineAction
                             onCheckedChanged: {
                                 if (!mksWifiSupport.checked) {
                                     manager.setCurrentIP("")
+                                    manager.setMaxFilenameLen("")
                                     disconnectPrinter();
                                     manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                                 }
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row
+                    {
+                        id: maxFilenameLenRow
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        Label
+                        {
+                            width: Math.round(parent.width * 0.5)
+                            height: maxFilenameLenInput.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Maximum file name length (0..255, 30 by default)")
+                            font: UM.Theme.getFont("default")
+                            color: UM.Theme.getColor("text")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.TextField
+                        {
+                            id: maxFilenameLenInput
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 3
+                            validator: RegExpValidator
+                            {
+                                regExp: /^\s*$|^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
+                            }
+
+                            text: manager.getMaxFilenameLen()
+
+                            onEditingFinished: {
+                                manager.setMaxFilenameLen(maxFilenameLenInput.text)
                             }
 
                             enabled: mksSupport.checked
@@ -212,7 +256,7 @@ Cura.MachineAction
                     {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 3
+                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 4
 
                         enabled: mksWifiSupport.checked;
 
@@ -348,6 +392,8 @@ Cura.MachineAction
                     Label
                     {
                         width: Math.round(parent.width * 0.5)
+                        height: mksScreenshotSupport.height
+                        verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Screenshot support")
                         font: UM.Theme.getFont("default")
@@ -377,6 +423,8 @@ Cura.MachineAction
                     Label
                     {
                         width: Math.round(parent.width * 0.5)
+                        height: screenshotComboBox.height
+                        verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Printer model")
                         font: UM.Theme.getFont("default")
@@ -417,6 +465,8 @@ Cura.MachineAction
                     Label
                     {
                         width: Math.round(parent.width * 0.5)
+                        height: simageTextInput.height
+                        verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Simage")
                         font: UM.Theme.getFont("default")
@@ -453,6 +503,8 @@ Cura.MachineAction
                     Label
                     {
                         width: Math.round(parent.width * 0.5)
+                        height: gimageTextInput.height
+                        verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Gimage")
                         font: UM.Theme.getFont("default")
@@ -501,7 +553,7 @@ Cura.MachineAction
 
         Label
         {
-            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width * 2
             wrapMode: Text.WordWrap
             text: catalog.i18nc("@label", "MKS WiFi Plugin is active for this printer")
         }
