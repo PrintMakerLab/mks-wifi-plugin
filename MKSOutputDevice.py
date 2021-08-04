@@ -116,14 +116,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._target_bed_temperature = 0
 
         self._application = CuraApplication.getInstance()
-        if self._application.getVersion().split(".")[0] < "4":
-            self._monitor_view_qml_path = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "qml",
-                "MonitorItem.qml")
-        else:
-            self._monitor_view_qml_path = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)), "qml",
-                "MonitorItem4x.qml")
+        self._monitor_view_qml_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)), "qml",
+            "MonitorItem4x.qml")
 
         # Make sure the output device gets selected above local file output and Octoprint XD
         self.setPriority(3)
