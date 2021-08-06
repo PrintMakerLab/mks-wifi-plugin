@@ -33,8 +33,6 @@ class MachineConfig(MachineAction):
 
         self._application = CuraApplication.getInstance()
         self._network_plugin = None
-        self.__additional_components_context = None
-        self.__additional_component = None
         self.__additional_components_view = None
 
         # Try to get version information from plugin.json

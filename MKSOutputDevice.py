@@ -998,6 +998,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._error_message.show()
         self._update_timer.start()
 
+    def read_line(self, line):
+        if "T" in line and "B" in line and "T0" in line:
+            self.printer_info_update(line)
+            return
+        if line.startswith("M997"):
+            self.printer_update_state(line)
+            return
+        if line.startswith("M994"):
+            self.printer_update_printing_filename(line)
+            return
+        if line.startswith("M992"):
+            self.printer_update_printing_time(line)
+            return
+        if line.startswith("M27"):
+            self.printer_update_totaltime(line)
+            return
+        if self.printer_file_list_parse(line):
+            return
+        if line.startswith("Upload"):
+            self.printer_upload_routine()
+
     def on_read(self):
         if not self._socket:
             self.disconnect()
@@ -1010,29 +1031,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if not self._printers:
                 self._createPrinterList()
             while self._socket.canReadLine():
-                s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-                s = s.replace("\r", "").replace("\n", "")
+                s = (str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())).replace("\r", "").replace("\n", "")
                 Logger.log("d", "mks recv: " + s)
-                if "T" in s and "B" in s and "T0" in s:
-                    self.printer_info_update(s)
-                    continue
-                if s.startswith("M997"):
-                    self.printer_update_state(s)
-                    continue
-                if s.startswith("M994"):
-                    self.printer_update_printing_filename(s)
-                    continue
-                if s.startswith("M992"):
-                    self.printer_update_printing_time(s)
-                    continue
-                if s.startswith("M27"):
-                    self.printer_update_totaltime(s)
-                    continue
-                if self.printer_file_list_parse(s):
-                    continue
-                if s.startswith("Upload"):
-                    self.printer_upload_routine()
-                    continue
+                self.read_line(s)
         except Exception as e:
             print(e)
 
@@ -1117,6 +1118,17 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 key, "value", instance_container1.getProperty(key, "value"))
 
         return flat_container
+
+    def _prepareResult(self, escaped_string, prefix, prefix_length):
+        # Introduce line breaks so that each comment is no longer than 80 characters. Prepend each line with the prefix.
+        result = ""
+
+        # Lines have 80 characters, so the payload of each line is 80 - prefix.
+        for pos in range(0, len(escaped_string), 80 - prefix_length):
+            result += prefix + \
+                escaped_string[pos: pos + 80 - prefix_length] + "\n"
+
+        return result
 
     def _serialiseSettings(self, stack):
         """Serialises a container stack to prepare it for writing at the end of the g-code.
@@ -1247,11 +1259,4 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             lambda m: MKSOutputDevice.escape_characters[re.escape(m.group(0))],
             json_string)
 
-        # Introduce line breaks so that each comment is no longer than 80 characters. Prepend each line with the prefix.
-        result = ""
-
-        # Lines have 80 characters, so the payload of each line is 80 - prefix.
-        for pos in range(0, len(escaped_string), 80 - prefix_length):
-            result += prefix + \
-                escaped_string[pos: pos + 80 - prefix_length] + "\n"
-        return result
+        return self._prepareResult(escaped_string, prefix, prefix_length)
