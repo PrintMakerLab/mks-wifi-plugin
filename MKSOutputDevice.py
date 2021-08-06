@@ -1018,7 +1018,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return
         if line.startswith("Upload"):
             self.printer_upload_routine()
-            return
 
     def on_read(self):
         if not self._socket:
