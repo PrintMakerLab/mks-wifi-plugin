@@ -998,6 +998,32 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._error_message.show()
         self._update_timer.start()
 
+    def read_line(self):
+        while self._socket.canReadLine():
+            s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
+            s = s.replace("\r", "").replace("\n", "")
+            Logger.log("d", "mks recv: " + s)
+            if "T" in s and "B" in s and "T0" in s:
+                self.printer_info_update(s)
+                continue
+            if s.startswith("M997"):
+                self.printer_update_state(s)
+                continue
+            if s.startswith("M994"):
+                self.printer_update_printing_filename(s)
+                continue
+            if s.startswith("M992"):
+                self.printer_update_printing_time(s)
+                continue
+            if s.startswith("M27"):
+                self.printer_update_totaltime(s)
+                continue
+            if self.printer_file_list_parse(s):
+                continue
+            if s.startswith("Upload"):
+                self.printer_upload_routine()
+                continue
+
     def on_read(self):
         if not self._socket:
             self.disconnect()
@@ -1009,30 +1035,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self.printer_set_connect()
             if not self._printers:
                 self._createPrinterList()
-            while self._socket.canReadLine():
-                s = str(self._socket.readLine().data(), encoding=sys.getfilesystemencoding())
-                s = s.replace("\r", "").replace("\n", "")
-                Logger.log("d", "mks recv: " + s)
-                if "T" in s and "B" in s and "T0" in s:
-                    self.printer_info_update(s)
-                    continue
-                if s.startswith("M997"):
-                    self.printer_update_state(s)
-                    continue
-                if s.startswith("M994"):
-                    self.printer_update_printing_filename(s)
-                    continue
-                if s.startswith("M992"):
-                    self.printer_update_printing_time(s)
-                    continue
-                if s.startswith("M27"):
-                    self.printer_update_totaltime(s)
-                    continue
-                if self.printer_file_list_parse(s):
-                    continue
-                if s.startswith("Upload"):
-                    self.printer_upload_routine()
-                    continue
+            self.read_line()
         except Exception as e:
             print(e)
 

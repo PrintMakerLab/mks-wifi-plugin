@@ -9,27 +9,6 @@ from PyQt5.QtCore import Qt
 from UM.Logger import Logger
 import os
 
-
-def getRect():
-    left = None
-    front = None
-    right = None
-    back = None
-    for node in DepthFirstIterator(Application.getInstance().getController().getScene().getRoot()):
-        if node.getBoundingBoxMesh():
-            if not left or node.getBoundingBox().left < left:
-                left = node.getBoundingBox().left
-            if not right or node.getBoundingBox().right > right:
-                right = node.getBoundingBox().right
-            if not front or node.getBoundingBox().front > front:
-                front = node.getBoundingBox().front
-            if not back or node.getBoundingBox().back < back:
-                back = node.getBoundingBox().back
-    if not (left and front and right and back):
-        return 0
-    result = max((right - left), (front - back))
-    return result
-
 def add_leading_zeros(rgb):
     str_hex = "%x" % rgb
     str_hex_len = len(str_hex)

@@ -17,7 +17,7 @@ def getMetaData():
     return {}
 
 def register(app):
-    if __matchVersion():
+    if match_version():
         qmlRegisterType(MKSOutputDevicePlugin.MKSOutputDevicePlugin, "MKSPlugin", 1, 0, "MKSOutputDevicePlugin")
         return {
             "output_device": MKSOutputDevicePlugin.MKSOutputDevicePlugin(),
@@ -27,7 +27,7 @@ def register(app):
         Logger.log("w", "Plugin not loaded because of a version mismatch")
         return {}
 
-def __matchVersion():
+def match_version():
     cura_version = Application.getInstance().getVersion()
     if cura_version == "master":
         Logger.log("d", "Running Cura from source. Skipping version check")

@@ -217,6 +217,23 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                         # self.getOutputDeviceManager().connect()
                         self.getOutputDeviceManager().removeOutputDevice(key)
 
+    def _checkInfo(self, name, info):
+        type_of_device = info.properties.get(b"type", None)
+        if type_of_device:
+            if type_of_device == b"printer":
+                address = '.'.join(map(lambda n: str(n), info.address))
+                if address in self._excluded_addresses:
+                    Logger.log("d",
+                                "The IP address %s of the printer \'%s\' is not correct. Trying to reconnect.",
+                                address, name)
+                    return False  # When getting the localhost IP, then try to reconnect
+                self.addPrinterSignal.emit(
+                    str(name), address, info.properties)
+            else:
+                Logger.log("w",
+                            "The type of the found device is '%s', not 'printer'! Ignoring.." % type_of_device)
+        return True
+
     def _onServiceChanged(self, zeroconf, service_type, name, state_change):
         if state_change == ServiceStateChange.Added:
             Logger.log("d", "Bonjour service added: %s" % name)
@@ -237,20 +254,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 info = zeroconf.get_service_info(service_type, name)
 
             if info:
-                type_of_device = info.properties.get(b"type", None)
-                if type_of_device:
-                    if type_of_device == b"printer":
-                        address = '.'.join(map(lambda n: str(n), info.address))
-                        if address in self._excluded_addresses:
-                            Logger.log("d",
-                                       "The IP address %s of the printer \'%s\' is not correct. Trying to reconnect.",
-                                       address, name)
-                            return False  # When getting the localhost IP, then try to reconnect
-                        self.addPrinterSignal.emit(
-                            str(name), address, info.properties)
-                    else:
-                        Logger.log("w",
-                                   "The type of the found device is '%s', not 'printer'! Ignoring.." % type_of_device)
+                if self._checkInfo(name, info) == False:
+                    return False
             else:
                 Logger.log("w", "Could not get information about %s" % name)
                 return False
@@ -267,6 +272,28 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         self._service_changed_request_queue.put(item)
         self._service_changed_request_event.set()
 
+    def _handleAllPendingRequests(self):
+        # a list of requests that have failed so later they will get re-scheduled
+        reschedule_requests = []
+        while not self._service_changed_request_queue.empty():
+            request = self._service_changed_request_queue.get()
+            zeroconf, service_type, name, state_change = request
+            try:
+                result = self._onServiceChanged(
+                    zeroconf, service_type, name, state_change)
+                if not result:
+                    reschedule_requests.append(request)
+            except Exception:
+                Logger.logException("e",
+                                    "Failed to get service info for [%s] [%s], the request will be rescheduled",
+                                    service_type, name)
+                reschedule_requests.append(request)
+
+        # re-schedule the failed requests if any
+        if reschedule_requests:
+            for request in reschedule_requests:
+                self._service_changed_request_queue.put(request)
+
     def _handleOnServiceChangedRequests(self):
         while True:
             # wait for the event to be set
@@ -278,31 +305,12 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             self._service_changed_request_event.clear()
 
             # handle all pending requests
-            # a list of requests that have failed so later they will get re-scheduled
-            reschedule_requests = []
-            while not self._service_changed_request_queue.empty():
-                request = self._service_changed_request_queue.get()
-                zeroconf, service_type, name, state_change = request
-                try:
-                    result = self._onServiceChanged(
-                        zeroconf, service_type, name, state_change)
-                    if not result:
-                        reschedule_requests.append(request)
-                except Exception:
-                    Logger.logException("e",
-                                        "Failed to get service info for [%s] [%s], the request will be rescheduled",
-                                        service_type, name)
-                    reschedule_requests.append(request)
-
-            # re-schedule the failed requests if any
-            if reschedule_requests:
-                for request in reschedule_requests:
-                    self._service_changed_request_queue.put(request)
+            self._handleAllPendingRequests()
+            
 
     @pyqtSlot()
     def openControlPanel(self):
         Logger.log("d", "Opening print jobs web UI...")
         self._monitor_view_qml_path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "qml", "MonitorItem4x.qml")
-        self.__additional_components_view = Application.getInstance(
-        ).createQmlComponent(self._monitor_view_qml_path, {"manager": self})
+        Application.getInstance().createQmlComponent(self._monitor_view_qml_path, {"manager": self})
