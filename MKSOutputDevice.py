@@ -1119,6 +1119,17 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         return flat_container
 
+    def _prepareResult(self, escaped_string, prefix, prefix_length):
+        # Introduce line breaks so that each comment is no longer than 80 characters. Prepend each line with the prefix.
+        result = ""
+
+        # Lines have 80 characters, so the payload of each line is 80 - prefix.
+        for pos in range(0, len(escaped_string), 80 - prefix_length):
+            result += prefix + \
+                escaped_string[pos: pos + 80 - prefix_length] + "\n"
+
+        return result
+
     def _serialiseSettings(self, stack):
         """Serialises a container stack to prepare it for writing at the end of the g-code.
         The settings are serialised, and special characters (including newline)
@@ -1248,11 +1259,4 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             lambda m: MKSOutputDevice.escape_characters[re.escape(m.group(0))],
             json_string)
 
-        # Introduce line breaks so that each comment is no longer than 80 characters. Prepend each line with the prefix.
-        result = ""
-
-        # Lines have 80 characters, so the payload of each line is 80 - prefix.
-        for pos in range(0, len(escaped_string), 80 - prefix_length):
-            result += prefix + \
-                escaped_string[pos: pos + 80 - prefix_length] + "\n"
-        return result
+        return self._prepareResult(escaped_string, prefix, prefix_length)
