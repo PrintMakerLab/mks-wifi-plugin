@@ -57,11 +57,7 @@ class SaveOutputDevice(OutputDevice):
             "file_something_wrong": catalog.i18nc("@info:status", "Something went wrong saving to <filename>{0}</filename>: <message>{1}</message>"),
         }
 
-    def requestWrite(self, nodes, file_name=None, limit_mimetypes=None, file_handler=None, **kwargs):
-        if self._writing:
-            raise OutputDeviceError.DeviceBusyError()
-
-        # Set up and display file dialog
+    def prepare_write_dialog(self):
         dialog = QFileDialog()
 
         dialog.setWindowTitle(self._translations.get("save_file_window"))
@@ -73,6 +69,36 @@ class SaveOutputDevice(OutputDevice):
 
         if sys.platform == "linux" and "KDE_FULL_SESSION" in os.environ:
             dialog.setOption(QFileDialog.DontUseNativeDialog)
+
+        return dialog
+    
+    def get_file_types(self, file_handler, limit_mimetypes):
+        file_types = file_handler.getSupportedFileTypesWrite()
+
+        file_types.sort(key=lambda k: k["description"])
+        if limit_mimetypes:
+            file_types = list(
+                filter(lambda i: i["mime_type"] in limit_mimetypes, file_types))
+
+        file_types = [ft for ft in file_types if not ft["hide_in_file_dialog"]]
+
+        return file_types
+
+    def get_file_writer(self, file_handler, selected_type):
+        if file_handler:
+            file_writer = file_handler.getWriter(selected_type["id"])
+        else:
+            file_writer = Application.getInstance(
+            ).getMeshFileHandler().getWriter(selected_type["id"])
+
+        return file_writer
+
+    def requestWrite(self, nodes, file_name=None, limit_mimetypes=None, file_handler=None, **kwargs):
+        if self._writing:
+            raise OutputDeviceError.DeviceBusyError()
+
+        # Set up and display file dialog
+        dialog = self.prepare_write_dialog()
 
         filters = []
         mime_types = []
@@ -88,14 +114,7 @@ class SaveOutputDevice(OutputDevice):
         if not file_handler:
             file_handler = Application.getInstance().getMeshFileHandler()
 
-        file_types = file_handler.getSupportedFileTypesWrite()
-
-        file_types.sort(key=lambda k: k["description"])
-        if limit_mimetypes:
-            file_types = list(
-                filter(lambda i: i["mime_type"] in limit_mimetypes, file_types))
-
-        file_types = [ft for ft in file_types if not ft["hide_in_file_dialog"]]
+        file_types = self.get_file_types(file_handler, limit_mimetypes)
 
         if len(file_types) == 0:
             Logger.log("e", "There are no file types available to write with!")
@@ -156,11 +175,7 @@ class SaveOutputDevice(OutputDevice):
         self.writeStarted.emit(self)
 
         # Actually writing file
-        if file_handler:
-            file_writer = file_handler.getWriter(selected_type["id"])
-        else:
-            file_writer = Application.getInstance(
-            ).getMeshFileHandler().getWriter(selected_type["id"])
+        file_writer = self.get_file_writer(file_handler, selected_type)
 
         try:
             mode = selected_type["mode"]

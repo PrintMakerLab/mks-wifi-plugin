@@ -19,7 +19,7 @@ from UM.Settings.InstanceContainer import InstanceContainer
 from cura.Machines.ContainerTree import ContainerTree
 
 from PyQt5.QtQuick import QQuickView
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QMessageBox
 
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 
