@@ -15,16 +15,18 @@ Using the plugin with Cura, you can:
 
 ## Installation ##
 
-* Marketplace:
-  Plugin is available through the Cura Marketplace as the MKS Wifi Plugin.
+Marketplace:
+  - Plugin is available through the Cura Marketplace as the MKS Wifi Plugin.
 
-* Manually:
+Manually:
   - Download or clone this repository;
   - Open Cura configuration folder. It can be found via Help -> Show Configuration Folder inside Cura;
   - Copy folder into [Cura configuration folder]/plugins/ ;
   - Restart Cura.
   
- ** Notes: The MKS WiFi plugin is only available for Cura 4.5 or higher version. **
+Notes:
+  - Latest version of MKS WiFi plugin is only available for Cura 4.7 or higher version;
+  - For Cura versions  4.6 or 4.5 please manually install version [1.2.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.2.2).
 
 ## Troubleshooting ##
 
