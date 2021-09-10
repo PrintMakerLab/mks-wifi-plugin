@@ -60,11 +60,14 @@ def add_screenshot():
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
+            Logger.log("d", "Get current preview settings.")
             if "mks_simage" in meta_data:
                 simage = int(global_container_stack.getMetaDataEntry("mks_simage"))
+                Logger.log("d", "mks_simage value: " + str(simage))
                 screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
             if "mks_gimage" in meta_data:
                 gimage = int(global_container_stack.getMetaDataEntry("mks_gimage"))
+                Logger.log("d", "mks_gimage value: " + str(gimage))
                 # ;; - needed for correct colors. do not remove them.
                 screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
             screenshot_string += "\r"
