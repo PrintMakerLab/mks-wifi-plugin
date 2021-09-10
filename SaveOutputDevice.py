@@ -192,12 +192,15 @@ class SaveOutputDevice(OutputDevice):
                 return None
 
             # Adding screeshot section
+            Logger.log("d", "Generating preview image")
             screenshot_string = utils.add_screenshot()
 
             if screenshot_string != "":
+                Logger.log("d", "Write preview image to the stream")
                 stream.write(screenshot_string)
             # End of screeshot section
 
+            Logger.log("d", "Prepaire to save the file")
             job = WriteFileJob(file_writer, stream, nodes, mode)
             job.setFileName(file_name)
             # The file will be added into the "recent files" list upon success
@@ -238,12 +241,13 @@ class SaveOutputDevice(OutputDevice):
             message._folder = os.path.dirname(job.getFileName())
             message.actionTriggered.connect(self._onMessageActionTriggered)
             message.show()
+            Logger.log("d", "File saved")
         else:
             message = Message(self._translations.get("file_cant_save").format(job.getFileName(
             ), str(job.getError())), lifetime=0, title=self._translations.get("warning"))
             message.show()
             self.writeError.emit(self)
-
+            Logger.log("d", "Can't save file: " + str(job.getError()))
         try:
             job.getStream().close()
         # When you don't have the rights to do the final flush or the disk is full.
