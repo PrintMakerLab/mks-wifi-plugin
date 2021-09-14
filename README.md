@@ -39,4 +39,4 @@ Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_r
 To create new translation, or improve existing one, please check [translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Translation).
 
 ## Funding ##
- The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson")
+ The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
