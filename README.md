@@ -5,7 +5,7 @@
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=bugs)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
 [![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=code_smells)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
 
-MKS WiFi plugin for Cura developed by Makerbase, Jeredian and Elkin-Vasily and it was originaly migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software") after V4.4 version.
+MKS WiFi plugin for Cura developed by [Makerbase](https://github.com/makerbase-mks), [Jeredian](https://github.com/Jeredian) and [Elkin-Vasily](https://github.com/Elkin-Vasily) and it was originaly migrated from [https://github.com/makerbase-mks/Software](https://github.com/makerbase-mks/Software "https://github.com/makerbase-mks/Software") after V4.4 version.
 
 Using the plugin with Cura, you can:
   - Connect Cura to the MKS Robin WiFi and MKS TFT WiFi;
@@ -32,9 +32,11 @@ Notes:
 
 Please [create a new GitHub issue](https://github.com/Jeredian/mks-wifi-plugin/issues/new/choose) and provide all details according to the template.
 
+Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_reception).
+
 ## Translation ##
 
 To create new translation, or improve existing one, please check [translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Translation).
 
 ## Funding ##
- The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson")
+ The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
