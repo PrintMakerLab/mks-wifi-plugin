@@ -293,15 +293,18 @@ class MachineConfig(MachineAction):
 
     @pyqtSlot(result="QVariantList")
     def getScreenshotOptions(self):
+        Logger.log("d", "Trying to get screenshot options")
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
         result = []
         result.append({"key": catalog.i18nc("@label", "Custom"), "value": 0})
         for option in options:
             result.append({"key": option["label"], "value": option["index"]}) 
+        Logger.log("d", "Get screenshot options done")
         return result
 
     @pyqtSlot(str, result="QVariant")
     def getScreenshotSettings(self, label):
+        Logger.log("d", "Get screenshot settings for: "+ label)
         result = {"simage": "", "gimage": ''}
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
         for option in options:
@@ -313,21 +316,29 @@ class MachineConfig(MachineAction):
 
     @pyqtSlot(str)
     def setScreenshotIndex(self, index):
+        Logger.log("d", "Trying to set screenshot index")
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             if index != "":
-                global_container_stack.setMetaDataEntry("mks_screenshot_index", index)
+                global_container_stack.setMetaDataEntry("mks_screenshot_index", index)        
+                Logger.log("d", "Screenshot index - updated to "+ str(index))
             else:
                 global_container_stack.setMetaDataEntry("mks_screenshot_index", None)
-                global_container_stack.removeMetaDataEntry("mks_screenshot_index")
+                global_container_stack.removeMetaDataEntry("mks_screenshot_index")          
+                Logger.log("d", "Screenshot index - removed")      
+        Logger.log("d", "Set screenshot index - completed")
 
     @pyqtSlot(result=str)
     def getScreenshotIndex(self):
+        Logger.log("d", "Trying to get screenshot index")
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
             if "mks_screenshot_index" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_screenshot_index")
+                index = global_container_stack.getMetaDataEntry("mks_screenshot_index")
+                Logger.log("d", "Current screenshot index is "+ str(index))
+                return index
+        Logger.log("d", "Can't get screenshot settings, use default index value")
         return "0"
 
     @pyqtSlot(result=str)
