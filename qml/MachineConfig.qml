@@ -22,6 +22,7 @@ Cura.MachineAction
 
     property var printerSupportScreenshots: manager.supportScreenshot()
     property var printerScreenshotSizesList: manager.getScreenshotOptions()
+    property var printerScreenshotIndex: manager.getScreenshotIndex()
 
     Connections
     {
@@ -414,7 +415,7 @@ Cura.MachineAction
                             }
                             simageTextInput.text = manager.getSimage()
                             gimageTextInput.text = manager.getGimage()
-                            screenshotComboBox.currentIndex = 0
+                            screenshotComboBox.currentIndex = printerScreenshotIndex
                         }
 
                         enabled: mksSupport.checked
@@ -441,8 +442,7 @@ Cura.MachineAction
                         textRole: "key"
 
                         model: printerScreenshotSizesList
-
-                        currentIndex: manager.getScreenshotIndex()
+                        currentIndex: printerScreenshotIndex
 
                         onCurrentIndexChanged:
                         {
@@ -458,7 +458,6 @@ Cura.MachineAction
                                 manager.setScreenshotIndex(currentIndex)
                             }
                         }
-
                         enabled: mksScreenshotSupport.checked
                     }
 
