@@ -964,8 +964,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         totaltime = 0
         if self.isBusy():
             self._printing_progress = int(info[info.find("M27") + len("M27"):len(info)].replace(" ", ""))
-            totaltime = int(self._printing_time / self._printing_progress * 100)
-            Logger.log("i", totaltime)
+            if self._printing_progress == 0:
+                totaltime = self._printing_time
+            else:
+                totaltime = int(self._printing_time / self._printing_progress * 100)
         else:
             self._printing_progress = 0
             totaltime = self._printing_time
