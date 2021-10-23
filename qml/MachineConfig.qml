@@ -162,7 +162,6 @@ Cura.MachineAction
                                     manager.setCurrentIP("")
                                     manager.setMaxFilenameLen("")
                                     disconnectPrinter();
-                                    manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                                 }
                             }
 
