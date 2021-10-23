@@ -252,7 +252,9 @@ Cura.MachineAction
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
                             onClicked:
                             {
-                                disconnectPrinter();
+                                if (connectedDevice.address  == base.selectedPrinter.ipAddress) {
+                                    disconnectPrinter();
+                                }
                                 manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
                             }
                         }
@@ -342,9 +344,11 @@ Cura.MachineAction
                                         }else{
                                             return false
                                         }
+                                    } else {
+                                        return true
                                     }
                                 }
-                                return true
+                                return false
                             }
                             onClicked: {
                                 manager.setCurrentIP(base.selectedPrinter.ipAddress)
@@ -354,7 +358,7 @@ Cura.MachineAction
 
                         Button
                         {
-                            id: unconnectbtn
+                            id: disconnectbtn
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Disconnect")
