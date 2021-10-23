@@ -22,7 +22,12 @@ Cura.MachineAction
 
     property var printerSupportScreenshots: manager.supportScreenshot()
     property var printerScreenshotSizesList: manager.getScreenshotOptions()
-    property var printerScreenshotIndex: manager.getScreenshotIndex()
+    property var printerScreenshotIndex: {
+        var sIndex = manager.getScreenshotIndex()
+
+        screenshotComboBox.currentIndex = sIndex
+        return sIndex
+    }
 
     Connections
     {
@@ -48,7 +53,7 @@ Cura.MachineAction
                 manager.setKey(printerKey);
                 completed();
             }
-             manager.changestage();
+            manager.changestage();
         }
     }
 
@@ -412,6 +417,7 @@ Cura.MachineAction
                                 manager.setSimage("")
                                 manager.setGimage("")
                                 manager.setScreenshotIndex("")
+                                screenshotComboBox.currentIndex = 0
                             }
                             simageTextInput.text = manager.getSimage()
                             gimageTextInput.text = manager.getGimage()
@@ -442,7 +448,6 @@ Cura.MachineAction
                         textRole: "key"
 
                         model: printerScreenshotSizesList
-                        currentIndex: printerScreenshotIndex
 
                         onCurrentIndexChanged:
                         {
@@ -486,7 +491,9 @@ Cura.MachineAction
                         text: manager.getSimage()
 
                         onEditingFinished: {
-                            manager.setSimage(simageTextInput.text)
+                            if (mksScreenshotSupport.checked) {
+                                manager.setSimage(simageTextInput.text)
+                            }
                         }
 
                         enabled: {
@@ -524,7 +531,9 @@ Cura.MachineAction
                         text: manager.getGimage()
 
                         onEditingFinished: {
-                            manager.setGimage(gimageTextInput.text)
+                            if (mksScreenshotSupport.checked) {
+                                manager.setGimage(gimageTextInput.text)
+                            }
                         }
 
                         enabled: {
