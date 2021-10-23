@@ -145,11 +145,6 @@ class MachineConfig(MachineAction):
         else:
             return []
 
-    @pyqtProperty("QVariantList")
-    def getSDFiles(self):
-        printers = list(["1, 2, 3", "2, 2, 3", "3, 3, 2"])
-        return printers
-
     @pyqtSlot()
     def changestage(self):
         CuraApplication.getInstance().getController().setActiveStage("MonitorStage")

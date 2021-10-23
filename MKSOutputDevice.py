@@ -233,6 +233,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             "all": catalog.i18nc("@label", "All"),
         }
 
+    sdFilesChanged = pyqtSignal()
+
     def _onOutputDevicesChanged(self):
         Logger.log("d", "MKS _onOutputDevicesChanged")
 
@@ -374,14 +376,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtSlot(str)
     def deleteSDFiles(self, filename):
         self._sendCommand("M30 1:/" + filename)
-        if filename in self.sdFiles:
-            self.sdFiles.remove(filename)
         self._sendCommand("M20")
 
     @pyqtSlot(str)
     def printSDFiles(self, filename):
         self._sendCommand("M23 " + filename)
         self._sendCommand("M24")
+
+    @pyqtSlot()
+    def refreshSDFiles(self):
+        self._sendCommand("M20")
 
     @pyqtSlot()
     def selectFileToUplload(self):
@@ -552,9 +556,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._progress_message = None
                 Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
 
-    @ pyqtProperty("QVariantList")
+    @ pyqtProperty("QVariantList", notify=sdFilesChanged)
     def getSDFiles(self):
-        self._sendCommand("M20")
         return list(self.sdFiles)
 
     def _setTargetBedTemperature(self, temperature):
@@ -981,6 +984,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return True
         if 'End file list' in info:
             self._sdFileList = False
+            self.sdFilesChanged.emit()
             return True
         if self._sdFileList:
             filename = info.replace("\n", "").replace("\r", "")
