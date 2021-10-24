@@ -137,7 +137,7 @@ Component
 
                         Button
                         {
-                            iconSource: UM.Theme.getIcon("arrow_top");
+                            iconSource: UM.Theme.getIcon("ChevronSingleUp");
                             style: UM.Theme.styles.monitor_button_style
                             width: height
                             height: UM.Theme.getSize("setting_control").height
@@ -146,7 +146,7 @@ Component
                         }
                         Button
                         {
-                            iconSource: UM.Theme.getIcon("arrow_bottom");
+                            iconSource: UM.Theme.getIcon("ChevronSingleDown");
                             style: UM.Theme.styles.monitor_button_style
                             width: height
                             height: UM.Theme.getSize("setting_control").height
@@ -175,7 +175,7 @@ Component
 
                         Button
                         {
-                            iconSource: UM.Theme.getIcon("arrow_top");
+                            iconSource: UM.Theme.getIcon("ChevronSingleUp");
                             style: UM.Theme.styles.monitor_button_style
                             width: height
                             height: UM.Theme.getSize("setting_control").height
@@ -184,7 +184,7 @@ Component
                         }
                         Button
                         {
-                            iconSource: UM.Theme.getIcon("arrow_bottom");
+                            iconSource: UM.Theme.getIcon("ChevronSingleDown");
                             style: UM.Theme.styles.monitor_button_style
                             width: height
                             height: UM.Theme.getSize("setting_control").height
@@ -239,7 +239,7 @@ Component
                         height: UM.Theme.getSize("setting_control").height
                         style: UM.Theme.styles.print_setup_action_button
                         text: catalog.i18nc("@action:button", "SD Files")
-                        onClicked: sdDialog.showDialog()
+                        onClicked: sdDialog.show()
 
                         onHoveredChanged:
                         {
@@ -392,22 +392,23 @@ Component
             }
         }
 
+        Timer {
+            interval: 5000
+            running: sdDialog.visible
+            repeat: true
+            onTriggered: Cura.MachineManager.printerOutputDevices[0].refreshSDFiles()
+        }
+
         UM.Dialog
         {
             id: sdDialog
-            signal showDialog()
-            onShowDialog:
-            {
-                listview.model = Cura.MachineManager.printerOutputDevices[0].getSDFiles
-                sdDialog.show();
-            }
             title: catalog.i18nc("@title:window", "Open file(s)")
             Column{
                 spacing: UM.Theme.getSize("default_margin").height
                 ScrollView{
                     id: objectListContainer
                     width: sdDialog.width-UM.Theme.getSize("default_margin").height*1.5
-                    height: sdDialog.height-btnOk.height*2
+                    height: sdDialog.height-btnPrint.height*2
                     Rectangle
                     {
                         parent: viewport
@@ -457,37 +458,26 @@ Component
             rightButtons: [
             Button {
                 text: catalog.i18nc("@action:button","Delete")
+                enabled: listview.currentIndex != -1
                 onClicked:
                 {
-                    // sdDialog.reject()
                     if(listview.currentIndex != -1)
                     {
-                        sdDialog.hide()
                         Cura.MachineManager.printerOutputDevices[0].deleteSDFiles(listview.model[listview.currentIndex])
-                        listview.model = Cura.MachineManager.printerOutputDevices[0].getSDFiles
                     }
                 }
             },
             Button {
-                id: btnOk
+                id: btnPrint
                 text: catalog.i18nc("@action:button", "Print")
+                enabled: listview.currentIndex != -1
                 onClicked:
                 {
-                    // sdDialog.accept()
                     if(listview.currentIndex != -1)
                     {
                         sdDialog.hide()
                         Cura.MachineManager.printerOutputDevices[0].printSDFiles(listview.model[listview.currentIndex])
                     }
-                }
-            },
-            Button {
-                id: btnRefresh
-                text: catalog.i18nc("@action:button", "Refresh")
-                onClicked:
-                {
-                    Cura.MachineManager.printerOutputDevices[0].getSDFiles
-                    
                 }
             }
         ]
@@ -496,7 +486,6 @@ Component
         UM.Dialog
         {
             id: moreDialog
-            signal showDialog()
             title: catalog.i18nc("@title:window", "More")
 
             minimumWidth: 200 * screenScaleFactor
