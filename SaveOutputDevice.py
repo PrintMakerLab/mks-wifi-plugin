@@ -192,12 +192,21 @@ class SaveOutputDevice(OutputDevice):
                 return None
 
             # Adding screeshot section
-            Logger.log("d", "Generating preview image")
-            screenshot_string = utils.add_screenshot()
+            if file_name.endswith(".gcode"):
+                Logger.log("d", "Generating preview image")
+                screenshot_string = utils.add_screenshot()
 
-            if screenshot_string != "":
-                Logger.log("d", "Write preview image to the stream")
-                stream.write(screenshot_string)
+                if screenshot_string != "":
+                    if mode == MeshWriter.OutputMode.TextMode:
+                        Logger.log("d", "Writing preview image in text mode")
+                        stream.write(screenshot_string)
+                    elif mode == MeshWriter.OutputMode.BinaryMode:
+                        Logger.log("d", "Writing preview image in binary mode not supported")
+                    else:
+                        Logger.log("e", "Unrecognised OutputMode.")
+                        return None
+            else:
+                Logger.log("w", "Saving none .gcode files with preview is not supported!") 
             # End of screeshot section
 
             Logger.log("d", "Prepaire to save the file")
