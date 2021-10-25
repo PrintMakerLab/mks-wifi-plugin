@@ -481,6 +481,38 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def is_contains_chinese(self, strs):
         return False
 
+    def sendfile(self, file_name, file_str):
+        data = QByteArray()
+        data.append(file_str.encode())
+
+        manager = HttpRequestManager.getInstance()
+        manager.post(
+            url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
+            headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
+            data = data,
+            callback = self._onRequestFinished,
+            error_callback = self._onUploadError,
+            upload_progress_callback = self._onUploadProgress
+        )
+
+    def got_ioerror(self, error):
+        Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
+        # preferences.setValue("mkswifi/uploadingfile", "False")
+        self._progress_message.hide()
+        self._progress_message = None
+        self._error_message = Message(
+            self._translations.get("file_send_failed"))
+        self._error_message.show()
+        self._update_timer.start()
+
+    def got_exeption(self, error):
+        # preferences.setValue("mkswifi/uploadingfile", "False")
+        self._update_timer.start()
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
+        Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
+
     def uploadfunc(self, filename):
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
@@ -510,35 +542,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._onOptionStateChanged)
                 self._progress_message.show()
 
-                data = QByteArray()
-                data.append(single_string_file_data.encode())
-
-                manager = HttpRequestManager.getInstance()
-                manager.post(
-                    url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
-                    headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
-                    data = data,
-                    callback = self._onRequestFinished,
-                    error_callback = self._onUploadError,
-                    upload_progress_callback = self._onUploadProgress
-                )
+                self.sendfile(file_name, single_string_file_data)
+                
                 self._gcode = None
             except IOError as e:
-                Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
-                # preferences.setValue("mkswifi/uploadingfile", "False")
-                self._progress_message.hide()
-                self._progress_message = None
-                self._error_message = Message(
-                    self._translations.get("file_send_failed"))
-                self._error_message.show()
-                self._update_timer.start()
+                self.got_ioerror(e)
             except Exception as e:
-                # preferences.setValue("mkswifi/uploadingfile", "False")
-                self._update_timer.start()
-                if self._progress_message is not None:
-                    self._progress_message.hide()
-                    self._progress_message = None
-                Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
+                self.got_exeption(e)
 
     @ pyqtProperty("QVariantList", notify=sdFilesChanged)
     def getSDFiles(self):
@@ -708,33 +718,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     QCoreApplication.processEvents()
                     last_process_events = time.time()
 
-            data = QByteArray()
-            data.append(single_string_file_data.encode())
-
-            manager = HttpRequestManager.getInstance()
-            manager.post(
-                url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
-                headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
-                data = data,
-                callback = self._onRequestFinished,
-                error_callback = self._onUploadError,
-                upload_progress_callback = self._onUploadProgress
-            )
+            self.sendfile(file_name, single_string_file_data)
+            
             self._gcode = None
         except IOError as e:
-            Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
-            self._progress_message.hide()
-            self._progress_message = None
-            self._error_message = Message(
-                self._translations.get("file_send_failed"))
-            self._error_message.show()
-            self._update_timer.start()
+            self.got_ioerror(e)
         except Exception as e:
-            self._update_timer.start()
-            if self._progress_message is not None:
-                self._progress_message.hide()
-                self._progress_message = None
-            Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
+            self.got_exeption(e)
 
     def _printFile(self):
         self._sendCommand("M23 " + self._last_file_name)
