@@ -5,46 +5,33 @@ from UM.Application import Application
 from UM.Logger import Logger
 from UM.Signal import signalemitter
 from UM.Message import Message
-from cura.PrinterOutput.PrinterOutputDevice import PrinterOutputDevice, ConnectionState
-from cura.CuraApplication import CuraApplication
+from UM.Settings.InstanceContainer import InstanceContainer
+from UM.TaskManagement.HttpRequestManager import HttpRequestManager
 
-from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice, AuthState
+from cura.PrinterOutput.PrinterOutputDevice import ConnectionState
+from cura.CuraApplication import CuraApplication
+from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice
 from cura.PrinterOutput.Models.PrinterOutputModel import PrinterOutputModel
 from cura.PrinterOutput.Models.PrintJobOutputModel import PrintJobOutputModel
-from UM.PluginRegistry import PluginRegistry
-from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice
-from UM.Settings.ContainerRegistry import ContainerRegistry
-from UM.Settings.Models.SettingDefinitionsModel import SettingDefinitionsModel
-from UM.Settings.InstanceContainer import InstanceContainer
+from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
 
-from PyQt5.QtQuick import QQuickView
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
-from cura.PrinterOutput.GenericOutputController import GenericOutputController
-
-from PyQt5.QtNetwork import QHttpMultiPart, QHttpPart, QNetworkRequest, QNetworkAccessManager, QNetworkReply, QTcpSocket
-from PyQt5.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, Qt, QObject, QByteArray
+from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
+from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
 from . import utils
-
-import UM
 
 import re  # For escaping characters in the settings.
 import json
 import copy
 import os.path
 import time
-import base64
 import sys
 from enum import IntEnum
-from UM.Preferences import Preferences
 
-from typing import cast, Any, Callable, Dict, List, Optional, Union, TYPE_CHECKING
-if TYPE_CHECKING:
-    from UM.Scene.SceneNode import SceneNode  # For typing.
-    from UM.FileHandler.FileHandler import FileHandler  # For typing.
+from typing import cast, Any, Dict, List
 
 from UM.Resources import Resources
 from . import Constants, MKSDialog
@@ -183,9 +170,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._update_timer.setInterval(2000)
         self._update_timer.setSingleShot(False)
         self._update_timer.timeout.connect(self._update)
-
-        self._manager = QNetworkAccessManager()
-        self._manager.finished.connect(self._onRequestFinished)
 
         self._preheat_timer = QTimer()
         self._preheat_timer.setSingleShot(True)
@@ -497,6 +481,38 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def is_contains_chinese(self, strs):
         return False
 
+    def sendfile(self, file_name, file_str):
+        data = QByteArray()
+        data.append(file_str.encode())
+
+        manager = HttpRequestManager.getInstance()
+        manager.post(
+            url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
+            headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
+            data = data,
+            callback = self._onRequestFinished,
+            error_callback = self._onUploadError,
+            upload_progress_callback = self._onUploadProgress
+        )
+
+    def got_ioerror(self, error):
+        Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
+        # preferences.setValue("mkswifi/uploadingfile", "False")
+        self._progress_message.hide()
+        self._progress_message = None
+        self._error_message = Message(
+            self._translations.get("file_send_failed"))
+        self._error_message.show()
+        self._update_timer.start()
+
+    def got_exeption(self, error):
+        # preferences.setValue("mkswifi/uploadingfile", "False")
+        self._update_timer.start()
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
+        Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
+
     def uploadfunc(self, filename):
         preferences = Application.getInstance().getPreferences()
         if self._progress_message:
@@ -526,35 +542,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     self._onOptionStateChanged)
                 self._progress_message.show()
 
-                data = QByteArray()
-                data.append(single_string_file_data.encode())
-
-                post_request = QNetworkRequest(
-                    QUrl("http://%s/upload?X-Filename=%s" %
-                         (self._address, file_name)))
-                post_request.setRawHeader(b'Content-Type',
-                                          b'application/octet-stream')
-                post_request.setRawHeader(b'Connection', b'keep-alive')
-                self._post_reply = self._manager.post(post_request, data)
-                self._post_reply.uploadProgress.connect(self._onUploadProgress)
-                self._post_reply.sslErrors.connect(self._onUploadError)
+                self.sendfile(file_name, single_string_file_data)
+                
                 self._gcode = None
             except IOError as e:
-                Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
-                # preferences.setValue("mkswifi/uploadingfile", "False")
-                self._progress_message.hide()
-                self._progress_message = None
-                self._error_message = Message(
-                    self._translations.get("file_send_failed"))
-                self._error_message.show()
-                self._update_timer.start()
+                self.got_ioerror(e)
             except Exception as e:
-                # preferences.setValue("mkswifi/uploadingfile", "False")
-                self._update_timer.start()
-                if self._progress_message is not None:
-                    self._progress_message.hide()
-                    self._progress_message = None
-                Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
+                self.got_exeption(e)
 
     @ pyqtProperty("QVariantList", notify=sdFilesChanged)
     def getSDFiles(self):
@@ -724,44 +718,20 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                     QCoreApplication.processEvents()
                     last_process_events = time.time()
 
-            data = QByteArray()
-            data.append(single_string_file_data.encode())
-
-            post_request = QNetworkRequest(
-                QUrl("http://%s/upload?X-Filename=%s" %
-                     (self._address, file_name)))
-            post_request.setRawHeader(b'Content-Type',
-                                      b'application/octet-stream')
-            post_request.setRawHeader(b'Connection', b'keep-alive')
-            self._post_reply = self._manager.post(post_request, data)
-            self._post_reply.uploadProgress.connect(self._onUploadProgress)
-            self._post_reply.sslErrors.connect(self._onUploadError)
-            # Logger.log("d", "http://%s:80/upload?X-Filename=%s" % (self._address, file_name))
+            self.sendfile(file_name, single_string_file_data)
+            
             self._gcode = None
         except IOError as e:
-            Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
-            self._progress_message.hide()
-            self._progress_message = None
-            self._error_message = Message(
-                self._translations.get("file_send_failed"))
-            self._error_message.show()
-            self._update_timer.start()
+            self.got_ioerror(e)
         except Exception as e:
-            self._update_timer.start()
-            if self._progress_message is not None:
-                self._progress_message.hide()
-                self._progress_message = None
-            Logger.log("e", Constants.EXCEPTION_MESSAGE % str(e))
+            self.got_exeption(e)
 
     def _printFile(self):
         self._sendCommand("M23 " + self._last_file_name)
         self._sendCommand("M24")
 
-    def _onUploadProgress(self, bytes_sent, bytes_total):
-        Logger.log("d",
-                   "Upload _onUploadProgress bytes_sent %s" % str(bytes_sent))
-        Logger.log(
-            "d", "Upload _onUploadProgress bytes_total %s" % str(bytes_total))
+    def _onUploadProgress(self, bytes_sent: int, bytes_total: int):
+        Logger.log("d", "Bytes sent %s/%s" % (str(bytes_sent), str(bytes_total)))
         if bytes_sent == bytes_total and bytes_sent > 0:
             self._progress_message.hide()
             self._error_message = Message(
@@ -777,8 +747,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if new_progress > self._progress_message.getProgress():
                 # Ensure that the message is visible.
                 self._progress_message.show()
-                self._progress_message.setProgress(bytes_sent / bytes_total *
-                                                   100)
+                self._progress_message.setProgress(new_progress)
         else:
             if self._progress_message is not None:
                 self._progress_message.setProgress(0)
