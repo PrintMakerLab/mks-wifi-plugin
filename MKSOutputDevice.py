@@ -5,21 +5,18 @@ from UM.Application import Application
 from UM.Logger import Logger
 from UM.Signal import signalemitter
 from UM.Message import Message
+from UM.Settings.InstanceContainer import InstanceContainer
+from UM.TaskManagement.HttpRequestManager import HttpRequestManager
+
 from cura.PrinterOutput.PrinterOutputDevice import ConnectionState
 from cura.CuraApplication import CuraApplication
-
 from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice
 from cura.PrinterOutput.Models.PrinterOutputModel import PrinterOutputModel
 from cura.PrinterOutput.Models.PrintJobOutputModel import PrintJobOutputModel
-from cura.PrinterOutput.NetworkedPrinterOutputDevice import NetworkedPrinterOutputDevice
-from UM.Settings.InstanceContainer import InstanceContainer
+from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
-from UM.TaskManagement.HttpRequestManager import HttpRequestManager
 
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-
-from cura.PrinterOutput.GenericOutputController import GenericOutputController
-
 from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
 from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
@@ -31,7 +28,6 @@ import json
 import copy
 import os.path
 import time
-import base64
 import sys
 from enum import IntEnum
 
