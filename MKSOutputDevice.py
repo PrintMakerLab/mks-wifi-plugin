@@ -105,7 +105,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._application = CuraApplication.getInstance()
         self._monitor_view_qml_path = os.path.join(
             os.path.dirname(os.path.abspath(__file__)), "qml",
-            "MonitorItem4x.qml")
+            "MonitorItem.qml")
 
         # Make sure the output device gets selected above local file output and Octoprint XD
         self.setPriority(3)
@@ -364,7 +364,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @pyqtSlot(str)
     def printSDFiles(self, filename):
-        self._sendCommand("M23 " + filename)
+        self._sendCommand("M23 1:/" + filename)
         self._sendCommand("M24")
 
     @pyqtSlot()

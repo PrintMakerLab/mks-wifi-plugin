@@ -307,5 +307,5 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def openControlPanel(self):
         Logger.log("d", "Opening print jobs web UI...")
         self._monitor_view_qml_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "qml", "MonitorItem4x.qml")
+            os.path.abspath(__file__)), "qml", "MonitorItem.qml")
         Application.getInstance().createQmlComponent(self._monitor_view_qml_path, {"manager": self})
