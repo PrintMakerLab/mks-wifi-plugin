@@ -48,7 +48,7 @@ def take_screenshot():
     cut_image = Snapshot.snapshot(width = 900, height = 900)
     return cut_image
 
-def addPreview(self):
+def add_preview(self):
     application = Application.getInstance()
 
     scene = application.getController().getScene()
@@ -99,14 +99,7 @@ def addPreview(self):
             Logger.log("d", "Plate %s has already been processed", plate_id)
             continue
 
-        if len(gcode_list) > 0:
-            # remove header from gcode, so we can put it back in front after processing
-            header = gcode_list.pop(0)
-        else:
-            header = ""
-
-        if header != "":
-            gcode_list.insert(0, header)  # add header back in front
+        # adding to header
         gcode_list[0] += processed_marker
         gcode_list[0] += "; Postprocessed by [MKS WiFi plugin](https://github.com/Jeredian/mks-wifi-plugin)\n"
         gcode_list[0] += "; simage=%d\n" % simage

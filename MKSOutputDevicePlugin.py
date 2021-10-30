@@ -50,7 +50,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             Constants.MANUAL_INSTANCES).split(",")
         Application.getInstance().globalContainerStackChanged.connect(self.reCheckConnections)
 
-        Application.getInstance().getOutputDeviceManager().writeStarted.connect(MKSPreview.addPreview)
+        Application.getInstance().getOutputDeviceManager().writeStarted.connect(MKSPreview.add_preview)
 
         self._service_changed_request_queue = Queue()
         self._service_changed_request_event = Event()
