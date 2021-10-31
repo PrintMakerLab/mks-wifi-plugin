@@ -152,9 +152,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._stream_buffer = b""
         self._stream_buffer_start_index = -1
 
-        self._post_reply = None
-        self._post_multi_part = None
-        self._post_part = None
+        self._request_data = None
+
         self._last_file_name = None
         self._last_file_path = None
 
@@ -486,7 +485,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         data.append(file_str.encode())
 
         manager = HttpRequestManager.getInstance()
-        manager.post(
+        self._request_data = manager.post(
             url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
             headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
             data = data,
@@ -594,6 +593,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             # self._socket.abort()
         if self._progress_message:
             self._progress_message.hide()
+            self._progress_message = None
         if self._error_message:
             self._error_message.hide()
         self._update_timer.stop()
@@ -1048,8 +1048,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._update_timer.start()
         self._isSending = False
         self._isPrinting = False
+        manager = HttpRequestManager.getInstance()
+        manager.abortRequest(self._request_data)
         self._progress_message.hide()
-        self._post_reply.abort()
+        self._progress_message = None
 
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")
