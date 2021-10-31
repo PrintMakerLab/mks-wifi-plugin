@@ -21,8 +21,6 @@ from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
 from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
-from . import utils
-
 import re  # For escaping characters in the settings.
 import json
 import copy
@@ -707,9 +705,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 "d", "mks file name: " + file_name + " original file name: " + Application.getInstance().
                 getPrintInformation().jobName.strip())
             
-            # Adding screeshot section
-            single_string_file_data = utils.add_screenshot()
-            # End of screeshot section
+            single_string_file_data = ""
 
             last_process_events = time.time()
             for line in self._gcode:

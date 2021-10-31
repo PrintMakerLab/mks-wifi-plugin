@@ -1,7 +1,7 @@
 # Copyright (c) 2021
 # MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.OutputDevice.OutputDevicePlugin import OutputDevicePlugin
-from . import MKSOutputDevice, SaveOutputDevice
+from . import MKSOutputDevice
 
 from zeroconf import Zeroconf, ServiceBrowser, ServiceStateChange, ServiceInfo
 from UM.Signal import Signal, signalemitter
@@ -20,6 +20,7 @@ import os
 
 from cura.CuraApplication import CuraApplication
 from . import Constants
+from . import MKSPreview
 
 catalog = i18nCatalog("mksplugin")
 
@@ -49,6 +50,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             Constants.MANUAL_INSTANCES).split(",")
         Application.getInstance().globalContainerStackChanged.connect(self.reCheckConnections)
 
+        Application.getInstance().getOutputDeviceManager().writeStarted.connect(MKSPreview.add_preview)
+
         self._service_changed_request_queue = Queue()
         self._service_changed_request_event = Event()
         self._service_changed_request_thread = Thread(target=self._handleOnServiceChangedRequests,
@@ -73,8 +76,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def startDiscovery(self):
         self.stop()
-        self.getOutputDeviceManager().addOutputDevice(
-            SaveOutputDevice.SaveOutputDevice())
         if self._browser:
             self._browser.cancel()
             self._browser = None
