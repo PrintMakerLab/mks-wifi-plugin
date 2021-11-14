@@ -218,8 +218,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.setDescription(self._translations.get("print_over_tooltip").format(
             global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
-        self.setConnectionState(
-            cast(ConnectionState, ConnectionState.Connecting))
+        self.setConnectionState(ConnectionState.Connecting)
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
         preferences = Application.getInstance().getPreferences()
@@ -567,8 +566,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._error_message.show()
         # self._updateJobState("")
         self._isConnect = False
-        self.setConnectionState(
-            cast(ConnectionState, ConnectionState.Closed))
+        self.setConnectionState(ConnectionState.Closed)
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
@@ -839,7 +837,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def printer_set_connect(self):
         self._sendCommand("M20")
-        self.setConnectionState(cast(ConnectionState, ConnectionState.Connected))
+        self.setConnectionState(ConnectionState.Connected)
         self.setConnectionText(self._translations.get("connected"))
 
     def get_current_temp(self, temp):
