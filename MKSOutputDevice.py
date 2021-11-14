@@ -27,7 +27,6 @@ import copy
 import os.path
 import time
 import sys
-from enum import IntEnum
 
 from typing import cast, Any, Dict, List
 
@@ -42,21 +41,6 @@ catalog = i18nCatalog("mksplugin")
 
 if catalog.hasTranslationLoaded():
     Logger.log("i", "MKS WiFi Plugin translation loaded!")
-
-class UnifiedConnectionState(IntEnum):
-    try:
-        Closed = ConnectionState.Closed
-        Connecting = ConnectionState.Connecting
-        Connected = ConnectionState.Connected
-        Busy = ConnectionState.Busy
-        Error = ConnectionState.Error
-    except AttributeError:
-        Closed = ConnectionState.closed  # type: ignore
-        Connecting = ConnectionState.connecting  # type: ignore
-        Connected = ConnectionState.connected  # type: ignore
-        Busy = ConnectionState.busy  # type: ignore
-        Error = ConnectionState.error  # type: ignore
-
 
 @signalemitter
 class MKSOutputDevice(NetworkedPrinterOutputDevice):
@@ -235,7 +219,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             global_container_stack.getName()))
         Logger.log("d", "MKS socket connecting ")
         self.setConnectionState(
-            cast(ConnectionState, UnifiedConnectionState.Connecting))
+            cast(ConnectionState, ConnectionState.Connecting))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
         preferences = Application.getInstance().getPreferences()
@@ -584,7 +568,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         # self._updateJobState("")
         self._isConnect = False
         self.setConnectionState(
-            cast(ConnectionState, UnifiedConnectionState.Closed))
+            cast(ConnectionState, ConnectionState.Closed))
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
@@ -855,7 +839,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def printer_set_connect(self):
         self._sendCommand("M20")
-        self.setConnectionState(cast(ConnectionState, UnifiedConnectionState.Connected))
+        self.setConnectionState(cast(ConnectionState, ConnectionState.Connected))
         self.setConnectionText(self._translations.get("connected"))
 
     def get_current_temp(self, temp):
@@ -997,7 +981,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         try:
             if not self._isConnect:
                 self._isConnect = True
-            if self._connection_state != UnifiedConnectionState.Connected:
+            if self._connection_state != ConnectionState.Connected:
                 self.printer_set_connect()
             if not self._printers:
                 self._createPrinterList()
