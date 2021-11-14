@@ -28,8 +28,6 @@ import os.path
 import time
 import sys
 
-from typing import cast, Any, Dict, List
-
 from UM.Resources import Resources
 from . import Constants, MKSDialog
 
