@@ -50,7 +50,7 @@ Cura.MachineAction
             var printerKey = base.selectedPrinter.getKey()
             if(manager.getStoredKey() != printerKey)
             {
-                manager.setKey(printerKey);
+                manager.mks_connect_printer(printerKey);
                 completed();
             }
             manager.changestage();
@@ -64,7 +64,7 @@ Cura.MachineAction
             var printerKey = base.selectedPrinter.getKey()
             if(manager.getStoredKey() == printerKey)
             {
-                manager.disConnection(printerKey);
+                manager.mks_disconnect_printer(printerKey);
                 completed();
             }
         }

@@ -108,7 +108,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isPause = False
         self._isSending = False
         self._gcode = None
-        self._isConnect = False
+        self._connection_state = ConnectionState.Closed
         self._printing_filename = ""
         self._printing_progress = 0
         self._printing_time = 0
@@ -116,7 +116,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._pause_time = 0
         self.last_update_time = 0
         self.angle = 10
-        self._connection_state_before_timeout = None
         self._sdFileList = False
         self.sdFiles = []
         self._mdialog = None
@@ -197,6 +196,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         }
 
     sdFilesChanged = pyqtSignal()
+    connectionStateChanged = pyqtSignal(str)
 
     def _onOutputDevicesChanged(self):
         Logger.log("d", "MKS _onOutputDevicesChanged")
@@ -215,12 +215,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 global_container_stack.getName()))
         self.setDescription(self._translations.get("print_over_tooltip").format(
             global_container_stack.getName()))
-        Logger.log("d", "MKS socket connecting ")
-        self.setConnectionState(ConnectionState.Connecting)
+        Logger.log("d", "MKS socket connecting to %s:%s" % (str(self._address), str(self._port)))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference(Constants.STOP_UPDATE, "False")
+        self.setConnectionState(ConnectionState.Connecting)
         self._update_timer.start()
 
     def getProperties(self):
@@ -547,8 +547,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return
         if self.isBusy() and "M20" in cmd:
             return
-        if self._socket and self._socket.state() == 2 or self._socket.state(
-        ) == 3:
+        if self._socket and self._socket.state() == 3:
             if isinstance(cmd, str):
                 self._command_queue.put(cmd + "\r\n")
             elif isinstance(cmd, list):
@@ -563,8 +562,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._error_message = Message("Printer disconneted.")
             self._error_message.show()
         # self._updateJobState("")
-        self._isConnect = False
-        self.setConnectionState(ConnectionState.Closed)
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
@@ -575,9 +572,25 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._error_message:
             self._error_message.hide()
         self._update_timer.stop()
+        self.setConnectionState(ConnectionState.Closed)
 
-    def isConnected(self):
-        return self._isConnect
+    @pyqtProperty(int, notify = connectionStateChanged)
+    def connectionState(self) -> "ConnectionState":
+        return self._connection_state
+
+    @pyqtProperty(bool)
+    def isConnected(self) -> bool:
+        state = (self._connection_state == ConnectionState.Connected or self._connection_state == ConnectionState.Busy)
+        Logger.log("d", "isConnected state = %d connectionState = %d" % (state, self._connection_state))
+        return state
+
+    def setConnectionState(self, connection_state: "ConnectionState") -> None:
+        if self._connection_state != connection_state:
+            self._connection_state = connection_state
+            Logger.log("d", "connectionState for %s now is %d" % (self._key, self._connection_state))
+            self.connectionStateChanged.emit(self._key)
+        else:
+            self._connection_state = connection_state
 
     def isBusy(self):
         return self._isPrinting or self._isPause
@@ -769,8 +782,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if preferencess.getValue(Constants.STOP_UPDATE):
             self._update_timer.stop()
             return
-        if self._socket is not None and (self._socket.state() == 2
-                                         or self._socket.state() == 3):
+        if self._socket and self._socket.state() == 3:
             self.write_socket_data()
         else:
             Logger.log("d", "MKS wifi reconnecting")
@@ -794,8 +806,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy() and "M20" in _queue_data:
                 continue
             _send_data += _queue_data
-        Logger.log("d", "_send_data: \r\n%s" % _send_data)
-        self._socket.writeData(_send_data.encode(sys.getfilesystemencoding()))
+        if self._socket.state() == 3:
+            Logger.log("d", "_send_data: %s" % _send_data.replace("\r", " ").replace("\n", " ")) 
+            self._socket.writeData(_send_data.encode(sys.getfilesystemencoding()))
         self._socket.flush()
 
     def _setJobState(self, job_state):
@@ -975,8 +988,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self.disconnect()
             return
         try:
-            if not self._isConnect:
-                self._isConnect = True
             if self._connection_state != ConnectionState.Connected:
                 self.printer_set_connect()
             if not self._printers:
