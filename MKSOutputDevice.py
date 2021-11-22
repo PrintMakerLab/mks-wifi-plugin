@@ -547,7 +547,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return
         if self.isBusy() and "M20" in cmd:
             return
-        if self._socket and self._socket.state() == 3:
+        if self.isSocketInConnectedState():
             if isinstance(cmd, str):
                 self._command_queue.put(cmd + "\r\n")
             elif isinstance(cmd, list):
@@ -577,6 +577,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtProperty(int, notify = connectionStateChanged)
     def connectionState(self) -> "ConnectionState":
         return self._connection_state
+
+    @pyqtProperty(bool)
+    def isSocketInConnectedState(self) -> bool:
+        return self._socket and self._socket.state() == 3
 
     @pyqtProperty(bool)
     def isConnected(self) -> bool:
@@ -782,7 +786,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if preferencess.getValue(Constants.STOP_UPDATE):
             self._update_timer.stop()
             return
-        if self._socket and self._socket.state() == 3:
+        if self.isSocketInConnectedState():
             self.write_socket_data()
         else:
             Logger.log("d", "MKS wifi reconnecting")
@@ -806,7 +810,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if self.isBusy() and "M20" in _queue_data:
                 continue
             _send_data += _queue_data
-        if self._socket.state() == 3:
+        if self.isSocketInConnectedState():
             Logger.log("d", "_send_data: %s" % _send_data.replace("\r", " ").replace("\n", " ")) 
             self._socket.writeData(_send_data.encode(sys.getfilesystemencoding()))
         self._socket.flush()
