@@ -459,6 +459,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def is_contains_chinese(self, strs):
         return False
 
+    
+    def isSocketInConnectedState(self) -> bool:
+        return self._socket and self._socket.state() == 3
+
     def sendfile(self, file_name, file_str):
         data = QByteArray()
         data.append(file_str.encode())
@@ -577,10 +581,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtProperty(int, notify = connectionStateChanged)
     def connectionState(self) -> "ConnectionState":
         return self._connection_state
-
-    @pyqtProperty(bool)
-    def isSocketInConnectedState(self) -> bool:
-        return self._socket and self._socket.state() == 3
 
     @pyqtProperty(bool)
     def isConnected(self) -> bool:
