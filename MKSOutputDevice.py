@@ -585,13 +585,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtProperty(bool)
     def isConnected(self) -> bool:
         state = (self._connection_state == ConnectionState.Connected or self._connection_state == ConnectionState.Busy)
-        Logger.log("d", "isConnected state = %d connectionState = %d" % (state, self._connection_state))
+        # Logger.log("d", "isConnected state = %d connectionState = %d" % (state, self._connection_state))
         return state
 
     def setConnectionState(self, connection_state: "ConnectionState") -> None:
         if self._connection_state != connection_state:
             self._connection_state = connection_state
-            Logger.log("d", "connectionState for %s now is %d" % (self._key, self._connection_state))
+            # Logger.log("d", "connectionState for %s now is %d" % (self._key, self._connection_state))
             self.connectionStateChanged.emit(self._key)
         else:
             self._connection_state = connection_state
