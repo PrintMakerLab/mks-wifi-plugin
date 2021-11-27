@@ -37,15 +37,14 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
         self._error_message = None
 
-        self._old_printers = []
-
         self.addPrinterSignal.connect(self.addPrinter)
         self.removePrinterSignal.connect(self.removePrinter)
 
         self._preferences = Application.getInstance().getPreferences()
+
+        Logger.log("d", self._preferences.getValue(Constants.MANUAL_INSTANCES).split(","))
+
         self._preferences.addPreference(Constants.MANUAL_INSTANCES, "")
-        self._preferences.addPreference("local_file/last_used_type", "")
-        self._preferences.addPreference("local_file/dialog_save_path", "")
         self._manual_instances = self._preferences.getValue(
             Constants.MANUAL_INSTANCES).split(",")
         Application.getInstance().globalContainerStackChanged.connect(self.reCheckConnections)
@@ -57,8 +56,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         self._service_changed_request_thread = Thread(target=self._handleOnServiceChangedRequests,
                                                       daemon=True)
         self._service_changed_request_thread.start()
-
-        self._changestage = False
 
     _translations = {}
 
@@ -75,12 +72,11 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         self.startDiscovery()
 
     def startDiscovery(self):
+        Logger.log("d", "Starting printer discovery.")
         self.stop()
         if self._browser:
             self._browser.cancel()
             self._browser = None
-            self._old_printers = [
-                printer_name for printer_name in self._printers]
             self._printers = {}
             self.printerListChanged.emit()
         self._zero_conf = Zeroconf()
@@ -122,7 +118,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 Constants.MANUAL_INSTANCES, ",".join(self._manual_instances))
 
     def stop(self):
-        # self.getOutputDeviceManager().removeOutputDevice("save_with_screenshot")
         if self._zero_conf is not None:
             Logger.log("d", "zeroconf close...")
             self._zero_conf.close()
@@ -130,11 +125,11 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def getPrinters(self):
         return self._printers
 
-    def disConnections(self, key):
-        Logger.log("d", "disConnections change %s" % key)
+    def mks_remove_output_device(self, key):
+        Logger.log("d", "mks_remove_output_device %s" % key)
         if key in self._printers:
             self._printers[key].disconnect()
-            # self._printers[key].connectionStateChanged.disconnect(self._onPrinterConnectionStateChanged)
+            self._printers[key].connectionStateChanged.disconnect(self._onPrinterConnectionStateChanged)
             self.getOutputDeviceManager().removeOutputDevice(key)
         preferences = Application.getInstance().getPreferences()
         preferences.addPreference("mkswifi/stopupdate", "True")
@@ -147,7 +142,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                    active_machine.getMetaDataEntry("mks_network_key"))
         for key in self._printers:
             if key == active_machine.getMetaDataEntry("mks_network_key"):
-                if not self._printers[key].isConnected():
+                if not self._printers[key].isConnected:
                     Logger.log("d", "Connecting [%s]..." % key)
                     self._printers[key].connect()
                     self._printers[key].connectionStateChanged.connect(
@@ -155,7 +150,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 self._printers[key]._properties.update({b"name": Application.getInstance(
                 ).getGlobalContainerStack().getName().encode("utf-8")})
             else:
-                if self._printers[key].isConnected():
+                if self._printers[key].isConnected:
                     Logger.log("d", "Closing connection [%s]..." % key)
                     self._printers[key].disconnect()
                     self._printers[key].connectionStateChanged.disconnect(
@@ -168,9 +163,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         has_key = global_container_stack and printer.getKey(
         ) == global_container_stack.getMetaDataEntry("mks_network_key")
         # Was the printer already connected, but a re-scan forced?
-        if has_key and printer.getKey() not in self._old_printers:
-            Logger.log(
-                "d", "addPrinter, connecting [%s]..." % printer.getKey())
+        if has_key:
+            Logger.log("d", "addPrinter, connecting [%s]..." % printer.getKey())
             self._printers[printer.getKey()].connect()
             printer.connectionStateChanged.connect(
                 self._onPrinterConnectionStateChanged)
@@ -178,23 +172,20 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def removePrinter(self, name):
         printer = self._printers.pop(name, None)
-        if printer and printer.isConnected():
+        if printer and printer.isConnected:
             printer.disconnect()
             printer.connectionStateChanged.disconnect(
                 self._onPrinterConnectionStateChanged)
             Logger.log("d", "removePrinter, disconnecting [%s]..." % name)
         self.printerListChanged.emit()
 
-    def printertrytoconnect(self):
-        Logger.log("d", "mks printertrytoconnect")
-        self._changestage = True
-
     def _onPrinterConnectionStateChanged(self, key):
         if key not in self._printers:
+            Logger.log("w", "no %s in _printers" % key)
             return
-        # Logger.log("d", "mks add output device %s" % self._printers[key].isConnected())
-        if self._printers[key].isConnected():
-            # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected())
+        # Logger.log("d", "mks add output device %s" % self._printers[key].())
+        if self._printers[key].isConnected:
+            # Logger.log("d", "mks add output device--------ok--------- %s" % self._printers[key].isConnected)
             if self._error_message:
                 self._error_message.hide()
             self._error_message = Message(self._translations.get("connected").format(
@@ -202,7 +193,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             self._error_message.show()
             self.getOutputDeviceManager().addOutputDevice(self._printers[key])
         else:
-            # self.getOutputDeviceManager().removeOutputDevice(key)
             global_container_stack = CuraApplication.getInstance().getGlobalContainerStack()
             if global_container_stack:
                 meta_data = global_container_stack.getMetaData()
@@ -302,11 +292,3 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
             # handle all pending requests
             self._handleAllPendingRequests()
-            
-
-    @pyqtSlot()
-    def openControlPanel(self):
-        Logger.log("d", "Opening print jobs web UI...")
-        self._monitor_view_qml_path = os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), "qml", "MonitorItem.qml")
-        Application.getInstance().createQmlComponent(self._monitor_view_qml_path, {"manager": self})

@@ -69,10 +69,6 @@ class MachineConfig(MachineAction):
         # Time to wait after a zeroconf service change before allowing a zeroconf reset
         self._zeroconf_change_grace_period = 0.25
 
-        self.timer = QTimer(self)
-        self.timer.start(10000)  # 5s
-        self.timer.timeout.connect(self.restartDiscovery)
-
     printersChanged = pyqtSignal()
     printersTryToConnect = pyqtSignal()
 
@@ -97,20 +93,6 @@ class MachineConfig(MachineAction):
     def reset(self):
         Logger.log("d", "Reset the list of found printers.")
         self.printersChanged.emit()
-
-    @pyqtSlot()
-    def restartDiscovery(self):
-        self.timer.stop()
-        # Ensure that there is a bit of time after a printer has been discovered.
-        # This is a work around for an issue with Qt 5.5.1 up to Qt 5.7 which can segfault if we do this too often.
-        # It's most likely that the QML engine is still creating delegates, where the python side already deleted or
-        # garbage collected the data.
-        # Whatever the case, waiting a bit ensures that it doesn't crash.
-        if time.time() - self._last_zeroconf_event_time > self._zeroconf_change_grace_period:
-            if not self._network_plugin:
-                self.startDiscovery()
-            else:
-                self._network_plugin.startDiscovery()
 
     @pyqtSlot(str, str)
     def removeManualPrinter(self, key, address):
@@ -146,36 +128,27 @@ class MachineConfig(MachineAction):
         CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
 
     @pyqtSlot(str)
-    def disConnection(self, key):
+    def mks_disconnect_printer(self, key):
+        Logger.log("d", "mks_disconnect_printer %s" % key)
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
             if "mks_network_key" in meta_data:
                 global_container_stack.setMetaDataEntry(
                     "mks_network_key", None)
-                # Delete old authentication data.
                 global_container_stack.removeMetaDataEntry(
-                    "network_authentication_id")
-                global_container_stack.removeMetaDataEntry(
-                    "network_authentication_key")
-        Logger.log("d", "disConnection change %s" % key)
+                    "mks_network_key")
         if self._network_plugin:
-            self._network_plugin.disConnections(key)
+            self._network_plugin.mks_remove_output_device(key)
 
     @pyqtSlot(str)
-    def setKey(self, key):
-        Logger.log(
-            "d", "MKS WiFi Plugin the network key of the active machine to %s", key)
+    def mks_connect_printer(self, key):
+        Logger.log("d", "mks_connect_printer %s", key)
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
             if "mks_network_key" in meta_data:
                 global_container_stack.setMetaDataEntry("mks_network_key", key)
-                # Delete old authentication data.
-                global_container_stack.removeMetaDataEntry(
-                    "network_authentication_id")
-                global_container_stack.removeMetaDataEntry(
-                    "network_authentication_key")
             else:
                 Logger.log("d", "MKS WiFi Plugin add dataEntry")
                 global_container_stack.setMetaDataEntry("mks_network_key", key)
