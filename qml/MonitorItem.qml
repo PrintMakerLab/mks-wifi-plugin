@@ -21,7 +21,6 @@ Component
         property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
         property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
         property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
-        property var currentLanguage: UM.Preferences.getValue("general/language")
 
         SystemPalette { id: palette }
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
@@ -38,14 +37,13 @@ Component
             color: UM.Theme.getColor("main_background")
 
             anchors.right: parent.right
-            width: parent.width * 0.35
+            width: Math.floor(parent.width * 0.35) - ((Math.floor(parent.width * 0.35) % 2) ? 0 : 1) // section after minus needed for correct alignment of extruder block when 2 extruders
             anchors.top: parent.top
             anchors.bottom: parent.bottom
 
             Cura.PrintMonitor {
                 id:base
 
-                width: UM.Theme.getSize("print_setup_widget").width - UM.Theme.getSize("default_margin").width // "- UM.Theme.getSize("default_margin").width" needed for correct alignment of extruder block when 2 extruders
                 anchors
                 {
                     right: parent.right
