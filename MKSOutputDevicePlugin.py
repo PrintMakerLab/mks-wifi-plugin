@@ -3,20 +3,14 @@
 from UM.OutputDevice.OutputDevicePlugin import OutputDevicePlugin
 from . import MKSOutputDevice
 
-from zeroconf import Zeroconf, ServiceBrowser, ServiceStateChange, ServiceInfo
 from UM.Signal import Signal, signalemitter
 from UM.Application import Application
 from UM.Logger import Logger
 
-from PyQt5.QtCore import QObject, pyqtSlot, pyqtProperty
-from queue import Queue
-from threading import Event, Thread
+from PyQt5.QtCore import QObject
 
 from UM.Message import Message
 from UM.i18n import i18nCatalog
-
-import time
-import os
 
 from cura.CuraApplication import CuraApplication
 from . import Constants
@@ -30,8 +24,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def __init__(self):
         super().__init__()
         self.init_translations()
-        self._zero_conf = None
-        self._browser = None
         self._printers = {}
         self._discovered_devices = {}
 
@@ -51,12 +43,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
         Application.getInstance().getOutputDeviceManager().writeStarted.connect(MKSPreview.add_preview)
 
-        self._service_changed_request_queue = Queue()
-        self._service_changed_request_event = Event()
-        self._service_changed_request_thread = Thread(target=self._handleOnServiceChangedRequests,
-                                                      daemon=True)
-        self._service_changed_request_thread.start()
-
     _translations = {}
 
     def init_translations(self):
@@ -73,15 +59,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def startDiscovery(self):
         Logger.log("d", "Starting printer discovery.")
-        self.stop()
-        if self._browser:
-            self._browser.cancel()
-            self._browser = None
-            self._printers = {}
-            self.printerListChanged.emit()
-        self._zero_conf = Zeroconf()
-        self._browser = ServiceBrowser(self._zero_conf, u'_mks._tcp.local.', [
-                                       self._appendServiceChangedRequest])
         for address in self._manual_instances:
             if address:
                 self.addManualPrinter(address)
@@ -116,11 +93,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             self._manual_instances.remove(address)
             self._preferences.setValue(
                 Constants.MANUAL_INSTANCES, ",".join(self._manual_instances))
-
-    def stop(self):
-        if self._zero_conf is not None:
-            Logger.log("d", "zeroconf close...")
-            self._zero_conf.close()
 
     def getPrinters(self):
         return self._printers
@@ -202,93 +174,3 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                     if localkey != key and key in self._printers:
                         # self.getOutputDeviceManager().connect()
                         self.getOutputDeviceManager().removeOutputDevice(key)
-
-    def _checkInfo(self, name, info):
-        type_of_device = info.properties.get(b"type", None)
-        if type_of_device:
-            if type_of_device == b"printer":
-                address = '.'.join(map(lambda n: str(n), info.address))
-                if address in self._excluded_addresses:
-                    Logger.log("d",
-                                "The IP address %s of the printer \'%s\' is not correct. Trying to reconnect.",
-                                address, name)
-                    return False  # When getting the localhost IP, then try to reconnect
-                self.addPrinterSignal.emit(
-                    str(name), address, info.properties)
-            else:
-                Logger.log("w",
-                            "The type of the found device is '%s', not 'printer'! Ignoring.." % type_of_device)
-        return True
-
-    def _onServiceChanged(self, zeroconf, service_type, name, state_change):
-        if state_change == ServiceStateChange.Added:
-            Logger.log("d", "Bonjour service added: %s" % name)
-
-            # First try getting info from zeroconf cache
-            info = ServiceInfo(service_type, name, properties={})
-            for record in zeroconf.cache.entries_with_name(name.lower()):
-                info.update_record(zeroconf, time.time(), record)
-
-            for record in zeroconf.cache.entries_with_name(info.server):
-                info.update_record(zeroconf, time.time(), record)
-                if info.address:
-                    break
-
-            # Request more data if info is not complete
-            if not info.address:
-                Logger.log("d", "Trying to get address of %s", name)
-                info = zeroconf.get_service_info(service_type, name)
-
-            if info:
-                if self._checkInfo(name, info) == False:
-                    return False
-            else:
-                Logger.log("w", "Could not get information about %s" % name)
-                return False
-
-        elif state_change == ServiceStateChange.Removed:
-            Logger.log("d", "Bonjour service removed: %s" % name)
-            self.removePrinterSignal.emit(str(name))
-
-        return True
-
-    def _appendServiceChangedRequest(self, zeroconf, service_type, name, state_change):
-        # append the request and set the event so the event handling thread can pick it up
-        item = (zeroconf, service_type, name, state_change)
-        self._service_changed_request_queue.put(item)
-        self._service_changed_request_event.set()
-
-    def _handleAllPendingRequests(self):
-        # a list of requests that have failed so later they will get re-scheduled
-        reschedule_requests = []
-        while not self._service_changed_request_queue.empty():
-            request = self._service_changed_request_queue.get()
-            zeroconf, service_type, name, state_change = request
-            try:
-                result = self._onServiceChanged(
-                    zeroconf, service_type, name, state_change)
-                if not result:
-                    reschedule_requests.append(request)
-            except Exception:
-                Logger.logException("e",
-                                    "Failed to get service info for [%s] [%s], the request will be rescheduled",
-                                    service_type, name)
-                reschedule_requests.append(request)
-
-        # re-schedule the failed requests if any
-        if reschedule_requests:
-            for request in reschedule_requests:
-                self._service_changed_request_queue.put(request)
-
-    def _handleOnServiceChangedRequests(self):
-        while True:
-            # wait for the event to be set
-            self._service_changed_request_event.wait(timeout=5.0)
-            # stop if the application is shutting down
-            if Application.getInstance().isShuttingDown():
-                return
-
-            self._service_changed_request_event.clear()
-
-            # handle all pending requests
-            self._handleAllPendingRequests()

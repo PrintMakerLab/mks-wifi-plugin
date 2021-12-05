@@ -65,10 +65,6 @@ class MachineConfig(MachineAction):
         self._application.engineCreatedSignal.connect(
             self._createAdditionalComponentsView)
 
-        self._last_zeroconf_event_time = time.time()
-        # Time to wait after a zeroconf service change before allowing a zeroconf reset
-        self._zeroconf_change_grace_period = 0.25
-
     printersChanged = pyqtSignal()
     printersTryToConnect = pyqtSignal()
 
@@ -111,7 +107,6 @@ class MachineConfig(MachineAction):
             self._network_plugin.addManualPrinter(address)
 
     def _onPrinterDiscoveryChanged(self, *args):
-        self._last_zeroconf_event_time = time.time()
         self.printersChanged.emit()
 
     @pyqtProperty("QVariantList", notify=printersChanged)
