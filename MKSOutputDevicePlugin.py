@@ -45,7 +45,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             if "mks_current_ip" in meta_data:
                 address = active_machine.getMetaDataEntry("mks_current_ip")
                 self.addPrinter(address)
-                return
 
     def mks_current_ip_recheck(self):
         Logger.log("d", "mks_current_ip_recheck called")
