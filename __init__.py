@@ -39,7 +39,7 @@ def match_version():
         Logger.log("d", "Running Cura Arachne_engine_beta. Skipping version check")
         return True
     if cura_version == "Arachne_engine_beta_2":
-        Logger.log("d", "Running Cura Arachne_engine_beta. Skipping version check")
+        Logger.log("d", "Running Cura Arachne_engine_beta_2. Skipping version check")
         return True
     cura_version = Version(cura_version)
     cura_version = Version([cura_version.getMajor(), cura_version.getMinor()])
