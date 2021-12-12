@@ -559,10 +559,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def disconnect(self):
         # Logger.log("d", "disconnect--------------")
-        preferencess = Application.getInstance().getPreferences()
-        if preferencess.getValue(Constants.STOP_UPDATE):
+        preferences = Application.getInstance().getPreferences()
+        if preferences.getValue(Constants.STOP_UPDATE):
             # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
-            self._error_message = Message("Printer disconneted.")
+            self._error_message = Message("Printer disconnected.")
             self._error_message.show()
         # self._updateJobState("")
         if self._socket is not None:

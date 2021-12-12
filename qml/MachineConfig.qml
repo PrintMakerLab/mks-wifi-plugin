@@ -9,8 +9,7 @@ import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.3
 import QtQuick.Window 2.1
 
-Cura.MachineAction
-{
+Cura.MachineAction {
     id: base
     anchors.fill: parent;
 
@@ -29,63 +28,39 @@ Cura.MachineAction
         return sIndex
     }
 
-    Connections
-    {
-        target: dialog ? dialog : null
-        ignoreUnknownSignals: true
-        onNextClicked:
-        {
-            // Connect to the printer if the MachineAction is currently shown
-            if(base.parent.wizard == dialog)
+    function connectPrinter() {
+        if(base.selectedPrinter) {
+            if(manager.getCurrentAddress() != base.selectedPrinter)
             {
-                connectPrinter();
-            }
-        }
-    }
-
-    function connectPrinter()
-    {
-        if(base.selectedPrinter)
-        {
-            var printerKey = base.selectedPrinter.getKey()
-            if(manager.getStoredKey() != printerKey)
-            {
-                manager.mks_connect_printer(printerKey);
-                completed();
-            }
-            manager.changestage();
-        }
-    }
-
-    function disconnectPrinter()
-    {
-        if(base.selectedPrinter)
-        {
-            var printerKey = base.selectedPrinter.getKey()
-            if(manager.getStoredKey() == printerKey)
-            {
-                manager.mks_disconnect_printer(printerKey);
+                manager.mks_connect_printer(base.selectedPrinter);
                 completed();
             }
         }
     }
 
-    ListModel
-    {
+    function disconnectPrinter() {
+        if(base.selectedPrinter) {
+            if(manager.getCurrentAddress() == base.selectedPrinter)
+            {
+                manager.mks_disconnect_printer(base.selectedPrinter);
+                completed();
+            }
+        }
+    }
+
+    ListModel {
         id: tabNameModel
 
         Component.onCompleted: update()
 
-        function update()
-        {
+        function update() {
             clear()
             append({ name: catalog.i18nc("@title:tab", "Network settings") })
             append({ name: catalog.i18nc("@title:tab", "Preview settings") })
         }
     }
 
-    Cura.RoundedRectangle
-    {
+    Cura.RoundedRectangle {
         anchors
         {
             top: tabBar.bottom
@@ -99,15 +74,13 @@ Cura.MachineAction
         border.width: UM.Theme.getSize("default_lining").width
         radius: UM.Theme.getSize("default_radius").width
         color: UM.Theme.getColor("main_background")
-        StackLayout
-        {
+        StackLayout {
             id: tabStack
             anchors.fill: parent
 
             currentIndex: tabBar.currentIndex
 
-            Item
-            {
+            Item {
                 id: networkTab
 
                 property int columnWidth: ((parent.width - 2 * UM.Theme.getSize("default_margin").width) / 2) | 0
@@ -117,8 +90,7 @@ Cura.MachineAction
                 property int controlWidth: (columnWidth / 3) | 0
                 property var labelFont: UM.Theme.getFont("default")
 
-                Column
-                {
+                Column {
                     id: networkUpperBlock
                     anchors
                     {
@@ -131,8 +103,7 @@ Cura.MachineAction
                     spacing: UM.Theme.getSize("default_margin").width
                     width: parent.width
 
-                    Row
-                    {
+                    Row {
                         id: wifiSupportRow
                         anchors
                         {
@@ -140,8 +111,7 @@ Cura.MachineAction
                             right: parent.right
                         }
 
-                        Label
-                        {
+                        Label {
                             width: Math.round(parent.width * 0.5)
                             height: mksWifiSupport.height
                             verticalAlignment: Text.AlignVCenter
@@ -152,14 +122,12 @@ Cura.MachineAction
 
                             enabled: mksSupport.checked
                         }
-                        Cura.CheckBox
-                        {
+                        Cura.CheckBox {
                             id: mksWifiSupport
                             checked: manager.WiFiSupportEnabled()
 
                             onCheckedChanged: {
                                 if (!mksWifiSupport.checked) {
-                                    manager.setCurrentIP("")
                                     manager.setMaxFilenameLen("")
                                     disconnectPrinter();
                                 }
@@ -169,8 +137,7 @@ Cura.MachineAction
                         }
                     }
 
-                    Row
-                    {
+                    Row {
                         id: maxFilenameLenRow
                         anchors
                         {
@@ -178,8 +145,7 @@ Cura.MachineAction
                             right: parent.right
                         }
 
-                        Label
-                        {
+                        Label {
                             width: Math.round(parent.width * 0.5)
                             height: maxFilenameLenInput.height
                             verticalAlignment: Text.AlignVCenter
@@ -190,8 +156,7 @@ Cura.MachineAction
 
                             enabled: mksSupport.checked
                         }
-                        Cura.TextField
-                        {
+                        Cura.TextField {
                             id: maxFilenameLenInput
                             width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                             maximumLength: 3
@@ -210,14 +175,12 @@ Cura.MachineAction
                         }
                     }
 
-                    Row
-                    {
+                    Row {
                         id: printerControlRaw
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button
-                        {
+                        Button {
                             id: addButton
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
@@ -225,42 +188,38 @@ Cura.MachineAction
                             enabled: mksWifiSupport.checked;
                             onClicked:
                             {
-                                manualPrinterDialog.showDialog("", "");
+                                manualPrinterDialog.showDialog("");
                             }
                         }
 
-                        Button
-                        {
+                        Button {
                             id: editButton
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Edit")
-                            enabled: mksWifiSupport.checked && base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
+                            enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked:
                             {
-                                manualPrinterDialog.showDialog(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
+                                manualPrinterDialog.showDialog(base.selectedPrinter);
                             }
                         }
 
-                        Button
-                        {
+                        Button {
                             id: removeButton
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Remove")
-                            enabled: mksWifiSupport.checked && base.selectedPrinter != null && base.selectedPrinter.getProperty("manual") == "true"
-                            onClicked:
-                            {
-                                if (connectedDevice.address  == base.selectedPrinter.ipAddress) {
+                            enabled: mksWifiSupport.checked && base.selectedPrinter != null
+                            onClicked: {
+                                if (connectedDevice.address  == base.selectedPrinter) {
                                     disconnectPrinter();
                                 }
-                                manager.removeManualPrinter(base.selectedPrinter.getKey(), base.selectedPrinter.ipAddress);
+                                manager.removePrinter(base.selectedPrinter);
                             }
                         }
                     }
 
-                    Cura.ScrollView
-                    {
+                    Cura.ScrollView {
                         id: objectListContainer
                         width: parent.width
                         height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 4
@@ -271,11 +230,10 @@ Cura.MachineAction
                         {
                             id: listview
                             model: manager.foundDevices
-                            onModelChanged:
-                            {
-                                var selectedKey = manager.getStoredKey();
+                            onModelChanged: {
+                                var printerAddress = manager.getCurrentAddress();
                                 for(var i = 0; i < model.length; i++) {
-                                    if(model[i].getKey() == selectedKey)
+                                    if(model[i] == printerAddress)
                                     {
                                         currentIndex = i;
                                         return
@@ -285,8 +243,7 @@ Cura.MachineAction
                             }
                             width: parent.width
                             currentIndex: -1
-                            onCurrentIndexChanged:
-                            {
+                            onCurrentIndexChanged: {
                                 base.selectedPrinter = listview.model[currentIndex];
                             }
                             Component.onCompleted: manager.startDiscovery()
@@ -300,13 +257,12 @@ Cura.MachineAction
                                     anchors.left: parent.left
                                     anchors.leftMargin: UM.Theme.getSize("default_margin").width
                                     anchors.right: parent.right
-                                    text: listview.model[index].address
+                                    text: listview.model[index]
                                     color: objectListContainer.enabled ? UM.Theme.getColor("text") : UM.Theme.getColor("text_inactive")
                                     elide: Text.ElideRight
                                 }
 
-                                MouseArea
-                                {
+                                MouseArea {
                                     anchors.fill: parent;
                                     onClicked:
                                     {
@@ -320,14 +276,12 @@ Cura.MachineAction
                         }
                     }
 
-                    Row
-                    {
+                    Row {
                         id: printerConnectRaw
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button
-                        {
+                        Button {
                             id: connectbtn
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
@@ -338,7 +292,7 @@ Cura.MachineAction
                                 }
                                 if (base.selectedPrinter) {
                                     if (connectedDevice != null) {
-                                        if (connectedDevice.address  != base.selectedPrinter.ipAddress) {
+                                        if (connectedDevice.address  != base.selectedPrinter) {
                                             return true
                                         }else{
                                             return false
@@ -350,13 +304,11 @@ Cura.MachineAction
                                 return false
                             }
                             onClicked: {
-                                manager.setCurrentIP(base.selectedPrinter.ipAddress)
                                 connectPrinter()
                             }
                         }
 
-                        Button
-                        {
+                        Button {
                             id: disconnectbtn
                             height: UM.Theme.getSize("setting_control").height
                             style: UM.Theme.styles.print_setup_action_button
@@ -367,7 +319,7 @@ Cura.MachineAction
                                 }
                                 if (base.selectedPrinter) {
                                     if (connectedDevice != null) {
-                                        if (connectedDevice.address == base.selectedPrinter.ipAddress) {
+                                        if (connectedDevice.address == base.selectedPrinter) {
                                             return true
                                         }
                                     }
@@ -380,12 +332,10 @@ Cura.MachineAction
                 }
             }
 
-            Item
-            {
+            Item {
                 id: screenshotTab
 
-                Grid
-                {
+                Grid {
                     id: screenshotUpperBlock
                     anchors
                     {
@@ -398,8 +348,7 @@ Cura.MachineAction
                     width: parent.width
                     columns: 2
 
-                    Label
-                    {
+                    Label {
                         width: Math.round(parent.width * 0.5)
                         height: mksScreenshotSupport.height
                         verticalAlignment: Text.AlignVCenter
@@ -410,8 +359,7 @@ Cura.MachineAction
 
                         enabled: mksSupport.checked
                     }
-                    Cura.CheckBox
-                    {
+                    Cura.CheckBox {
                         id: mksScreenshotSupport
                         checked: printerSupportScreenshots
 
@@ -430,8 +378,7 @@ Cura.MachineAction
                         enabled: mksSupport.checked
                     }
 
-                    Label
-                    {
+                    Label {
                         width: Math.round(parent.width * 0.5)
                         height: screenshotComboBox.height
                         verticalAlignment: Text.AlignVCenter
@@ -442,8 +389,7 @@ Cura.MachineAction
 
                         enabled: mksScreenshotSupport.checked
                     }
-                    Cura.ComboBox
-                    {
+                    Cura.ComboBox {
                         id: screenshotComboBox
                         width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                         height: mksSupport.height
@@ -469,8 +415,7 @@ Cura.MachineAction
                         enabled: mksScreenshotSupport.checked
                     }
 
-                    Label
-                    {
+                    Label {
                         width: Math.round(parent.width * 0.5)
                         height: simageTextInput.height
                         verticalAlignment: Text.AlignVCenter
@@ -481,13 +426,11 @@ Cura.MachineAction
 
                         enabled: mksScreenshotSupport.checked
                     }
-                    Cura.TextField
-                    {
+                    Cura.TextField {
                         id: simageTextInput
                         width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                         maximumLength: 5
-                        validator: RegExpValidator
-                        {
+                        validator: RegExpValidator {
                             regExp: /[0-9]*/
                         }
 
@@ -509,8 +452,7 @@ Cura.MachineAction
                         }
                     }
 
-                    Label
-                    {
+                    Label {
                         width: Math.round(parent.width * 0.5)
                         height: gimageTextInput.height
                         verticalAlignment: Text.AlignVCenter
@@ -521,13 +463,11 @@ Cura.MachineAction
 
                         enabled: mksScreenshotSupport.checked
                     }
-                    Cura.TextField
-                    {
+                    Cura.TextField {
                         id: gimageTextInput
                         width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                         maximumLength: 5
-                        validator: RegExpValidator
-                        {
+                        validator: RegExpValidator {
                             regExp: /[0-9]*/
                         }
 
@@ -553,8 +493,7 @@ Cura.MachineAction
         }
     }
 
-    Row
-    {
+    Row {
         id: headerRow
         anchors.top: parent.top
         anchors.left: parent.left
@@ -562,14 +501,12 @@ Cura.MachineAction
         width: parent.width
         spacing: UM.Theme.getSize("default_margin").height
 
-        Label
-        {
+        Label {
             width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width * 2
             wrapMode: Text.WordWrap
             text: catalog.i18nc("@label", "MKS WiFi Plugin is active for this printer")
         }
-        Cura.CheckBox
-        {
+        Cura.CheckBox {
             id: mksSupport
             checked: manager.pluginEnabled()
 
@@ -585,14 +522,12 @@ Cura.MachineAction
         }
     }
 
-    UM.TabRow
-    {
+    UM.TabRow {
         id: tabBar
         anchors.top: headerRow.bottom
         anchors.topMargin: UM.Theme.getSize("default_margin").height
         width: parent.width
-        Repeater
-        {
+        Repeater {
             model: tabNameModel
             delegate: UM.TabRowButton
             {
@@ -601,10 +536,9 @@ Cura.MachineAction
         }
     }
 
-    UM.Dialog
-    {
+    UM.Dialog {
         id: manualPrinterDialog
-        property string printerKey
+        property var prevAddress: ""
         property alias addressText: addressField.text
 
         title: catalog.i18nc("@title:window", "Adding a new printer")
@@ -614,11 +548,10 @@ Cura.MachineAction
         width: minimumWidth
         height: minimumHeight
 
-        signal showDialog(string key, string address)
-        onShowDialog:
-        {
-            printerKey = key;
+        signal showDialog(string address)
+        onShowDialog: {
 
+            prevAddress = address;
             addressText = address;
             addressField.selectAll();
             addressField.focus = true;
@@ -626,24 +559,21 @@ Cura.MachineAction
             manualPrinterDialog.show();
         }
 
-        onAccepted:
-        {
-            manager.setManualPrinter(printerKey, addressText)
+        onAccepted: {
+            manager.setPrinter(prevAddress, addressText)
         }
 
         Column {
             anchors.fill: parent
             spacing: UM.Theme.getSize("default_margin").height
 
-            Label
-            {
+            Label {
                 text: catalog.i18nc("@alabel","Enter the IP address or hostname of your printer on the network.")
                 width: parent.width
                 wrapMode: Text.WordWrap
             }
 
-            TextField
-            {
+            TextField {
                 id: addressField
                 width: parent.width
                 maximumLength: 40
@@ -651,24 +581,20 @@ Cura.MachineAction
                 {
                     regExp: /[a-zA-Z0-9\.\-\_]*/
                 }
-
-                onAccepted: btnOk.clicked()
             }
         }
 
         rightButtons: [
             Button {
                 text: catalog.i18nc("@action:button","Cancel")
-                onClicked:
-                {
+                onClicked: {
                     manualPrinterDialog.reject()
                     manualPrinterDialog.hide()
                 }
             },
             Button {
                 text: catalog.i18nc("@action:button", "OK")
-                onClicked:
-                {
+                onClicked: {
                     manualPrinterDialog.accept()
                     manualPrinterDialog.hide()
                 }
