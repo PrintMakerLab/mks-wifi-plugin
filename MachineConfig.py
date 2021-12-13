@@ -192,7 +192,7 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_current_ip" in meta_data:
+            if "mks_ip_list" in meta_data:
                 return True
         return False
     
