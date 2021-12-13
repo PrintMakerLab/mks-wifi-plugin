@@ -38,6 +38,9 @@ def match_version():
     if cura_version == "Arachne_engine_beta":
         Logger.log("d", "Running Cura Arachne_engine_beta. Skipping version check")
         return True
+    if cura_version == "Arachne_engine_beta_2":
+        Logger.log("d", "Running Cura Arachne_engine_beta_2. Skipping version check")
+        return True
     cura_version = Version(cura_version)
     cura_version = Version([cura_version.getMajor(), cura_version.getMinor()])
 
@@ -54,5 +57,5 @@ def match_version():
     if cura_version >= minimum_cura_version:
         return True
     else:
-        Logger.log("d", "This version of MKS WiFi Plugin is not compatible with current version of Cura. Please check for an update.")
+        Logger.log("d", "This version of MKS WiFi Plugin is not compatible with current version of Cura (%s). Please check for an update." % (Application.getInstance().getVersion()))
         return False
