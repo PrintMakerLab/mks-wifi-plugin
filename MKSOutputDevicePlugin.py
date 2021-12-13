@@ -32,7 +32,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def init_translations(self):
         self._translations = {
-            "connected": catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> printer connected successfully!")
+            "connected": catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> printer connected successfully!"),
+            "disconnected": catalog.i18nc("@info:status Don't translate the XML tags <message>!", "<message>{0}</message> printer disconnected!")
         }
 
     printerListChanged = Signal()
@@ -165,5 +166,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             self.getOutputDeviceManager().addOutputDevice(self._current_printer)
         else:
             if self.getOutputDeviceManager().getOutputDevice(key):
-                #TODO maybe this is a good place to generate disconnect message 
+                self._error_message = Message(self._translations.get("disconnected").format(
+                    self._current_printer._properties.get(b"name", b"").decode("utf-8")))
+                self._error_message.show()
                 self.getOutputDeviceManager().removeOutputDevice(self._current_printer.getKey())
