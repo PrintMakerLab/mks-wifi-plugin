@@ -12,7 +12,7 @@ from PyQt5.QtCore import QObject
 from UM.Message import Message
 from UM.i18n import i18nCatalog
 
-from . import MKSPreview
+from . import Constants, MKSPreview
 
 catalog = i18nCatalog("mksplugin")
 
@@ -43,8 +43,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         active_machine = Application.getInstance().getGlobalContainerStack()
         if active_machine:
             meta_data = active_machine.getMetaData()
-            if "mks_current_ip" in meta_data:
-                address = active_machine.getMetaDataEntry("mks_current_ip")
+            if Constants.CURRENT_IP in meta_data:
+                address = active_machine.getMetaDataEntry(Constants.CURRENT_IP)
                 self.addPrinter(address)
 
     def mks_current_ip_recheck(self):
@@ -97,34 +97,34 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
         active_machine = Application.getInstance().getGlobalContainerStack()
         
-        ip_list_entry = active_machine.getMetaDataEntry("mks_ip_list")
+        ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
 
         if ip_list_entry:
             ip_list = ip_list_entry.split(",")
             ip_list.append(address)
-            active_machine.setMetaDataEntry("mks_ip_list", ','.join(ip_list))
+            active_machine.setMetaDataEntry(Constants.IP_LIST, ','.join(ip_list))
         else:
-            active_machine.setMetaDataEntry("mks_ip_list", address)
+            active_machine.setMetaDataEntry(Constants.IP_LIST, address)
         self.printerListChanged.emit()
 
     def mks_remove_printer_from_list(self, key, address=None):
         Logger.log("d", "mks_remove_printer_from_list %s %s" % (key, address))
         active_machine = Application.getInstance().getGlobalContainerStack()
 
-        if active_machine.getMetaDataEntry("mks_current_ip") == self._current_printer:
-            active_machine.setMetaDataEntry("mks_current_ip", None)
-            active_machine.removeMetaDataEntry("mks_current_ip")
+        if active_machine.getMetaDataEntry(Constants.CURRENT_IP) == self._current_printer:
+            active_machine.setMetaDataEntry(Constants.CURRENT_IP, None)
+            active_machine.removeMetaDataEntry(Constants.CURRENT_IP)
 
         if address:
-            ip_list = active_machine.getMetaDataEntry("mks_ip_list").split(";")
+            ip_list = active_machine.getMetaDataEntry(Constants.IP_LIST).split(";")
 
             ip_list.remove(address)
 
             if ip_list:
-                active_machine.setMetaDataEntry("mks_ip_list", ip_list)
+                active_machine.setMetaDataEntry(Constants.IP_LIST, ip_list)
             else:
-                active_machine.setMetaDataEntry("mks_ip_list", None)
-                active_machine.removeMetaDataEntry("mks_ip_list")
+                active_machine.setMetaDataEntry(Constants.IP_LIST, None)
+                active_machine.removeMetaDataEntry(Constants.IP_LIST)
 
         if self._current_printer.getKey() == key:
             self.mks_remove_output_device(key)
@@ -134,7 +134,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def mks_edit_printer_in_list(self, prev_address, address):
         active_machine = Application.getInstance().getGlobalContainerStack()
 
-        ip_list_entry = active_machine.getMetaDataEntry("mks_ip_list")
+        ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
 
         if ip_list_entry:
             ip_list = ip_list_entry.split(",")
@@ -142,13 +142,13 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 ip_list.remove(prev_address)
             if address != "":
                 ip_list.append(address)
-            active_machine.setMetaDataEntry("mks_ip_list", ','.join(ip_list))
+            active_machine.setMetaDataEntry(Constants.IP_LIST, ','.join(ip_list))
             
         self.printerListChanged.emit()
 
     def getPrinters(self):
         active_machine = Application.getInstance().getGlobalContainerStack()
-        ip_list_entry = active_machine.getMetaDataEntry("mks_ip_list")
+        ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
         if ip_list_entry:
             return ip_list_entry.split(",")
         return []

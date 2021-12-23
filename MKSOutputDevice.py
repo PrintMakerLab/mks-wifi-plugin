@@ -399,8 +399,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_max_filename_len" in meta_data:
-                return int(global_container_stack.getMetaDataEntry("mks_max_filename_len"))
+            if Constants.MAX_FILENAME_LEN in meta_data:
+                return int(global_container_stack.getMetaDataEntry(Constants.MAX_FILENAME_LEN))
         return 30
 
     def check_valid_filename(self, filename):

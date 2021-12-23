@@ -5,6 +5,8 @@ from cura.Snapshot import Snapshot
 from PyQt5.QtCore import Qt
 from UM.Logger import Logger
 
+from . import Constants
+
 def add_leading_zeros(rgb):
     str_hex = "%x" % rgb
     str_hex_len = len(str_hex)
@@ -75,12 +77,12 @@ def add_preview(self):
     if image:
         meta_data = global_container_stack.getMetaData()
         Logger.log("d", "Get current preview settings.")
-        if "mks_simage" in meta_data:
-            simage = int(global_container_stack.getMetaDataEntry("mks_simage"))
+        if Constants.SIMAGE in meta_data:
+            simage = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
             Logger.log("d", "mks_simage value: " + str(simage))
             screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
-        if "mks_gimage" in meta_data:
-            gimage = int(global_container_stack.getMetaDataEntry("mks_gimage"))
+        if Constants.GIMAGE in meta_data:
+            gimage = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
             Logger.log("d", "mks_gimage value: " + str(gimage))
             # ;; - needed for correct colors. do not remove them.
             screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
