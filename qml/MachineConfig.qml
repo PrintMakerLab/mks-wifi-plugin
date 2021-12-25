@@ -211,8 +211,10 @@ Cura.MachineAction {
                             text: catalog.i18nc("@action:button", "Remove")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked: {
-                                if (connectedDevice.address  == base.selectedPrinter) {
-                                    disconnectPrinter();
+                                if (connectedDevice) {
+                                    if (connectedDevice.address  == base.selectedPrinter) {
+                                        disconnectPrinter();
+                                    }
                                 }
                                 manager.removePrinter(base.selectedPrinter);
                             }

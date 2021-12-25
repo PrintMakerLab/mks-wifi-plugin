@@ -88,14 +88,11 @@ class MachineConfig(MachineAction):
         Logger.log("d", "Reset the list of found printers.")
         self.printersChanged.emit()
 
-    @pyqtSlot(str, str)
+    @pyqtSlot(str)
     def removePrinter(self, address):
         if not self._network_plugin:
             return
-
-        key = "mks:%s" % (address)
-
-        self._network_plugin.mks_remove_printer_from_list(key, address)
+        self._network_plugin.mks_remove_printer_from_list(address)
 
     @pyqtSlot(str, str)
     def setPrinter(self, prev_address, address):

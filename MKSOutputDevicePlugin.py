@@ -107,8 +107,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             active_machine.setMetaDataEntry(Constants.IP_LIST, address)
         self.printerListChanged.emit()
 
-    def mks_remove_printer_from_list(self, key, address=None):
-        Logger.log("d", "mks_remove_printer_from_list %s %s" % (key, address))
+    def mks_remove_printer_from_list(self, address):
+        Logger.log("d", "mks_remove_printer_from_list %s" % (address))
         active_machine = Application.getInstance().getGlobalContainerStack()
 
         if active_machine.getMetaDataEntry(Constants.CURRENT_IP) == self._current_printer:
@@ -116,18 +116,19 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             active_machine.removeMetaDataEntry(Constants.CURRENT_IP)
 
         if address:
-            ip_list = active_machine.getMetaDataEntry(Constants.IP_LIST).split(";")
+            ip_list = active_machine.getMetaDataEntry(Constants.IP_LIST).split(",")
 
             ip_list.remove(address)
 
             if ip_list:
-                active_machine.setMetaDataEntry(Constants.IP_LIST, ip_list)
+                active_machine.setMetaDataEntry(Constants.IP_LIST, ','.join(ip_list))
             else:
                 active_machine.setMetaDataEntry(Constants.IP_LIST, None)
                 active_machine.removeMetaDataEntry(Constants.IP_LIST)
 
-        if self._current_printer.getKey() == key:
-            self.mks_remove_output_device(key)
+        if self._current_printer:
+            if self._current_printer.address == address:
+                self.mks_remove_output_device(self._current_printer.getKey())
             
         self.printerListChanged.emit()
 
