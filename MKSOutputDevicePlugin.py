@@ -126,9 +126,8 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
                 active_machine.setMetaDataEntry(Constants.IP_LIST, None)
                 active_machine.removeMetaDataEntry(Constants.IP_LIST)
 
-        if self._current_printer:
-            if self._current_printer.address == address:
-                self.mks_remove_output_device(self._current_printer.getKey())
+        if self._current_printer and self._current_printer.address == address:
+            self.mks_remove_output_device(self._current_printer.getKey())
             
         self.printerListChanged.emit()
 
