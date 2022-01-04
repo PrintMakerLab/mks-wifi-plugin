@@ -43,7 +43,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         active_machine = Application.getInstance().getGlobalContainerStack()
         if active_machine:
             meta_data = active_machine.getMetaData()
-            if Constants.CURRENT_IP in meta_data:
+            if meta_data and Constants.CURRENT_IP in meta_data:
                 address = active_machine.getMetaDataEntry(Constants.CURRENT_IP)
                 self.addPrinter(address)
 
