@@ -8,16 +8,14 @@ from UM.Application import Application
 
 from UM.Settings.ContainerRegistry import ContainerRegistry
 from cura.MachineAction import MachineAction
-from UM.PluginRegistry import PluginRegistry
 from cura.CuraApplication import CuraApplication
 
 from PyQt5.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
 
 import os.path
 import json
-import time
 
-from PyQt5.QtCore import QTimer
+from . import Constants
 
 catalog = i18nCatalog("mksplugin")
 
@@ -90,77 +88,63 @@ class MachineConfig(MachineAction):
         Logger.log("d", "Reset the list of found printers.")
         self.printersChanged.emit()
 
-    @pyqtSlot(str, str)
-    def removeManualPrinter(self, key, address):
+    @pyqtSlot(str)
+    def removePrinter(self, address):
         if not self._network_plugin:
             return
-
-        self._network_plugin.removeManualPrinter(key, address)
+        self._network_plugin.mks_remove_printer_from_list(address)
 
     @pyqtSlot(str, str)
-    def setManualPrinter(self, key, address):
-        if key != "":
-            # This manual printer replaces a current manual printer
-            self._network_plugin.removeManualPrinter(key)
+    def setPrinter(self, prev_address, address):
+        if prev_address == "" and address != "":
+            self._network_plugin.mks_add_printer_to_list(address)
 
-        if address != "":
-            self._network_plugin.addManualPrinter(address)
-
+        if prev_address != "" and address != "":
+            self._network_plugin.mks_edit_printer_in_list(prev_address, address)
+            
     def _onPrinterDiscoveryChanged(self, *args):
         self.printersChanged.emit()
 
     @pyqtProperty("QVariantList", notify=printersChanged)
     def foundDevices(self):
         if self._network_plugin:
-            printers = list(self._network_plugin.getPrinters().values())
-            printers.sort(key=lambda k: k.address)
+            printers = self._network_plugin.getPrinters()
+            printers.sort()
             return printers
         else:
             return []
 
-    @pyqtSlot()
-    def changestage(self):
-        CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
-
     @pyqtSlot(str)
-    def mks_disconnect_printer(self, key):
-        Logger.log("d", "mks_disconnect_printer %s" % key)
+    def mks_disconnect_printer(self, address):
+        Logger.log("d", "mks_disconnect_printer %s" % address)
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_network_key" in meta_data:
+            if Constants.CURRENT_IP in meta_data:
                 global_container_stack.setMetaDataEntry(
-                    "mks_network_key", None)
+                    Constants.CURRENT_IP, None)
                 global_container_stack.removeMetaDataEntry(
-                    "mks_network_key")
+                    Constants.CURRENT_IP)
         if self._network_plugin:
-            self._network_plugin.mks_remove_output_device(key)
+            self._network_plugin.mks_current_ip_recheck()
 
     @pyqtSlot(str)
-    def mks_connect_printer(self, key):
-        Logger.log("d", "mks_connect_printer %s", key)
+    def mks_connect_printer(self, address):
+        Logger.log("d", "mks_connect_printer %s", address)
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
-            meta_data = global_container_stack.getMetaData()
-            if "mks_network_key" in meta_data:
-                global_container_stack.setMetaDataEntry("mks_network_key", key)
-            else:
-                Logger.log("d", "MKS WiFi Plugin add dataEntry")
-                global_container_stack.setMetaDataEntry("mks_network_key", key)
+            global_container_stack.setMetaDataEntry(Constants.CURRENT_IP, address)
 
         if self._network_plugin:
             # Ensure that the connection states are refreshed.
-            Logger.log("d", "reCheckConnections-----")
-            preferences = Application.getInstance().getPreferences()
-            preferences.addPreference("mkswifi/stopupdate", "True")
-            self._network_plugin.reCheckConnections()
+            self._network_plugin.mks_current_ip_recheck()
 
     @pyqtSlot(result=bool)
     def pluginEnabled(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_support" in meta_data:
+            if Constants.MKS_SUPPORT in meta_data:
                 return True
         return False
 
@@ -170,65 +154,47 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_support" in meta_data:
+            if Constants.MKS_SUPPORT in meta_data:
                 Logger.log("d", "Already ON")
                 return
-            global_container_stack.setMetaDataEntry("mks_support", "true")
+            global_container_stack.setMetaDataEntry(Constants.MKS_SUPPORT, "true")
 
     @pyqtSlot()
     def pluginDisable(self):
         Logger.log("d", "Try to turn MKS WiFi Plugin OFF")
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
-            global_container_stack.setMetaDataEntry("mks_support", None)
-            global_container_stack.removeMetaDataEntry("mks_support")
-            global_container_stack.setMetaDataEntry("mks_max_filename_len", None)
-            global_container_stack.removeMetaDataEntry("mks_max_filename_len")
-            global_container_stack.setMetaDataEntry("mks_screenshot_index", None)
-            global_container_stack.removeMetaDataEntry("mks_screenshot_index")
-            global_container_stack.setMetaDataEntry("mks_simage", None)
-            global_container_stack.removeMetaDataEntry("mks_simage")
-            global_container_stack.setMetaDataEntry("mks_gimage", None)
-            global_container_stack.removeMetaDataEntry("mks_gimage")
-            # It will be legacy soon
-            global_container_stack.setMetaDataEntry("mks_network_key", None)
-            global_container_stack.removeMetaDataEntry("mks_network_key")
+            global_container_stack.setMetaDataEntry(Constants.MKS_SUPPORT, None)
+            global_container_stack.removeMetaDataEntry(Constants.MKS_SUPPORT)
+            global_container_stack.setMetaDataEntry(Constants.MAX_FILENAME_LEN, None)
+            global_container_stack.removeMetaDataEntry(Constants.MAX_FILENAME_LEN)
+            global_container_stack.setMetaDataEntry(Constants.SCREENSHOT_INDEX, None)
+            global_container_stack.removeMetaDataEntry(Constants.SCREENSHOT_INDEX)
+            global_container_stack.setMetaDataEntry(Constants.SIMAGE, None)
+            global_container_stack.removeMetaDataEntry(Constants.SIMAGE)
+            global_container_stack.setMetaDataEntry(Constants.GIMAGE, None)
+            global_container_stack.removeMetaDataEntry(Constants.GIMAGE)
+            global_container_stack.setMetaDataEntry(Constants.CURRENT_IP, None)
+            global_container_stack.removeMetaDataEntry(Constants.CURRENT_IP)
+            global_container_stack.setMetaDataEntry(Constants.IP_LIST, None)
+            global_container_stack.removeMetaDataEntry(Constants.IP_LIST)
 
     @pyqtSlot(result=bool)
     def WiFiSupportEnabled(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_current_ip" in meta_data:
+            if Constants.IP_LIST in meta_data:
                 return True
         return False
-
-    @pyqtSlot(result=str)
-    def getCurrentIP(self):
-        global_container_stack = Application.getInstance().getGlobalContainerStack()
-        if global_container_stack:
-            meta_data = global_container_stack.getMetaData()
-            if "mks_current_ip" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_current_ip")
-        return ""
-
-    @pyqtSlot(str)
-    def setCurrentIP(self, ip):
-        global_container_stack = Application.getInstance().getGlobalContainerStack()
-        if global_container_stack:
-            if ip != "":
-                global_container_stack.setMetaDataEntry("mks_current_ip", ip)
-            else:
-                global_container_stack.setMetaDataEntry("mks_current_ip", None)
-                global_container_stack.removeMetaDataEntry("mks_current_ip")
     
     @pyqtSlot(result=str)
     def getMaxFilenameLen(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_max_filename_len" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_max_filename_len")
+            if Constants.MAX_FILENAME_LEN in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.MAX_FILENAME_LEN)
         return ""
 
     @pyqtSlot(str)
@@ -236,17 +202,17 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             if filename_len != "":
-                global_container_stack.setMetaDataEntry("mks_max_filename_len", filename_len)
+                global_container_stack.setMetaDataEntry(Constants.MAX_FILENAME_LEN, filename_len)
             else:
-                global_container_stack.setMetaDataEntry("mks_max_filename_len", None)
-                global_container_stack.removeMetaDataEntry("mks_max_filename_len")
+                global_container_stack.setMetaDataEntry(Constants.MAX_FILENAME_LEN, None)
+                global_container_stack.removeMetaDataEntry(Constants.MAX_FILENAME_LEN)
 
     @pyqtSlot(result=bool)
     def supportScreenshot(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_simage" in meta_data or "mks_gimage" in meta_data:
+            if Constants.SIMAGE in meta_data or Constants.GIMAGE in meta_data:
                 return True
         return False
 
@@ -279,11 +245,11 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             if index != "":
-                global_container_stack.setMetaDataEntry("mks_screenshot_index", index)        
+                global_container_stack.setMetaDataEntry(Constants.SCREENSHOT_INDEX, index)        
                 Logger.log("d", "Screenshot index - updated to "+ str(index))
             else:
-                global_container_stack.setMetaDataEntry("mks_screenshot_index", None)
-                global_container_stack.removeMetaDataEntry("mks_screenshot_index")          
+                global_container_stack.setMetaDataEntry(Constants.SCREENSHOT_INDEX, None)
+                global_container_stack.removeMetaDataEntry(Constants.SCREENSHOT_INDEX)          
                 Logger.log("d", "Screenshot index - removed")      
         Logger.log("d", "Set screenshot index - completed")
 
@@ -293,8 +259,8 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_screenshot_index" in meta_data:
-                index = global_container_stack.getMetaDataEntry("mks_screenshot_index")
+            if Constants.SCREENSHOT_INDEX in meta_data:
+                index = global_container_stack.getMetaDataEntry(Constants.SCREENSHOT_INDEX)
                 Logger.log("d", "Current screenshot index is "+ str(index))
                 return index
         Logger.log("d", "Can't get screenshot settings, use default index value")
@@ -305,8 +271,8 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_simage" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_simage")
+            if Constants.SIMAGE in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.SIMAGE)
         return ""
 
     @pyqtSlot(result=str)
@@ -314,8 +280,8 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_gimage" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_gimage")
+            if Constants.GIMAGE in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.GIMAGE)
         return ""
 
     @pyqtSlot(str)
@@ -323,32 +289,32 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             if simage != "":
-                global_container_stack.setMetaDataEntry("mks_simage", simage)
+                global_container_stack.setMetaDataEntry(Constants.SIMAGE, simage)
             else:
-                global_container_stack.setMetaDataEntry("mks_simage", None)
-                global_container_stack.removeMetaDataEntry("mks_simage")
+                global_container_stack.setMetaDataEntry(Constants.SIMAGE, None)
+                global_container_stack.removeMetaDataEntry(Constants.SIMAGE)
 
     @pyqtSlot(str)
     def setGimage(self, gimage):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             if gimage != "":
-                global_container_stack.setMetaDataEntry("mks_gimage", gimage)
+                global_container_stack.setMetaDataEntry(Constants.GIMAGE, gimage)
             else:
-                global_container_stack.setMetaDataEntry("mks_gimage", None)
-                global_container_stack.removeMetaDataEntry("mks_gimage")
+                global_container_stack.setMetaDataEntry(Constants.GIMAGE, None)
+                global_container_stack.removeMetaDataEntry(Constants.GIMAGE)
 
     @pyqtSlot()
     def printtest(self):
         Logger.log("d", "mks ready for click")
 
     @pyqtSlot(result=str)
-    def getStoredKey(self):
+    def getCurrentAddress(self):
         global_container_stack = self._application.getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_network_key" in meta_data:
-                return global_container_stack.getMetaDataEntry("mks_network_key")
+            if Constants.CURRENT_IP in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.CURRENT_IP)
         return ""
 
     @pyqtSlot()

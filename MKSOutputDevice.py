@@ -218,8 +218,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         Logger.log("d", "MKS socket connecting to %s:%s" % (str(self._address), str(self._port)))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
-        preferences = Application.getInstance().getPreferences()
-        preferences.addPreference(Constants.STOP_UPDATE, "False")
         self.setConnectionState(ConnectionState.Connecting)
         self._update_timer.start()
 
@@ -351,14 +349,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @pyqtSlot()
     def selectFileToUplload(self):
-        preferences = Application.getInstance().getPreferences()
-        preferences.addPreference(Constants.AUTO_PRINT, "True")
-        preferences.addPreference(Constants.SAVE_PATH, "")
+        active_machine = Application.getInstance().getGlobalContainerStack()
+        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+        active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
-            filename, _ = QFileDialog.getOpenFileName(None, self._translations.get("choose_file"), preferences.getValue(Constants.SAVE_PATH), self._translations.get("gcode") + "(*.gcode *.g *.goc);;" + self._translations.get("all") + "(*.*)")
-            preferences.setValue(Constants.SAVE_PATH, filename)
+            filename, _ = QFileDialog.getOpenFileName(None, self._translations.get("choose_file"), active_machine.getMetaDataEntry(Constants.SAVE_PATH), self._translations.get("gcode") + "(*.gcode *.g *.goc);;" + self._translations.get("all") + "(*.*)")
+            active_machine.setMetaDataEntry(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():
                 filename = self.check_valid_filepath(filename)
@@ -401,8 +399,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if "mks_max_filename_len" in meta_data:
-                return int(global_container_stack.getMetaDataEntry("mks_max_filename_len"))
+            if Constants.MAX_FILENAME_LEN in meta_data:
+                return int(global_container_stack.getMetaDataEntry(Constants.MAX_FILENAME_LEN))
         return 30
 
     def check_valid_filename(self, filename):
@@ -425,7 +423,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._error_message = Message(message)
         self._error_message.show()
 
-    def show_progress_message(self, preferences):
+    def show_progress_message(self, active_machine):
         if self._application.getVersion().split(".")[0] < "4":
             Application.getInstance().showPrintMonitor.emit(True)
             status = self._translations.get("sending_file")
@@ -440,7 +438,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 -1,
                 title,
                 option_text=self._translations.get("print_job_label"),
-                option_state=preferences.getValue(Constants.AUTO_PRINT))
+                option_state=active_machine.getMetaDataEntry(Constants.AUTO_PRINT))
             self._progress_message.addAction(
                 "Cancel",  self._translations.get("button_cancel"), None, "")
             self._progress_message.actionTriggered.connect(
@@ -495,12 +493,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
 
     def uploadfunc(self, filename):
-        preferences = Application.getInstance().getPreferences()
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
-            preferences.addPreference(Constants.AUTO_PRINT, "True")
-            preferences.addPreference(Constants.SAVE_PATH, "")
+            active_machine = Application.getInstance().getGlobalContainerStack()
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+            active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
             # preferences.addPreference("mkswifi/uploadingfile", "True")
             self._update_timer.stop()
             self._isSending = True
@@ -514,7 +512,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 file_name = filename[filename.rfind("/") + 1:]
                 self._last_file_name = filename[filename.rfind("/") + 1:]
                 self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get(
-                    "print_job_title"), option_text=self._translations.get("print_job_label"), option_state=preferences.getValue(Constants.AUTO_PRINT))
+                    "print_job_title"), option_text=self._translations.get("print_job_label"), option_state=active_machine.getMetaDataEntry(Constants.AUTO_PRINT))
                 self._progress_message.addAction(
                     "Cancel", self._translations.get("button_cancel"), None, "")
                 self._progress_message.actionTriggered.connect(
@@ -559,12 +557,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def disconnect(self):
         # Logger.log("d", "disconnect--------------")
-        preferencess = Application.getInstance().getPreferences()
-        if preferencess.getValue(Constants.STOP_UPDATE):
-            # Logger.log("d", "timer_update MKS wifi stopupdate-----------")
-            self._error_message = Message("Printer disconneted.")
-            self._error_message.show()
-        # self._updateJobState("")
         if self._socket is not None:
             self._socket.readyRead.disconnect(self.on_read)
             self._socket.close()
@@ -683,19 +675,17 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 "PrepareStage")
 
     def _startPrint(self, file_name="cura_file.gcode"):
-        preferences = Application.getInstance().getPreferences()
-        global_container_stack = CuraApplication.getInstance(
-        ).getGlobalContainerStack()
-        if not global_container_stack:
+        active_machine = Application.getInstance().getGlobalContainerStack()
+        if not active_machine:
             return
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
             return
         self._preheat_timer.stop()
         try:
-            preferences.addPreference(Constants.AUTO_PRINT, "True")
-            preferences.addPreference(Constants.SAVE_PATH, "")
-            self.show_progress_message(preferences)
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+            active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
+            self.show_progress_message(active_machine)
             self._last_file_name = file_name
             Logger.log(
                 "d", "mks file name: " + file_name + " original file name: " + Application.getInstance().
@@ -781,10 +771,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def _update(self):
         # Logger.log("d", "timer_update MKS wifi reconnecting")
-        preferencess = Application.getInstance().getPreferences()
-        if preferencess.getValue(Constants.STOP_UPDATE):
-            self._update_timer.stop()
-            return
         if self.isSocketInConnectedState():
             self.write_socket_data()
         else:
@@ -1023,16 +1009,16 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")
-        preferences = Application.getInstance().getPreferences()
-        preferences.addPreference(Constants.AUTO_PRINT, "True")
-        if preferences.getValue(Constants.AUTO_PRINT):
+        active_machine = Application.getInstance().getGlobalContainerStack()
+        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+        if active_machine.getMetaDataEntry(Constants.AUTO_PRINT):
             self._printFile()
         if not http_status_code:
             return
 
     def _onOptionStateChanged(self, optstate):
-        preferences = Application.getInstance().getPreferences()
-        preferences.setValue(Constants.AUTO_PRINT, str(optstate))
+        active_machine = Application.getInstance().getGlobalContainerStack()
+        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, str(optstate))
 
     def _cancelSendGcode(self, message_id, action_id):
         self._update_timer.start()
