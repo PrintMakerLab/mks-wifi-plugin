@@ -30,6 +30,7 @@ import sys
 
 from UM.Resources import Resources
 from . import Constants, MKSDialog
+from .utils import utils
 
 Resources.addSearchPath(
     os.path.join(os.path.abspath(
@@ -403,11 +404,27 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return int(global_container_stack.getMetaDataEntry(Constants.MAX_FILENAME_LEN))
         return 30
 
+    def is_auto_file_renaming_enabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.AUTO_FILE_RENAMING in meta_data:
+                return bool(global_container_stack.getMetaDataEntry(Constants.AUTO_FILE_RENAMING))
+        return False
+
     def check_valid_filename(self, filename):
-        if filename in self.sdFiles:
-            filename = self.check_valid_filename(self.show_exists_dialog(filename))
-        if len(filename) >= self.get_max_filename_len():
-            filename = self.check_valid_filename(self.show_to_long_dialog(filename))
+        file_already_exists = filename in self.sdFiles
+        max_filename_len = self.get_max_filename_len()
+        filename_too_long = len(filename) > max_filename_len
+
+        if file_already_exists or filename_too_long:
+            if self.is_auto_file_renaming_enabled():
+                filename = utils.generate_new_filename(self.sdFiles, filename, max_filename_len)
+            elif file_already_exists:
+                filename = self.check_valid_filename(self.show_exists_dialog(filename))
+            elif filename_too_long:
+                filename = self.check_valid_filename(self.show_to_long_dialog(filename))
+
         if self.is_contains_chinese(filename):
             filename = self.check_valid_filename(self.show_contains_chinese_dialog(filename))
         return filename

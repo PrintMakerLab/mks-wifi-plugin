@@ -176,6 +176,39 @@ Cura.MachineAction {
                     }
 
                     Row {
+                        id: autoFileRenamingRow
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        Label
+                        {
+                            width: Math.round(parent.width * 0.5)
+                            height: autoFileRenaming.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Auto file renaming (if name is too long or already exists)")
+                            font: UM.Theme.getFont("default")
+                            color: UM.Theme.getColor("text")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.CheckBox
+                        {
+                            id: autoFileRenaming
+                            checked: manager.isAutoFileRenamingEnabled()
+
+                            onCheckedChanged: {
+                                manager.setAutoFileRenaming(autoFileRenaming.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
                         id: printerControlRaw
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width

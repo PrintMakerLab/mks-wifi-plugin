@@ -208,6 +208,25 @@ class MachineConfig(MachineAction):
                 global_container_stack.removeMetaDataEntry(Constants.MAX_FILENAME_LEN)
 
     @pyqtSlot(result=bool)
+    def isAutoFileRenamingEnabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.AUTO_FILE_RENAMING in meta_data:
+                return True
+        return False
+
+    @pyqtSlot(str)
+    def setAutoFileRenaming(self, is_auto_file_renaming_enabled):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if is_auto_file_renaming_enabled == "true":
+                global_container_stack.setMetaDataEntry(Constants.AUTO_FILE_RENAMING, is_auto_file_renaming_enabled)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.AUTO_FILE_RENAMING, None)
+                global_container_stack.removeMetaDataEntry(Constants.AUTO_FILE_RENAMING)
+
+    @pyqtSlot(result=bool)
     def supportScreenshot(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
