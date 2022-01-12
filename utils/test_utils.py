@@ -252,7 +252,7 @@ def test_generate_new_filename_hardname():
     )
 
 def simulate_printing_12_times_and_validate_result(filename, max_filename, existing_sd_files, expected_sd_files):
-    for i in range(12):
+    for _ in range(12):
         file = utils.generate_new_filename(existing_sd_files, filename, max_filename)
         existing_sd_files.append(file)
     
