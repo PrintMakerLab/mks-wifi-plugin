@@ -1,4 +1,4 @@
-# Copyright (c) 2021
+# Copyright (c) 2022
 # MKS Plugin is released under the terms of the AGPLv3 or higher.
 
 # To run unit tests:
@@ -9,8 +9,9 @@
 
 import utils
 
-def test_generate_new_filename_abcd_30():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_without_truncation():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abcd.gcode',
         max_filename=30,
         existing_sd_files=[],
@@ -29,8 +30,9 @@ def test_generate_new_filename_abcd_30():
             'abcd11.gcode']
     )
 
-def test_generate_new_filename_abc_10():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_10_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=10,
         existing_sd_files=[],
@@ -49,8 +51,9 @@ def test_generate_new_filename_abc_10():
             'ab11.gcode']
     )
 
-def test_generate_new_filename_abc_9():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_9_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=9,
         existing_sd_files=[],
@@ -69,8 +72,9 @@ def test_generate_new_filename_abc_9():
             'a11.gcode']
     )
 
-def test_generate_new_filename_abc_8():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_8_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=8,
         existing_sd_files=[],
@@ -89,8 +93,9 @@ def test_generate_new_filename_abc_8():
             '11.gcode']
     )
 
-def test_generate_new_filename_abc_7():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_7_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=7,
         existing_sd_files=[],
@@ -109,8 +114,9 @@ def test_generate_new_filename_abc_7():
             '11.gcode']
     )
 
-def test_generate_new_filename_abc_6():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_6_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=6,
         existing_sd_files=[],
@@ -129,8 +135,9 @@ def test_generate_new_filename_abc_6():
             '11.gcode']
     )
 
-def test_generate_new_filename_abc_5():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_with_truncation_after_5_chars():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=5,
         existing_sd_files=[],
@@ -149,8 +156,9 @@ def test_generate_new_filename_abc_5():
             '11.gcode']
     )
 
-def test_generate_new_filename_abc_0():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_when_max_filename_0():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=0,
         existing_sd_files=[],
@@ -169,8 +177,9 @@ def test_generate_new_filename_abc_0():
             '11.gcode']
     )
 
-def test_generate_new_filename_abc1_30_existing_abc1():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_for_abc1_when_it_already_exists():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc1.gcode',
         max_filename=30,
         existing_sd_files=['abc1.gcode'],
@@ -190,8 +199,9 @@ def test_generate_new_filename_abc1_30_existing_abc1():
             'abc112.gcode']
     )
 
-def test_generate_new_filename_abc_30_existing_abc5():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_for_abc_when_abc5_already_exists():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc.gcode',
         max_filename=30,
         existing_sd_files=['abc5.gcode'],
@@ -211,8 +221,9 @@ def test_generate_new_filename_abc_30_existing_abc5():
             'abc12.gcode']
     )
 
-def test_generate_new_filename_abc_no_file_extension():
-    simulate_printing_12_times_and_validate_result(
+def test_generate_new_filename_for_file_without_extension():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='abc',
         max_filename=30,
         existing_sd_files=[],
@@ -231,8 +242,30 @@ def test_generate_new_filename_abc_no_file_extension():
             'abc11']
     )
 
+def test_generate_new_filename_for_file_with_only_extension():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
+        filename='.gcode',
+        max_filename=30,
+        existing_sd_files=[],
+        expected_sd_files=[
+            '.gcode',
+            '1.gcode',
+            '2.gcode',
+            '3.gcode',
+            '4.gcode',
+            '5.gcode',
+            '6.gcode',
+            '7.gcode',
+            '8.gcode',
+            '9.gcode',
+            '10.gcode',
+            '11.gcode']
+    )
+
 def test_generate_new_filename_hardname():
-    simulate_printing_12_times_and_validate_result(
+    simulate_printing_and_validate_result(
+        repeat_count=12,
         filename='aBc$.de..ext',
         max_filename=30,
         existing_sd_files=[],
@@ -251,8 +284,8 @@ def test_generate_new_filename_hardname():
             'aBc$.de.11.ext']
     )
 
-def simulate_printing_12_times_and_validate_result(filename, max_filename, existing_sd_files, expected_sd_files):
-    for _ in range(12):
+def simulate_printing_and_validate_result(repeat_count, filename, max_filename, existing_sd_files, expected_sd_files):
+    for _ in range(repeat_count):
         file = utils.generate_new_filename(existing_sd_files, filename, max_filename)
         existing_sd_files.append(file)
     

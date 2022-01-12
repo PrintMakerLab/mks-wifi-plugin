@@ -409,7 +409,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
             if Constants.AUTO_FILE_RENAMING in meta_data:
-                return bool(global_container_stack.getMetaDataEntry(Constants.AUTO_FILE_RENAMING))
+                return True
         return False
 
     def check_valid_filename(self, filename):
