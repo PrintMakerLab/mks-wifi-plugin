@@ -263,6 +263,27 @@ def test_generate_new_filename_for_file_with_only_extension():
             '11.gcode']
     )
 
+def test_generate_new_filename_for_file_with_gco_extension():
+    simulate_printing_and_validate_result(
+        repeat_count=12,
+        filename='.gco',
+        max_filename=30,
+        existing_sd_files=[],
+        expected_sd_files=[
+            '.gco',
+            '1.gco',
+            '2.gco',
+            '3.gco',
+            '4.gco',
+            '5.gco',
+            '6.gco',
+            '7.gco',
+            '8.gco',
+            '9.gco',
+            '10.gco',
+            '11.gco']
+    )
+
 def test_generate_new_filename_hardname():
     simulate_printing_and_validate_result(
         repeat_count=12,

@@ -30,7 +30,7 @@ import sys
 
 from UM.Resources import Resources
 from . import Constants, MKSDialog
-from .utils import utils
+from . import utils
 
 Resources.addSearchPath(
     os.path.join(os.path.abspath(
@@ -356,7 +356,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
-            filename, _ = QFileDialog.getOpenFileName(None, self._translations.get("choose_file"), active_machine.getMetaDataEntry(Constants.SAVE_PATH), self._translations.get("gcode") + "(*.gcode *.g *.goc);;" + self._translations.get("all") + "(*.*)")
+            filename, _ = QFileDialog.getOpenFileName(None, self._translations.get("choose_file"), active_machine.getMetaDataEntry(Constants.SAVE_PATH), self._translations.get("gcode") + "(*.gcode *.g *.gco);;" + self._translations.get("all") + "(*.*)")
             active_machine.setMetaDataEntry(Constants.SAVE_PATH, filename)
             self._uploadpath = filename
             if ".g" in filename.lower():

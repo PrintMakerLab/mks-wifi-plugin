@@ -257,7 +257,7 @@ Cura.MachineAction {
                     Cura.ScrollView {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 4
+                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - autoFileRenamingRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 5
 
                         enabled: mksWifiSupport.checked;
 
