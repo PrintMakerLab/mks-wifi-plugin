@@ -176,6 +176,39 @@ Cura.MachineAction {
                     }
 
                     Row {
+                        id: autoFileRenamingRow
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        Label
+                        {
+                            width: Math.round(parent.width * 0.5)
+                            height: autoFileRenaming.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Auto file renaming (if name is too long or already exists)")
+                            font: UM.Theme.getFont("default")
+                            color: UM.Theme.getColor("text")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.CheckBox
+                        {
+                            id: autoFileRenaming
+                            checked: manager.isAutoFileRenamingEnabled()
+
+                            onCheckedChanged: {
+                                manager.setAutoFileRenaming(autoFileRenaming.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
                         id: printerControlRaw
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
@@ -224,7 +257,7 @@ Cura.MachineAction {
                     Cura.ScrollView {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 4
+                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - autoFileRenamingRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 5
 
                         enabled: mksWifiSupport.checked;
 

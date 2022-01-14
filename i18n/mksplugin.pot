@@ -210,6 +210,11 @@ msgctxt "@label"
 msgid "Maximum file name length (0..255, 30 by default)"
 msgstr ""
 
+#: qml/MachineConfig.qml:154
+msgctxt "@label"
+msgid "Auto file renaming (if name is too long or already exists)"
+msgstr ""
+
 #: qml/MachineConfig.qml:187
 msgctxt "@action:button"
 msgid "Add"
