@@ -20,9 +20,9 @@ categories:
     label: 'type: maintenance'
   - title: 'Documentation'
     label: 'type: docs'
-  - title: 'Other changes'
   - title: 'Dependency Updates'
     label: 'type: dependencies'
+  - title: 'Other changes'
 
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 
@@ -36,9 +36,10 @@ version-resolver:
   patch:
     labels:
       - 'type: bug'
-      - 'type: maintenance'
-      - 'type: docs'
+      - 'type: community'
       - 'type: dependencies'
+      - 'type: docs'
+      - 'type: maintenance'
 
-  exclude-labels:
+exclude-labels:
   - 'skip-changelog'
