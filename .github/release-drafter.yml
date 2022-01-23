@@ -5,8 +5,6 @@ template: |
 
   $CHANGES
 
-  $CONTRIBUTORS
-
   **Full Changelog**: https://github.com/$OWNER/$REPOSITORY/compare/$PREVIOUS_TAG...$RESOLVED_VERSION
 
 categories:
