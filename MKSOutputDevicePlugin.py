@@ -77,8 +77,10 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         }
 
         self._current_printer = MKSOutputDevice.MKSOutputDevice(instance_name, address, properties)
-
-        Logger.log("d", "addPrinter, connecting [%s]..." % self._current_printer.getKey())
+        if self._current_printer is None:
+            Logger.log("w", "Current printer not found")
+        else:
+            Logger.log("d", "addPrinter, connecting [%s]..." % self._current_printer.getKey())
         self._current_printer.connect()
         self._current_printer.connectionStateChanged.connect(
             self._onPrinterConnectionStateChanged)
@@ -154,19 +156,27 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
         return []
 
     def _onPrinterConnectionStateChanged(self, key):
-        if self._current_printer.getKey() != key:
-            Logger.log("w", "_current_printer.getKey != %s" % key)
+        if self._current_printer is None:
+            Logger.log("w", "Current printer not found")
+            return
+
+        current_key = self._current_printer.getKey()
+        printer_name = self._current_printer._properties.get(b"name", b"").decode("utf-8")
+        if current_key != key:
+                Logger.log("w", "_current_printer.getKey != %s" % key)
 
         if self._current_printer.isConnected:
             if self._error_message:
                 self._error_message.hide()
-            self._error_message = Message(self._translations.get("connected").format(
-                self._current_printer._properties.get(b"name", b"").decode("utf-8")))
-            self._error_message.show()
-            self.getOutputDeviceManager().addOutputDevice(self._current_printer)
+            connected = self._translations.get("connected")
+            if connected:
+                self._error_message = Message(connected.format(printer_name))
+                self._error_message.show()
+                self.getOutputDeviceManager().addOutputDevice(self._current_printer)
         else:
             if self.getOutputDeviceManager().getOutputDevice(key):
-                self._error_message = Message(self._translations.get("disconnected").format(
-                    self._current_printer._properties.get(b"name", b"").decode("utf-8")))
-                self._error_message.show()
-                self.getOutputDeviceManager().removeOutputDevice(self._current_printer.getKey())
+                disconnected = self._translations.get("disconnected")
+                if disconnected:
+                    self._error_message = Message(disconnected.format(printer_name))
+                    self._error_message.show()
+                    self.getOutputDeviceManager().removeOutputDevice(current_key)
