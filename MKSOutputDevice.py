@@ -97,8 +97,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._translations.get("print_over_tft_action_button"))
         self.setDescription(self._translations.get("print_over_tft_tooltip"))
         self.setIconName("print")
-        self.setConnectionText(
-            self._translations.get("connected_message").format(self._key))
+        connected_message = self._translations.get("connected_message")
+        if connected_message:
+            self.setConnectionText(connected_message.format(self._key))
         Application.getInstance().globalContainerStackChanged.connect(
             self._onGlobalContainerChanged)
 
@@ -211,11 +212,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._socket.connectToHost(self._address, self._port)
         global_container_stack = Application.getInstance(
         ).getGlobalContainerStack()
-        self.setShortDescription(
-            self._translations.get("print_over_action_button").format(
-                global_container_stack.getName()))
-        self.setDescription(self._translations.get("print_over_tooltip").format(
-            global_container_stack.getName()))
+
+        print_over_action_button = self._translations.get("print_over_action_button")
+        if print_over_action_button:
+            self.setShortDescription(print_over_action_button.format(global_container_stack.getName()))
+
+        print_over_tooltip = self._translations.get("print_over_tooltip")
+        if print_over_tooltip:
+            self.setDescription(print_over_tooltip.format(global_container_stack.getName()))
+
         Logger.log("d", "MKS socket connecting to %s:%s" % (str(self._address), str(self._port)))
         self._setAcceptsCommands(True)
         self._socket.readyRead.connect(self.on_read)
@@ -375,7 +380,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         dialog.exec_()
         new_filename = ""
         if dialog.accepted():
-        	new_filename = dialog.get_filename()
+            new_filename = dialog.get_filename()
         dialog.close()
         return new_filename
 
@@ -430,9 +435,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return filename
 
     def check_valid_filepath(self, filepath):
-    	filename = filepath[filepath.rfind("/") + 1:]
-    	filename = self.check_valid_filename(filename);
-    	return filepath[:filepath.rfind("/")] + "/" + filename
+        filename = filepath[filepath.rfind("/") + 1:]
+        filename = self.check_valid_filename(filename)
+        return filepath[:filepath.rfind("/")] + "/" + filename
 
     def show_error_message(self, message):
         if self._error_message is not None:
@@ -475,7 +480,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return False
     
     def isSocketInConnectedState(self) -> bool:
-        return self._socket and self._socket.state() == 3 # QAbstractSocket::ConnectedState
+        return self._socket is not None and self._socket.state() == 3 # QAbstractSocket::ConnectedState
 
     def sendfile(self, file_name, file_str):
         data = QByteArray()
@@ -494,8 +499,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def got_ioerror(self, error):
         Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
         # preferences.setValue("mkswifi/uploadingfile", "False")
-        self._progress_message.hide()
-        self._progress_message = None
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
         self._error_message = Message(
             self._translations.get("file_send_failed"))
         self._error_message.show()
@@ -676,13 +682,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             job_name = "cura_file"
         filename = "%s.gcode" % job_name
 
-        filename = self.check_valid_filename(filename);
+        filename = self.check_valid_filename(filename)
 
         if self.isBusy():
             self.isBusy_error_message()
             return
         if filename != "":
-        	self._startPrint(filename)
+            self._startPrint(filename)
 
     def _messageBoxCallback(self, button):
         if button == QMessageBox.Yes:
@@ -730,36 +736,35 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("M24")
 
     def _onUploadProgress(self, bytes_sent: int, bytes_total: int):
-        Logger.log("d", "Bytes sent %s/%s" % (str(bytes_sent), str(bytes_total)))
-        if bytes_sent == bytes_total and bytes_sent > 0:
-            self._progress_message.hide()
-            self._error_message = Message(
-                self._translations.get("file_send_success"))
-            self._error_message.show()
-            CuraApplication.getInstance().getController().setActiveStage(
-                "MonitorStage")
-        elif bytes_total > 0:
-            new_progress = bytes_sent / bytes_total * 100
-            # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
-            # timeout responses if this happens.
-            self._last_response_time = time.time()
-            if new_progress > self._progress_message.getProgress():
-                # Ensure that the message is visible.
-                self._progress_message.show()
-                self._progress_message.setProgress(new_progress)
-        else:
-            if self._progress_message is not None:
+        Logger.log("d", "Bytes sent %s/%s" % (str(bytes_sent), str(bytes_total)))        
+        if self._progress_message is not None:
+            if bytes_sent == bytes_total and bytes_sent > 0:
+                self._progress_message.hide()
+                self._error_message = Message(self._translations.get("file_send_success"))
+                self._error_message.show()
+                CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+            elif bytes_total > 0:
+                new_progress = bytes_sent / bytes_total * 100
+                # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
+                # timeout responses if this happens.
+                self._last_response_time = time.time()
+                if new_progress > self._progress_message.getProgress():
+                    # Ensure that the message is visible.
+                    self._progress_message.show()
+                    self._progress_message.setProgress(new_progress)
+            else:
                 self._progress_message.setProgress(0)
                 self._progress_message.hide()
                 self._progress_message = None
+        else:
+            Logger.log("w", "Progress message not found") 
 
     def _onUploadError(self, reply, sslerror):
         Logger.log("d", "Upload Error")
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(
-            self._translations.get("file_send_failed"))
+        self._error_message = Message(self._translations.get("file_send_failed"))
         self._error_message.show()
         self._update_timer.start()
 
@@ -796,6 +801,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self.connect()
 
     def write_socket_data(self):
+        if self._socket is None:
+            Logger.log("w", "Socket not found") 
+            return
         _send_data = ("M105\r\nM997\r\n", "")[self._command_queue.qsize() > 0]
         if self.isBusy():
             _send_data += "M994\r\nM992\r\nM27\r\n"
@@ -818,6 +826,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._socket.flush()
 
     def _setJobState(self, job_state):
+        command = None
         if job_state == "abort":
             command = "M26"
         elif job_state == "print":
@@ -1043,8 +1052,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isPrinting = False
         manager = HttpRequestManager.getInstance()
         manager.abortRequest(self._request_data)
-        self._progress_message.hide()
-        self._progress_message = None
+        if self._progress_message is not None:
+            self._progress_message.hide()
+            self._progress_message = None
 
     def CreateMKSController(self):
         Logger.log("d", "Creating additional ui components for mkscontroller.")

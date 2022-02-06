@@ -51,13 +51,13 @@ class MKSDialog(QDialog):
         return self.line_edit.text()
 
     def yes_click(self):
-    	self.yes_cliked = True
-    	self.accept()
+        self.yes_cliked = True
+        self.accept()
 
     def no_click(self):
-    	self.yes_cliked = False
-    	self.line_edit.setText("")
-    	self.reject()
+        self.yes_cliked = False
+        self.line_edit.setText("")
+        self.reject()
 
     def accepted(self):
     	return self.yes_cliked

@@ -96,11 +96,14 @@ class MachineConfig(MachineAction):
 
     @pyqtSlot(str, str)
     def setPrinter(self, prev_address, address):
-        if prev_address == "" and address != "":
-            self._network_plugin.mks_add_printer_to_list(address)
+        if self._network_plugin is not None:
+            if prev_address == "" and address != "":
+                self._network_plugin.mks_add_printer_to_list(address)
 
-        if prev_address != "" and address != "":
-            self._network_plugin.mks_edit_printer_in_list(prev_address, address)
+            if prev_address != "" and address != "":
+                self._network_plugin.mks_edit_printer_in_list(prev_address, address)
+        else:
+            Logger.log("w", "Network plugin not found")
             
     def _onPrinterDiscoveryChanged(self, *args):
         self.printersChanged.emit()
