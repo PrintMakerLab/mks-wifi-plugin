@@ -230,7 +230,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def getProperties(self):
         return self._properties
 
-    @pyqtSlot(str, result="str | None")
+    @pyqtSlot(str, result=str)
     def getProperty(self, key):
         key = key.encode("utf-8")
         if key in self._properties:
@@ -238,7 +238,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             return ""
 
-    @pyqtSlot(result="str | None")
+    @pyqtSlot(result=str)
     def getKey(self):
         return self._key
 
