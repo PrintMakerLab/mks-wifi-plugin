@@ -375,7 +375,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         dialog.exec_()
         new_filename = ""
         if dialog.accepted():
-        	new_filename = dialog.get_filename()
+            new_filename = dialog.get_filename()
         dialog.close()
         return new_filename
 
@@ -430,9 +430,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return filename
 
     def check_valid_filepath(self, filepath):
-    	filename = filepath[filepath.rfind("/") + 1:]
-    	filename = self.check_valid_filename(filename);
-    	return filepath[:filepath.rfind("/")] + "/" + filename
+        filename = filepath[filepath.rfind("/") + 1:]
+        filename = self.check_valid_filename(filename)
+        return filepath[:filepath.rfind("/")] + "/" + filename
 
     def show_error_message(self, message):
         if self._error_message is not None:
@@ -676,13 +676,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             job_name = "cura_file"
         filename = "%s.gcode" % job_name
 
-        filename = self.check_valid_filename(filename);
+        filename = self.check_valid_filename(filename)
 
         if self.isBusy():
             self.isBusy_error_message()
             return
         if filename != "":
-        	self._startPrint(filename)
+            self._startPrint(filename)
 
     def _messageBoxCallback(self, button):
         if button == QMessageBox.Yes:
