@@ -135,21 +135,24 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def mks_edit_printer_in_list(self, prev_address, address):
         active_machine = Application.getInstance().getGlobalContainerStack()
-
-        ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
-
-        if ip_list_entry:
-            ip_list = ip_list_entry.split(",")
-            if prev_address != "":
-                ip_list.remove(prev_address)
-            if address != "":
-                ip_list.append(address)
-            active_machine.setMetaDataEntry(Constants.IP_LIST, ','.join(ip_list))
+        if active_machine is not None:
+            ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
+            if ip_list_entry:
+                ip_list = ip_list_entry.split(",")
+                if prev_address != "":
+                    ip_list.remove(prev_address)
+                if address != "":
+                    ip_list.append(address)
+                active_machine.setMetaDataEntry(Constants.IP_LIST, ','.join(ip_list))
             
-        self.printerListChanged.emit()
+            self.printerListChanged.emit()
 
     def getPrinters(self):
-        active_machine = Application.getInstance().getGlobalContainerStack()
+        active_machine = Application.getInstance().getGlobalContainerStack()        
+        if active_machine is None:
+            Logger.log("w", "Active machine not found")
+            return []
+
         ip_list_entry = active_machine.getMetaDataEntry(Constants.IP_LIST)
         if ip_list_entry:
             return ip_list_entry.split(",")
