@@ -183,8 +183,7 @@ Cura.MachineAction {
                             right: parent.right
                         }
 
-                        Label
-                        {
+                        Label {
                             width: Math.round(parent.width * 0.5)
                             height: autoFileRenaming.height
                             verticalAlignment: Text.AlignVCenter
@@ -195,13 +194,43 @@ Cura.MachineAction {
 
                             enabled: mksSupport.checked
                         }
-                        Cura.CheckBox
-                        {
+                        Cura.CheckBox {
                             id: autoFileRenaming
                             checked: manager.isAutoFileRenamingEnabled()
 
                             onCheckedChanged: {
                                 manager.setAutoFileRenaming(autoFileRenaming.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
+                        id: printAutostartRow
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: printAutostart.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Start printing after file upload")
+                            font: UM.Theme.getFont("default")
+                            color: UM.Theme.getColor("text")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.CheckBox {
+                            id: printAutostart
+                            checked: manager.isPrintAutostartEnabled()
+
+                            onCheckedChanged: {
+                                manager.setPrintAutostart(printAutostart.checked)
                             }
 
                             enabled: mksSupport.checked
@@ -257,7 +286,7 @@ Cura.MachineAction {
                     Cura.ScrollView {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - autoFileRenamingRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 5
+                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - autoFileRenamingRow.height - printAutostartRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 6
 
                         enabled: mksWifiSupport.checked;
 
