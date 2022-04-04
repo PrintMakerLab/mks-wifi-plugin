@@ -356,7 +356,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtSlot()
     def selectFileToUplload(self):
         active_machine = Application.getInstance().getGlobalContainerStack()
-        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
         active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
@@ -417,6 +416,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 return True
         return False
 
+    def is_print_auto_start_enabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.AUTO_PRINT in meta_data:
+                return True
+        return False
+
     def check_valid_filename(self, filename):
         file_already_exists = filename in self.sdFiles
         max_filename_len = self.get_max_filename_len()
@@ -445,7 +452,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._error_message = Message(message)
         self._error_message.show()
 
-    def show_progress_message(self, active_machine):
+    def show_progress_message(self):
         if self._application.getVersion().split(".")[0] < "4":
             Application.getInstance().showPrintMonitor.emit(True)
             status = self._translations.get("sending_file")
@@ -460,7 +467,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 -1,
                 title,
                 option_text=self._translations.get("print_job_label"),
-                option_state=active_machine.getMetaDataEntry(Constants.AUTO_PRINT))
+                option_state=self.is_print_auto_start_enabled())
             self._progress_message.addAction(
                 "Cancel",  self._translations.get("button_cancel"), None, "")
             self._progress_message.actionTriggered.connect(
@@ -520,7 +527,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self.show_error_message(self._translations.get("error_2"))
         else:
             active_machine = Application.getInstance().getGlobalContainerStack()
-            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
             active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
             # preferences.addPreference("mkswifi/uploadingfile", "True")
             self._update_timer.stop()
@@ -535,7 +541,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 file_name = filename[filename.rfind("/") + 1:]
                 self._last_file_name = filename[filename.rfind("/") + 1:]
                 self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get(
-                    "print_job_title"), option_text=self._translations.get("print_job_label"), option_state=active_machine.getMetaDataEntry(Constants.AUTO_PRINT))
+                    "print_job_title"), option_text=self._translations.get("print_job_label"), option_state=self.is_print_auto_start_enabled())
                 self._progress_message.addAction(
                     "Cancel", self._translations.get("button_cancel"), None, "")
                 self._progress_message.actionTriggered.connect(
@@ -706,9 +712,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return
         self._preheat_timer.stop()
         try:
-            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
             active_machine.setMetaDataEntry(Constants.SAVE_PATH, "")
-            self.show_progress_message(active_machine)
+            self.show_progress_message()
             self._last_file_name = file_name
             Logger.log(
                 "d", "mks file name: " + file_name + " original file name: " + Application.getInstance().
@@ -1035,9 +1040,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")
-        active_machine = Application.getInstance().getGlobalContainerStack()
-        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
-        if active_machine.getMetaDataEntry(Constants.AUTO_PRINT):
+        if self.is_print_auto_start_enabled():
             self._printFile()
         if not http_status_code:
             return

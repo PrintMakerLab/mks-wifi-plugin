@@ -230,6 +230,25 @@ class MachineConfig(MachineAction):
                 global_container_stack.removeMetaDataEntry(Constants.AUTO_FILE_RENAMING)
 
     @pyqtSlot(result=bool)
+    def isPrintAutostartEnabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.AUTO_PRINT in meta_data:
+                return True
+        return False
+
+    @pyqtSlot(str)
+    def setPrintAutostart(self, is_auto_print_enabled):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if is_auto_print_enabled == "true":
+                global_container_stack.setMetaDataEntry(Constants.AUTO_PRINT, is_auto_print_enabled)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.AUTO_PRINT, None)
+                global_container_stack.removeMetaDataEntry(Constants.AUTO_PRINT)
+
+    @pyqtSlot(result=bool)
     def supportScreenshot(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
