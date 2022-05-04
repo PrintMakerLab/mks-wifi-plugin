@@ -1,14 +1,14 @@
 // Copyright (c) 2019
 // MKSPlugin is released under the terms of the AGPLv3 or higher.
 
-import QtQuick 2.2
-import UM 1.2 as UM
-import Cura 1.0 as Cura
+import QtQuick 6.0
+import UM 1.6 as UM
+import Cura 1.7 as Cura
 import MKSPlugin 1.0 as MKSPlugin
 
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.1
+import QtQuick.Controls 6.0
+import QtQuick.Layouts 6.0
+import QtQuick.Window 6.0
 
 import "."
 
@@ -118,7 +118,7 @@ Component
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
-                            Button {
+                            Cura.PrimaryButton {
                                 iconSource: UM.Theme.getIcon("ChevronSingleUp");
                                 style: UM.Theme.styles.monitor_button_style
                                 width: height
@@ -126,7 +126,7 @@ Component
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
                             }
-                            Button {
+                            Cura.PrimaryButton {
                                 iconSource: UM.Theme.getIcon("ChevronSingleDown");
                                 style: UM.Theme.styles.monitor_button_style
                                 width: height

@@ -663,7 +663,6 @@ Cura.MachineAction {
                     manualPrinterDialog.hide()
                 }
                 enabled: manualPrinterDialog.addressText.trim() != ""
-                isDefault: true
             }
         ]
     }

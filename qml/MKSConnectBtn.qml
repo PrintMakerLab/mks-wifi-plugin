@@ -3,12 +3,12 @@
 // Copyright (c) 2018 Ultimaker B.V.
 // Cura is released under the terms of the LGPLv3 or higher.
 
-import QtQuick 2.2
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.1
-import QtQuick.Window 2.1
-import UM 1.2 as UM
-import Cura 1.0 as Cura
+import QtQuick 6.0
+import QtQuick.Controls 6.0
+import QtQuick.Layouts 6.0
+import QtQuick.Window 6.0
+import UM 1.6 as UM
+import Cura 1.7 as Cura
 
 Item {
     id: base;
@@ -56,19 +56,17 @@ Item {
         objectName: "networkPrinterConnectButton";
         spacing: UM.Theme.getSize("default_margin").width;
 
-        Button {
+        Cura.PrimaryButton {
             height: UM.Theme.getSize("save_button_save_to_button").height;
             onClicked: Cura.MachineManager.printerOutputDevices[0].requestAuthentication();
-            style: UM.Theme.styles.print_setup_action_button;
             text: catalog.i18nc("@action:button", "Request Access");
             tooltip: catalog.i18nc("@info:tooltip", "Send access request to the printer");
             visible: printerConnected && !printerAcceptsCommands && !authenticationRequested;
         }
 
-        Button {
+        Cura.PrimaryButton {
             height: UM.Theme.getSize("save_button_save_to_button").height;
             onClicked: connectActionDialog.show();
-            style: UM.Theme.styles.print_setup_action_button;
             text: catalog.i18nc("@action:button", "Connect");
             tooltip: catalog.i18nc("@info:tooltip", "Connect to a printer");
             visible: !printerConnected;
@@ -78,7 +76,6 @@ Item {
     UM.Dialog {
         id: connectActionDialog;
         rightButtons: Button {
-            iconName: "dialog-close";
             onClicked: connectActionDialog.reject();
             text: catalog.i18nc("@action:button", "Close");
         }
