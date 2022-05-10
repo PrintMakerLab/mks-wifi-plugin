@@ -17,7 +17,7 @@ from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
 
 from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket, 
+from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
 from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
