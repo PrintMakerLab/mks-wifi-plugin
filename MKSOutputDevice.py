@@ -376,7 +376,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def show_dialog(self, filename, label, title):
         dialog = MKSDialog.MKSDialog()
         dialog.init_dialog(filename, label, title)
-        dialog.exec_()
+        dialog.exec()
         new_filename = ""
         if dialog.accepted():
             new_filename = dialog.get_filename()
@@ -487,7 +487,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return False
     
     def isSocketInConnectedState(self) -> bool:
-        return self._socket is not None and self._socket.state() == 3 # QAbstractSocket::ConnectedState
+        return self._socket is not None and self._socket.state() == QTcpSocket.SocketState.ConnectedState # QAbstractSocket::ConnectedState
 
     def sendfile(self, file_name, file_str):
         data = QByteArray()
@@ -1036,7 +1036,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def _onRequestFinished(self, reply):
         http_status_code = reply.attribute(
-            QNetworkRequest.HttpStatusCodeAttribute)
+            QNetworkRequest.Attribute.HttpStatusCodeAttribute)
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")
