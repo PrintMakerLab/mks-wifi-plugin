@@ -60,4 +60,4 @@ class MKSDialog(QDialog):
         self.reject()
 
     def accepted(self):
-    	return self.yes_cliked
+        return self.yes_cliked
