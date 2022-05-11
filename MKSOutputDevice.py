@@ -487,7 +487,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return False
     
     def isSocketInConnectedState(self) -> bool:
-        return self._socket is not None and self._socket.state() == 3 # QAbstractSocket::ConnectedState
+        return self._socket is not None and self._socket.state() == QTcpSocket.SocketState.ConnectedState # QAbstractSocket::ConnectedState
 
     def sendfile(self, file_name, file_str):
         data = QByteArray()
