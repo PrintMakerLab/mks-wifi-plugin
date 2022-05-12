@@ -118,17 +118,17 @@ Component
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
-                            Cura.PrimaryButton {
+                            Button {
                                 iconSource: UM.Theme.getIcon("ChevronSingleUp");
-                                style: UM.Theme.styles.monitor_button_style
+                                // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
                             }
-                            Cura.PrimaryButton {
+                            Button {
                                 iconSource: UM.Theme.getIcon("ChevronSingleDown");
-                                style: UM.Theme.styles.monitor_button_style
+                                // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
 
