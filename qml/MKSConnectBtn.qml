@@ -61,7 +61,7 @@ Item {
             onClicked: Cura.MachineManager.printerOutputDevices[0].requestAuthentication();
             // style: UM.Theme.styles.print_setup_action_button;
             text: catalog.i18nc("@action:button", "Request Access");
-            tooltip: catalog.i18nc("@info:tooltip", "Send access request to the printer");
+            // tooltip: catalog.i18nc("@info:tooltip", "Send access request to the printer");
             visible: printerConnected && !printerAcceptsCommands && !authenticationRequested;
         }
 
@@ -70,7 +70,7 @@ Item {
             onClicked: connectActionDialog.show();
             // style: UM.Theme.styles.print_setup_action_button;
             text: catalog.i18nc("@action:button", "Connect");
-            tooltip: catalog.i18nc("@info:tooltip", "Connect to a printer");
+            // tooltip: catalog.i18nc("@info:tooltip", "Connect to a printer");
             visible: !printerConnected;
         }
     }
