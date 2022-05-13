@@ -349,6 +349,7 @@ Cura.MachineAction {
                             id: connectbtn
                             height: UM.Theme.getSize("setting_control").height
                             // style: UM.Theme.styles.print_setup_action_button
+                            ToolTip.text: qsTr("Testing")
                             text: catalog.i18nc("@action:button", "Connect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {

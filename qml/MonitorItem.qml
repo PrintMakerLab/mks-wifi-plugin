@@ -370,7 +370,8 @@ Component
                     text: catalog.i18nc("@action:button", "SD Files")
                     onClicked: sdDialog.show()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
                 }
 
                 Button {
@@ -383,7 +384,8 @@ Component
                     text: catalog.i18nc("@action:button", "Send Print Job")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
                 }
 
 
@@ -395,7 +397,8 @@ Component
                     text: catalog.i18nc("@action:button", "Fan On")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Turn fan on.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Turn fan on.")
                 }
 
                 Button {
@@ -406,7 +409,8 @@ Component
                     text: catalog.i18nc("@action:button", "Fan Off")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Turn fan off.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Turn fan off.")
                 }
 
                 Button {
@@ -419,7 +423,8 @@ Component
                     text: catalog.i18nc("@action:button", "Cool Down")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
                 }
 
                 Button {
@@ -432,7 +437,8 @@ Component
                     text: catalog.i18nc("@action:button", "Unlock Motors")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
 
-                    // tooltip: catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
                 }
             }
         }
