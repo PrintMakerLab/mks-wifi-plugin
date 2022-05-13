@@ -4,7 +4,7 @@
 from UM.i18n import i18nCatalog
 from UM.Logger import Logger
 
-from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 
 catalog = i18nCatalog("mksplugin")
 
@@ -60,4 +60,4 @@ class MKSDialog(QDialog):
         self.reject()
 
     def accepted(self):
-    	return self.yes_cliked
+        return self.yes_cliked

@@ -10,7 +10,7 @@ from UM.Settings.ContainerRegistry import ContainerRegistry
 from cura.MachineAction import MachineAction
 from cura.CuraApplication import CuraApplication
 
-from PyQt5.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
+from PyQt6.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
 
 import os.path
 import json
