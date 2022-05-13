@@ -7,7 +7,7 @@ from UM.Signal import Signal, signalemitter
 from UM.Application import Application
 from UM.Logger import Logger
 
-from PyQt5.QtCore import QObject
+from PyQt6.QtCore import QObject
 
 from UM.Message import Message
 from UM.i18n import i18nCatalog

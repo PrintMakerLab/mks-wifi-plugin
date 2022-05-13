@@ -1,13 +1,13 @@
 // Copyright (c) 2021
 // MKS Plugin is released under the terms of the AGPLv3 or higher.
 
-import UM 1.3 as UM
+import UM 1.5 as UM
 import Cura 1.0 as Cura
 
-import QtQuick 2.2
-import QtQuick.Controls 1.1
-import QtQuick.Layouts 1.3
-import QtQuick.Window 2.1
+import QtQuick 6.0
+import QtQuick.Controls 6.0
+import QtQuick.Layouts 6.0
+import QtQuick.Window 6.0
 
 Cura.MachineAction {
     id: base
@@ -122,7 +122,7 @@ Cura.MachineAction {
 
                             enabled: mksSupport.checked
                         }
-                        Cura.CheckBox {
+                        UM.CheckBox {
                             id: mksWifiSupport
                             checked: manager.WiFiSupportEnabled()
 
@@ -160,9 +160,9 @@ Cura.MachineAction {
                             id: maxFilenameLenInput
                             width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                             maximumLength: 3
-                            validator: RegExpValidator
+                            validator: RegularExpressionValidator
                             {
-                                regExp: /^\s*$|^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
+                                regularExpression: /^\s*$|^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
                             }
 
                             text: manager.getMaxFilenameLen()
@@ -194,7 +194,7 @@ Cura.MachineAction {
 
                             enabled: mksSupport.checked
                         }
-                        Cura.CheckBox {
+                        UM.CheckBox {
                             id: autoFileRenaming
                             checked: manager.isAutoFileRenamingEnabled()
 
@@ -225,7 +225,7 @@ Cura.MachineAction {
 
                             enabled: mksSupport.checked
                         }
-                        Cura.CheckBox {
+                        UM.CheckBox {
                             id: printAutostart
                             checked: manager.isPrintAutostartEnabled()
 
@@ -245,7 +245,7 @@ Cura.MachineAction {
                         Button {
                             id: addButton
                             height: UM.Theme.getSize("setting_control").height
-                            style: UM.Theme.styles.print_setup_action_button
+                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Add");
                             enabled: mksWifiSupport.checked;
                             onClicked:
@@ -257,7 +257,7 @@ Cura.MachineAction {
                         Button {
                             id: editButton
                             height: UM.Theme.getSize("setting_control").height
-                            style: UM.Theme.styles.print_setup_action_button
+                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Edit")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked:
@@ -269,7 +269,7 @@ Cura.MachineAction {
                         Button {
                             id: removeButton
                             height: UM.Theme.getSize("setting_control").height
-                            style: UM.Theme.styles.print_setup_action_button
+                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Remove")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked: {
@@ -348,7 +348,7 @@ Cura.MachineAction {
                         Button {
                             id: connectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            style: UM.Theme.styles.print_setup_action_button
+                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Connect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {
@@ -375,7 +375,7 @@ Cura.MachineAction {
                         Button {
                             id: disconnectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            style: UM.Theme.styles.print_setup_action_button
+                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Disconnect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {
@@ -423,7 +423,7 @@ Cura.MachineAction {
 
                         enabled: mksSupport.checked
                     }
-                    Cura.CheckBox {
+                    UM.CheckBox {
                         id: mksScreenshotSupport
                         checked: printerSupportScreenshots
 
@@ -494,8 +494,8 @@ Cura.MachineAction {
                         id: simageTextInput
                         width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                         maximumLength: 5
-                        validator: RegExpValidator {
-                            regExp: /[0-9]*/
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[0-9]*/
                         }
 
                         text: manager.getSimage()
@@ -531,8 +531,8 @@ Cura.MachineAction {
                         id: gimageTextInput
                         width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
                         maximumLength: 5
-                        validator: RegExpValidator {
-                            regExp: /[0-9]*/
+                        validator: RegularExpressionValidator {
+                            regularExpression: /[0-9]*/
                         }
 
                         text: manager.getGimage()
@@ -570,7 +570,7 @@ Cura.MachineAction {
             wrapMode: Text.WordWrap
             text: catalog.i18nc("@label", "MKS WiFi Plugin is active for this printer")
         }
-        Cura.CheckBox {
+        UM.CheckBox {
             id: mksSupport
             checked: manager.pluginEnabled()
 
@@ -641,29 +641,28 @@ Cura.MachineAction {
                 id: addressField
                 width: parent.width
                 maximumLength: 40
-                validator: RegExpValidator
+                validator: RegularExpressionValidator
                 {
-                    regExp: /[a-zA-Z0-9\.\-\_]*/
+                    regularExpression: /[a-zA-Z0-9\.\-\_]*/
                 }
             }
         }
 
         rightButtons: [
-            Button {
+            Cura.SecondaryButton {
                 text: catalog.i18nc("@action:button","Cancel")
                 onClicked: {
                     manualPrinterDialog.reject()
                     manualPrinterDialog.hide()
                 }
             },
-            Button {
+            Cura.PrimaryButton {
                 text: catalog.i18nc("@action:button", "OK")
                 onClicked: {
                     manualPrinterDialog.accept()
                     manualPrinterDialog.hide()
                 }
                 enabled: manualPrinterDialog.addressText.trim() != ""
-                isDefault: true
             }
         ]
     }

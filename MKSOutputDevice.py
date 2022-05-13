@@ -16,9 +16,9 @@ from cura.PrinterOutput.Models.PrintJobOutputModel import PrintJobOutputModel
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
 
-from PyQt5.QtWidgets import QFileDialog, QMessageBox
-from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
-from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
+from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from PyQt6.QtNetwork import QNetworkRequest, QTcpSocket
+from PyQt6.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
 import re  # For escaping characters in the settings.
@@ -376,7 +376,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     def show_dialog(self, filename, label, title):
         dialog = MKSDialog.MKSDialog()
         dialog.init_dialog(filename, label, title)
-        dialog.exec_()
+        dialog.exec()
         new_filename = ""
         if dialog.accepted():
             new_filename = dialog.get_filename()
@@ -1036,7 +1036,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def _onRequestFinished(self, reply):
         http_status_code = reply.attribute(
-            QNetworkRequest.HttpStatusCodeAttribute)
+            QNetworkRequest.Attribute.HttpStatusCodeAttribute)
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")
