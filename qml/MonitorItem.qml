@@ -119,7 +119,7 @@ Component
                             }
 
                             Button {
-                                iconSource: UM.Theme.getIcon("ChevronSingleUp");
+                                icon.source: UM.Theme.getIcon("ChevronSingleUp");
                                 // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
@@ -127,7 +127,7 @@ Component
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
                             }
                             Button {
-                                iconSource: UM.Theme.getIcon("ChevronSingleDown");
+                                icon.source: UM.Theme.getIcon("ChevronSingleDown");
                                 // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
@@ -153,8 +153,8 @@ Component
                             }
 
                             Button {
-                                iconSource: UM.Theme.getIcon("ChevronSingleUp");
-                                style: UM.Theme.styles.monitor_button_style
+                                icon.source: UM.Theme.getIcon("ChevronSingleUp");
+                                // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
 
@@ -162,8 +162,8 @@ Component
                             }
 
                             Button {
-                                iconSource: UM.Theme.getIcon("ChevronSingleDown");
-                                style: UM.Theme.styles.monitor_button_style
+                                icon.source: UM.Theme.getIcon("ChevronSingleDown");
+                                // style: UM.Theme.styles.monitor_button_style
                                 width: height
                                 height: UM.Theme.getSize("setting_control").height
 
@@ -225,7 +225,7 @@ Component
                         }
                     }
 
-                    style: UM.Theme.styles.print_setup_action_button
+                    // style: UM.Theme.styles.print_setup_action_button
                 }
 
                 Button {
@@ -237,7 +237,7 @@ Component
 
                     text: cura_catalog.i18nc("@label", "Abort Print")
 
-                    style: UM.Theme.styles.print_setup_action_button
+                    // style: UM.Theme.styles.print_setup_action_button
                 }
 
                 Button {
@@ -249,7 +249,7 @@ Component
                     anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    style: UM.Theme.styles.print_setup_action_button
+                    // style: UM.Theme.styles.print_setup_action_button
                     text: catalog.i18nc("@action:button", "More")
                     onClicked: moreDialog.show()
                 }
@@ -370,7 +370,8 @@ Component
                     text: catalog.i18nc("@action:button", "SD Files")
                     onClicked: sdDialog.show()
 
-                    tooltip: catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
                 }
 
                 Button {
@@ -383,7 +384,8 @@ Component
                     text: catalog.i18nc("@action:button", "Send Print Job")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].selectFileToUplload()
 
-                    tooltip: catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Select and send G-Code file to 3D printer.")
                 }
 
 
@@ -395,7 +397,8 @@ Component
                     text: catalog.i18nc("@action:button", "Fan On")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].openfan()
 
-                    tooltip: catalog.i18nc("@tooltip", "Turn fan on.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Turn fan on.")
                 }
 
                 Button {
@@ -406,7 +409,8 @@ Component
                     text: catalog.i18nc("@action:button", "Fan Off")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].closefan()
 
-                    tooltip: catalog.i18nc("@tooltip", "Turn fan off.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Turn fan off.")
                 }
 
                 Button {
@@ -419,7 +423,8 @@ Component
                     text: catalog.i18nc("@action:button", "Cool Down")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].printtest()
 
-                    tooltip: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
                 }
 
                 Button {
@@ -432,7 +437,8 @@ Component
                     text: catalog.i18nc("@action:button", "Unlock Motors")
                     onClicked: Cura.MachineManager.printerOutputDevices[0].unlockmotor()
 
-                    tooltip: catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
+                    ToolTip.visible: hovered
+                    ToolTip.text: catalog.i18nc("@tooltip", "Unlock 3D printer motors.")
                 }
             }
         }
