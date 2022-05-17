@@ -242,10 +242,9 @@ Cura.MachineAction {
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: addButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Add");
                             enabled: mksWifiSupport.checked;
                             onClicked:
@@ -254,10 +253,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: editButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Edit")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked:
@@ -266,10 +264,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: removeButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Remove")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked: {
@@ -345,10 +342,9 @@ Cura.MachineAction {
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: connectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Connect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {
@@ -372,10 +368,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: disconnectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Disconnect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {

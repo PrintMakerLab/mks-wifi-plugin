@@ -21,6 +21,7 @@ Component
         property var connectedDevice: Cura.MachineManager.printerOutputDevices.length >= 1 ? Cura.MachineManager.printerOutputDevices[0] : null
         property var printerModel: connectedDevice != null ? connectedDevice.activePrinter : null
         property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
+        property var _buttonSize: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
 
         SystemPalette { id: palette }
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
@@ -59,7 +60,7 @@ Component
                         top: parent.top
                         left: parent.left
                         //had not found how to insert this into Cura's qml, so took the summ of sizes from Cura's sources
-                        leftMargin: Math.floor(parent.width * 0.4) + UM.Theme.getSize("default_margin").width * 2 + UM.Theme.getSize("default_lining").width * 5 + UM.Theme.getSize("setting_control").height * 4
+                        leftMargin: Math.floor(parent.width * 0.4) + UM.Theme.getSize("default_margin").width * 2 + UM.Theme.getSize("default_lining").width * 5 + _buttonSize * 4
                     }
 
                     Label {//outputDevice.activePrinter.name spacer got from Cura/resources/qml/PrinterOutput/OutputDeviceHeader.qml
@@ -108,29 +109,27 @@ Component
                             enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
 
                             spacing: UM.Theme.getSize("default_lining").height
-                            Label {
+                            UM.Label {
                                 text: catalog.i18nc("@label", "E0")
                                 color: UM.Theme.getColor("setting_control_text")
-                                font: UM.Theme.getFont("default")
-                                width: UM.Theme.getSize("section").height
+                                width: height
                                 height: UM.Theme.getSize("setting_control").height
-                                verticalAlignment: Text.AlignVCenter
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
-                            Button {
-                                icon.source: UM.Theme.getIcon("ChevronSingleUp");
-                                // style: UM.Theme.styles.monitor_button_style
-                                width: height
-                                height: UM.Theme.getSize("setting_control").height
+                            Cura.SecondaryButton {
+                                iconSource: UM.Theme.getIcon("ChevronSingleUp");
+                                leftPadding: (width - iconSize) / 2
+                                width: _buttonSize
+                                height: _buttonSize
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
                             }
-                            Button {
-                                icon.source: UM.Theme.getIcon("ChevronSingleDown");
-                                // style: UM.Theme.styles.monitor_button_style
-                                width: height
-                                height: UM.Theme.getSize("setting_control").height
+                            Cura.SecondaryButton {
+                                iconSource: UM.Theme.getIcon("ChevronSingleDown");
+                                leftPadding: (width - iconSize) / 2
+                                width: _buttonSize
+                                height: _buttonSize
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
                             }
@@ -210,7 +209,7 @@ Component
                     text: " "
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: pauseResumeButtonSpacer
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
@@ -224,11 +223,9 @@ Component
                             return cura_catalog.i18nc("@label", "Pause");
                         }
                     }
-
-                    // style: UM.Theme.styles.print_setup_action_button
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: abortButtonSpacer
 
                     visible: false
@@ -236,11 +233,9 @@ Component
                     height: UM.Theme.getSize("save_button_save_to_button").height
 
                     text: cura_catalog.i18nc("@label", "Abort Print")
-
-                    // style: UM.Theme.styles.print_setup_action_button
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: moreButton
                     
                     anchors.top: percentageLabelSpacer.bottom
@@ -249,7 +244,6 @@ Component
                     anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
-                    // style: UM.Theme.styles.print_setup_action_button
                     text: catalog.i18nc("@action:button", "More")
                     onClicked: moreDialog.show()
                 }
@@ -350,9 +344,8 @@ Component
             title: catalog.i18nc("@title:window", "More")
 
             minimumWidth: 200 * screenScaleFactor
-            minimumHeight: 180 * screenScaleFactor
             width: minimumWidth
-            height: minimumHeight
+            height: sdFileButton.height + uploadButton.height + fanOnButton.height + fanOffButton.height + coolDownButton.height + unlockMotorButton.height + UM.Theme.getSize("default_margin").height * 2
 
             Column {
                 id: buttonColumn
@@ -360,7 +353,7 @@ Component
 
                 anchors.fill: parent
 
-                Button {
+                Cura.SecondaryButton {
                     id: sdFileButton
 
                     width: parent.width
@@ -374,7 +367,7 @@ Component
                     ToolTip.text: catalog.i18nc("@tooltip", "Browse SD card in 3D printer.")
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: uploadButton
 
                     width: parent.width
@@ -389,7 +382,7 @@ Component
                 }
 
 
-                Button {
+                Cura.SecondaryButton {
                     id: fanOnButton
 
                     width: parent.width
@@ -401,7 +394,7 @@ Component
                     ToolTip.text: catalog.i18nc("@tooltip", "Turn fan on.")
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: fanOffButton
 
                     width: parent.width
@@ -413,7 +406,7 @@ Component
                     ToolTip.text: catalog.i18nc("@tooltip", "Turn fan off.")
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: coolDownButton
 
                     width: parent.width
@@ -427,7 +420,7 @@ Component
                     ToolTip.text: catalog.i18nc("@tooltip", "Cool down heated bed and exptuder.")
                 }
 
-                Button {
+                Cura.SecondaryButton {
                     id: unlockMotorButton
 
                     width: parent.width
