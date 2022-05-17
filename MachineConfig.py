@@ -10,7 +10,12 @@ from UM.Settings.ContainerRegistry import ContainerRegistry
 from cura.MachineAction import MachineAction
 from cura.CuraApplication import CuraApplication
 
-from PyQt6.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
+USE_QT5 = False
+try:
+    from PyQt6.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
+except ModuleNotFoundError:
+    from PyQt5.QtCore import pyqtSignal, pyqtProperty, pyqtSlot, QObject
+    USE_QT5 = True
 
 import os.path
 import json
@@ -22,7 +27,12 @@ catalog = i18nCatalog("mksplugin")
 class MachineConfig(MachineAction):
     def __init__(self, parent=None):
         super().__init__("MachineConfig", catalog.i18nc("@action", "MKS WiFi Plugin"))
-        self._qml_url = os.path.join("qml", "MachineConfig.qml")
+        
+        if (USE_QT5):
+            self._qml_url = os.path.join("qml_qt5", "MachineConfig.qml")
+        else:
+            self._qml_url = os.path.join("qml", "MachineConfig.qml")
+
         ContainerRegistry.getInstance().containerAdded.connect(self._onContainerAdded)
 
         self._application = CuraApplication.getInstance()
@@ -374,8 +384,13 @@ class MachineConfig(MachineAction):
         Logger.log("d", "Creating additional ui components for tft35.")
 
         # Create networking dialog
-        path = os.path.join(os.path.dirname(
+        if (USE_QT5):
+            path = os.path.join(os.path.dirname(
+                os.path.abspath(__file__)), "qml_qt5",  "MKSConnectBtn.qml")
+        else:
+            path = os.path.join(os.path.dirname(
             os.path.abspath(__file__)), "qml",  "MKSConnectBtn.qml")
+            
         self.__additional_components_view = CuraApplication.getInstance(
         ).createQmlComponent(path, {"manager": self})
         if not self.__additional_components_view:

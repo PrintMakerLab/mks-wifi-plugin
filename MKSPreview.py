@@ -2,7 +2,12 @@
 # MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.Application import Application
 from cura.Snapshot import Snapshot
-from PyQt6.QtCore import Qt
+
+try:
+    from PyQt6.QtCore import Qt
+except ModuleNotFoundError:
+    from PyQt5.QtCore import Qt
+    
 from UM.Logger import Logger
 
 from . import Constants

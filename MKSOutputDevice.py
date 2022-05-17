@@ -16,9 +16,17 @@ from cura.PrinterOutput.Models.PrintJobOutputModel import PrintJobOutputModel
 from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
 
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
-from PyQt6.QtNetwork import QNetworkRequest, QTcpSocket
-from PyQt6.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
+USE_QT5 = False
+try:
+    from PyQt6.QtWidgets import QFileDialog, QMessageBox
+    from PyQt6.QtNetwork import QNetworkRequest, QTcpSocket
+    from PyQt6.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
+except ModuleNotFoundError:
+    from PyQt5.QtWidgets import QFileDialog, QMessageBox
+    from PyQt5.QtNetwork import QNetworkRequest, QTcpSocket
+    from PyQt5.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
+    USE_QT5 = True
+
 from queue import Queue
 
 import re  # For escaping characters in the settings.
@@ -84,9 +92,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._target_bed_temperature = 0
 
         self._application = CuraApplication.getInstance()
-        self._monitor_view_qml_path = os.path.join(
-            os.path.dirname(os.path.abspath(__file__)), "qml",
-            "MonitorItem.qml")
+        
+        if (USE_QT5):
+            self._monitor_view_qml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "qml_qt5",
+                "MonitorItem.qml")
+        else:
+            self._monitor_view_qml_path = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)), "qml",
+                "MonitorItem.qml")
 
         # Make sure the output device gets selected above local file output and Octoprint XD
         self.setPriority(3)
@@ -1035,8 +1049,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.printersChanged.emit()
 
     def _onRequestFinished(self, reply):
-        http_status_code = reply.attribute(
-            QNetworkRequest.Attribute.HttpStatusCodeAttribute)
+        if (USE_QT5):
+            http_status_code = reply.attribute(
+                QNetworkRequest.HttpStatusCodeAttribute)
+        else:
+            http_status_code = reply.attribute(
+                QNetworkRequest.Attribute.HttpStatusCodeAttribute)
+                
         self._isSending = True
         self._update_timer.start()
         self._sendCommand("M20")

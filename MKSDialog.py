@@ -4,7 +4,10 @@
 from UM.i18n import i18nCatalog
 from UM.Logger import Logger
 
-from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+try:
+    from PyQt6.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
+except ModuleNotFoundError:
+    from PyQt5.QtWidgets import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton
 
 catalog = i18nCatalog("mksplugin")
 

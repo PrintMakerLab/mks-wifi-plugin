@@ -5,7 +5,11 @@ import os, json
 from . import MKSOutputDevicePlugin
 from . import MachineConfig
 from UM.i18n import i18nCatalog
-from PyQt6.QtQml import qmlRegisterType
+
+try:
+    from PyQt6.QtQml import qmlRegisterType
+except ModuleNotFoundError:
+    from PyQt5.QtQml import qmlRegisterType
 
 catalog = i18nCatalog("cura")
 
