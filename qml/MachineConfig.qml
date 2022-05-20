@@ -641,24 +641,28 @@ Cura.MachineAction {
                     regularExpression: /[a-zA-Z0-9\.\-\_]*/
                 }
             }
-        }
 
-        rightButtons: [
-            Cura.SecondaryButton {
-                text: catalog.i18nc("@action:button","Cancel")
-                onClicked: {
-                    manualPrinterDialog.reject()
-                    manualPrinterDialog.hide()
+            Row {
+                anchors.right: parent.right
+                spacing: UM.Theme.getSize("default_margin").height
+
+                Cura.SecondaryButton {
+                    text: catalog.i18nc("@action:button","Cancel")
+                    onClicked: {
+                        manualPrinterDialog.reject()
+                        manualPrinterDialog.hide()
+                    }
                 }
-            },
-            Cura.PrimaryButton {
-                text: catalog.i18nc("@action:button", "OK")
-                onClicked: {
-                    manualPrinterDialog.accept()
-                    manualPrinterDialog.hide()
+
+                Cura.PrimaryButton {
+                    text: catalog.i18nc("@action:button", "OK")
+                    onClicked: {
+                        manualPrinterDialog.accept()
+                        manualPrinterDialog.hide()
+                    }
+                    enabled: manualPrinterDialog.addressText.trim() != ""
                 }
-                enabled: manualPrinterDialog.addressText.trim() != ""
             }
-        ]
+        }
     }
 }
