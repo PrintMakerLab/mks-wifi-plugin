@@ -99,14 +99,19 @@ Component
                     Row {
                         spacing: UM.Theme.getSize("default_margin").width
 
+                        anchors.top: printerControlBoxSpacer.bottom
+
                         anchors
                         {
-                            top: printerControlBoxSpacer.bottom
+                            //top: parent.top
+                            left: parent.left
+                            //had not found how to insert this into Cura's qml, so took the summ of sizes from Cura's sources
+                            leftMargin: Math.floor(parent.width * 0.2) + UM.Theme.getSize("default_margin").width + UM.Theme.getSize("default_lining").width + UM.Theme.getSize("setting_control").height
                         }
+
 
                         Column {
                             enabled: connectedDevice != null && connectedDevice.acceptsCommands && (activePrintJob == null || !(activePrintJob.state == "printing" || activePrintJob.state == "resuming" || activePrintJob.state == "pausing" || activePrintJob.state == "error" || activePrintJob.state == "offline"))
-
                             spacing: UM.Theme.getSize("default_lining").height
                             Label {
                                 text: catalog.i18nc("@label", "E0")
@@ -121,16 +126,16 @@ Component
                             Button {
                                 icon.source: UM.Theme.getIcon("ChevronSingleUp");
                                 // style: UM.Theme.styles.monitor_button_style
-                                width: height
-                                height: UM.Theme.getSize("setting_control").height
+                                width: height/2
+                                height: UM.Theme.getSize("setting_control").height*2
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
                             }
                             Button {
                                 icon.source: UM.Theme.getIcon("ChevronSingleDown");
                                 // style: UM.Theme.styles.monitor_button_style
-                                width: height
-                                height: UM.Theme.getSize("setting_control").height
+                                width: height/2
+                                height: UM.Theme.getSize("setting_control").height*2
 
                                 onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
                             }
@@ -246,7 +251,7 @@ Component
                     anchors.top: percentageLabelSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("progressbar").height +  Math.round(UM.Theme.getSize("thick_margin").height / 4) + UM.Theme.getSize("thick_margin").height
                     anchors.right: parent.right
-                    anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
+                    anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_").width
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // style: UM.Theme.styles.print_setup_action_button
