@@ -99,11 +99,9 @@ Component
                     Row {
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        anchors.top: printerControlBoxSpacer.bottom
-
                         anchors
                         {
-                            //top: parent.top
+                            top: printerControlBoxSpacer.bottom
                             left: parent.left
                             //had not found how to insert this into Cura's qml, so took the summ of sizes from Cura's sources
                             leftMargin: Math.floor(parent.width * 0.2) + UM.Theme.getSize("default_margin").width + UM.Theme.getSize("default_lining").width + UM.Theme.getSize("setting_control").height
@@ -251,7 +249,7 @@ Component
                     anchors.top: percentageLabelSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("progressbar").height +  Math.round(UM.Theme.getSize("thick_margin").height / 4) + UM.Theme.getSize("thick_margin").height
                     anchors.right: parent.right
-                    anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_").width
+                    anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // style: UM.Theme.styles.print_setup_action_button
