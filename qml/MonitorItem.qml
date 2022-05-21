@@ -250,7 +250,7 @@ Component
                     anchors.top: percentageLabelSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("progressbar").height +  Math.round(UM.Theme.getSize("thick_margin").height / 4) + UM.Theme.getSize("thick_margin").height
                     anchors.right: parent.right
-                    anchors.rightMargin: UM.Theme.getSize("default_margin").width + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
+                    anchors.rightMargin: UM.Theme.getSize("default_margin").width * 2.5 + pauseResumeButtonSpacer.width + UM.Theme.getSize("default_margin").width + abortButtonSpacer.width + UM.Theme.getSize("thick_margin").width
 
                     height: UM.Theme.getSize("save_button_save_to_button").height
                     // style: UM.Theme.styles.print_setup_action_button
