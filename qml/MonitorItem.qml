@@ -23,7 +23,6 @@ Component
         property var activePrintJob: printerModel != null ? printerModel.activePrintJob: null
         property var _buttonSize: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
 
-        SystemPalette { id: palette }
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
         UM.I18nCatalog { id: cura_catalog; name: "cura"}
 
@@ -260,32 +259,31 @@ Component
         UM.Dialog {
             id: sdDialog
             title: catalog.i18nc("@title:window", "Open file(s)")
-            Column{
+
+            Column {
                 spacing: UM.Theme.getSize("default_margin").height
-                ScrollView{
+
+                Cura.ScrollView {
                     id: objectListContainer
                     width: sdDialog.width-UM.Theme.getSize("default_margin").height*1.5
                     height: sdDialog.height-btnPrint.height*2
-                    Rectangle
-                    {
-                        parent: viewport
-                        anchors.fill: parent
-                        color: palette.light
-                    }
-                    ListView{
+
+                    ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                    ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
+                    ListView {
                         id: listview
                         model: Cura.MachineManager.printerOutputDevices[0].getSDFiles
                         currentIndex: -1
+
                         onModelChanged:
                         {
                             currentIndex = -1;
                         }
-                        onCurrentIndexChanged:
-                        {
-                        }
+
                         delegate: Rectangle {
                             height: childrenRect.height
-                            color: ListView.isCurrentItem ? palette.highlight : index % 2 ? palette.base : palette.alternateBase
+                            color: ListView.isCurrentItem ? UM.Theme.getColor("button_active") : UM.Theme.getColor("button")
                             width: objectListContainer.width
                             Label
                             {
@@ -293,7 +291,7 @@ Component
                                 anchors.leftMargin: UM.Theme.getSize("default_margin").width
                                 anchors.right: parent.right
                                 text: listview.model[index]
-                                color: parent.ListView.isCurrentItem ? palette.highlightedText : palette.text
+                                color: UM.Theme.getColor("text")
                                 elide: Text.ElideRight
                             }
 
@@ -310,33 +308,37 @@ Component
                         }
                     }
                 }
-            }
-            rightButtons: [
-                Button {
-                    text: catalog.i18nc("@action:button","Delete")
-                    enabled: listview.currentIndex != -1
-                    onClicked:
-                    {
-                        if(listview.currentIndex != -1)
+
+                Row {
+                    anchors.right: parent.right
+                    spacing: UM.Theme.getSize("default_margin").height
+
+                    Cura.SecondaryButton {
+                        text: catalog.i18nc("@action:button","Delete")
+                        enabled: listview.currentIndex != -1
+                        onClicked:
                         {
-                            Cura.MachineManager.printerOutputDevices[0].deleteSDFiles(listview.model[listview.currentIndex])
+                            if(listview.currentIndex != -1)
+                            {
+                                Cura.MachineManager.printerOutputDevices[0].deleteSDFiles(listview.model[listview.currentIndex])
+                            }
                         }
                     }
-                },
-                Button {
-                    id: btnPrint
-                    text: catalog.i18nc("@action:button", "Print")
-                    enabled: listview.currentIndex != -1
-                    onClicked:
-                    {
-                        if(listview.currentIndex != -1)
+                    Cura.SecondaryButton {
+                        id: btnPrint
+                        text: catalog.i18nc("@action:button", "Print")
+                        enabled: listview.currentIndex != -1
+                        onClicked:
                         {
-                            sdDialog.hide()
-                            Cura.MachineManager.printerOutputDevices[0].printSDFiles(listview.model[listview.currentIndex])
+                            if(listview.currentIndex != -1)
+                            {
+                                sdDialog.hide()
+                                Cura.MachineManager.printerOutputDevices[0].printSDFiles(listview.model[listview.currentIndex])
+                            }
                         }
                     }
                 }
-            ]
+            }
         }
 
         UM.Dialog {

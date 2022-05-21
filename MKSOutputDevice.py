@@ -560,7 +560,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @ pyqtProperty("QVariantList", notify=sdFilesChanged)
     def getSDFiles(self):
-        return list(self.sdFiles)
+        return self.sdFiles
 
     def _setTargetBedTemperature(self, temperature):
         if not self._updateTargetBedTemperature(temperature):

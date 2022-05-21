@@ -287,10 +287,16 @@ Cura.MachineAction {
 
                         enabled: mksWifiSupport.checked;
 
+                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
                         ListView
                         {
                             id: listview
                             model: manager.foundDevices
+                            width: parent.width
+                            currentIndex: -1
+
                             onModelChanged: {
                                 var printerAddress = manager.getCurrentAddress();
                                 for(var i = 0; i < model.length; i++) {
@@ -302,14 +308,12 @@ Cura.MachineAction {
                                 }
                                 currentIndex = -1;
                             }
-                            width: parent.width
-                            currentIndex: -1
                             onCurrentIndexChanged: {
                                 base.selectedPrinter = listview.model[currentIndex];
                             }
                             Component.onCompleted: manager.startDiscovery()
-                            delegate: Rectangle
-                            {
+                            
+                            delegate: Rectangle {
                                 height: childrenRect.height
                                 color: ListView.isCurrentItem ? UM.Theme.getColor("button_active") : UM.Theme.getColor("button")
                                 width: parent.width
