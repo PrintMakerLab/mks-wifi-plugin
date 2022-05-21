@@ -1,14 +1,14 @@
 // Copyright (c) 2019
 // MKSPlugin is released under the terms of the AGPLv3 or higher.
 
-import QtQuick 6.0
-import UM 1.6 as UM
-import Cura 1.7 as Cura
+import QtQuick 2.2
+import UM 1.5 as UM
+import Cura 1.0 as Cura
 import MKSPlugin 1.0 as MKSPlugin
 
-import QtQuick.Controls 6.0
-import QtQuick.Layouts 6.0
-import QtQuick.Window 6.0
+import QtQuick.Controls 2.1
+import QtQuick.Layouts 2.1
+import QtQuick.Window 2.1
 
 import "."
 
@@ -120,23 +120,24 @@ Component
                                 verticalAlignment: Text.AlignVCenter
                                 horizontalAlignment: Text.AlignHCenter
                             }
-
-                            Button {
-                                icon.source: UM.Theme.getIcon("ChevronSingleUp");
-                                // style: UM.Theme.styles.monitor_button_style
-                                width: height/2
-                                height: UM.Theme.getSize("setting_control").height*2
-
-                                onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
-                            }
-                            Button {
-                                icon.source: UM.Theme.getIcon("ChevronSingleDown");
-                                // style: UM.Theme.styles.monitor_button_style
-                                width: height/2
-                                height: UM.Theme.getSize("setting_control").height*2
-
-                                onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
-                            }
+                Cura.SecondaryButton
+                {
+                    Layout.row: 1
+                    Layout.column: 1
+                    Layout.preferredWidth: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
+                    Layout.preferredHeight: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
+                    iconSource: UM.Theme.getIcon("ChevronSingleUp")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0up()
+                }
+                Cura.SecondaryButton
+                {
+                    Layout.row: 1
+                    Layout.column: 1
+                    Layout.preferredWidth: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
+                    Layout.preferredHeight: UM.Theme.getSize("setting_control").height + UM.Theme.getSize("thin_margin").height
+                    iconSource: UM.Theme.getIcon("ChevronSingleDown")
+                    onClicked: Cura.MachineManager.printerOutputDevices[0].e0down()
+                }
                         }
 
                         Column {
