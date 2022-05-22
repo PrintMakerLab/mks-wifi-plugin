@@ -283,7 +283,7 @@ Component
 
                         delegate: Rectangle {
                             height: childrenRect.height
-                            color: ListView.isCurrentItem ? UM.Theme.getColor("button_active") : UM.Theme.getColor("button")
+                            color: ListView.isCurrentItem ? UM.Theme.getColor("background_3") : "transparent"
                             width: objectListContainer.width
                             Label
                             {
