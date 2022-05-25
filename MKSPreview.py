@@ -2,7 +2,7 @@
 # MKS Plugin is released under the terms of the AGPLv3 or higher.
 from UM.Application import Application
 from cura.Snapshot import Snapshot
-from PyQt6.QtCore import Qt
+from PyQt6 import QtCore
 from UM.Logger import Logger
 
 from . import Constants
@@ -20,7 +20,7 @@ def add_leading_zeros(rgb):
 
 def add_screenshot_str(img, width, height, img_type):
     result = ""
-    b_image = img.scaled(width, height, Qt.KeepAspectRatio)
+    b_image = img.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
     img_size = b_image.size()
     result += img_type
     datasize = 0

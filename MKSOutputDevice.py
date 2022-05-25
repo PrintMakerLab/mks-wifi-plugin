@@ -146,7 +146,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._ischanging = False
 
         self._update_timer = QTimer()
-        # TODO; Add preference for update interval
         self._update_timer.setInterval(2000)
         self._update_timer.setSingleShot(False)
         self._update_timer.timeout.connect(self._update)
@@ -560,7 +559,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @ pyqtProperty("QVariantList", notify=sdFilesChanged)
     def getSDFiles(self):
-        return list(self.sdFiles)
+        return self.sdFiles
 
     def _setTargetBedTemperature(self, temperature):
         if not self._updateTargetBedTemperature(temperature):

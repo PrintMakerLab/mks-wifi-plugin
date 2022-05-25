@@ -242,10 +242,9 @@ Cura.MachineAction {
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: addButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Add");
                             enabled: mksWifiSupport.checked;
                             onClicked:
@@ -254,10 +253,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: editButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Edit")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked:
@@ -266,10 +264,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: removeButton
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Remove")
                             enabled: mksWifiSupport.checked && base.selectedPrinter != null
                             onClicked: {
@@ -290,10 +287,16 @@ Cura.MachineAction {
 
                         enabled: mksWifiSupport.checked;
 
+                        ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
+                        ScrollBar.vertical.policy: ScrollBar.AsNeeded
+
                         ListView
                         {
                             id: listview
                             model: manager.foundDevices
+                            width: parent.width
+                            currentIndex: -1
+
                             onModelChanged: {
                                 var printerAddress = manager.getCurrentAddress();
                                 for(var i = 0; i < model.length; i++) {
@@ -305,16 +308,14 @@ Cura.MachineAction {
                                 }
                                 currentIndex = -1;
                             }
-                            width: parent.width
-                            currentIndex: -1
                             onCurrentIndexChanged: {
                                 base.selectedPrinter = listview.model[currentIndex];
                             }
                             Component.onCompleted: manager.startDiscovery()
-                            delegate: Rectangle
-                            {
+                            
+                            delegate: Rectangle {
                                 height: childrenRect.height
-                                color: ListView.isCurrentItem ? UM.Theme.getColor("button_active") : UM.Theme.getColor("button")
+                                color: ListView.isCurrentItem ? UM.Theme.getColor("background_3") : "transparent"
                                 width: parent.width
                                 Label
                                 {
@@ -345,10 +346,9 @@ Cura.MachineAction {
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: connectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Connect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {
@@ -372,10 +372,9 @@ Cura.MachineAction {
                             }
                         }
 
-                        Button {
+                        Cura.SecondaryButton {
                             id: disconnectbtn
                             height: UM.Theme.getSize("setting_control").height
-                            // style: UM.Theme.styles.print_setup_action_button
                             text: catalog.i18nc("@action:button", "Disconnect")
                             enabled: {
                                 if (!mksWifiSupport.checked) {
@@ -646,24 +645,28 @@ Cura.MachineAction {
                     regularExpression: /[a-zA-Z0-9\.\-\_]*/
                 }
             }
-        }
 
-        rightButtons: [
-            Cura.SecondaryButton {
-                text: catalog.i18nc("@action:button","Cancel")
-                onClicked: {
-                    manualPrinterDialog.reject()
-                    manualPrinterDialog.hide()
+            Row {
+                anchors.right: parent.right
+                spacing: UM.Theme.getSize("default_margin").height
+
+                Cura.SecondaryButton {
+                    text: catalog.i18nc("@action:button","Cancel")
+                    onClicked: {
+                        manualPrinterDialog.reject()
+                        manualPrinterDialog.hide()
+                    }
                 }
-            },
-            Cura.PrimaryButton {
-                text: catalog.i18nc("@action:button", "OK")
-                onClicked: {
-                    manualPrinterDialog.accept()
-                    manualPrinterDialog.hide()
+
+                Cura.PrimaryButton {
+                    text: catalog.i18nc("@action:button", "OK")
+                    onClicked: {
+                        manualPrinterDialog.accept()
+                        manualPrinterDialog.hide()
+                    }
+                    enabled: manualPrinterDialog.addressText.trim() != ""
                 }
-                enabled: manualPrinterDialog.addressText.trim() != ""
             }
-        ]
+        }
     }
 }
