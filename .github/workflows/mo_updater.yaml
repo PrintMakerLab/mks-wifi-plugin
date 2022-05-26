@@ -2,6 +2,9 @@ name: "Update i18n .mo"
 
 on:
   push:
+    branches-ignore:
+      - develop
+      - 'release-**'
     paths:
       - 'i18n/**/mksplugin.po'
 

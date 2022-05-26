@@ -1,6 +1,10 @@
 name: "Update i18n"
 
-on: push
+on:
+  push:
+    branches-ignore:
+      - develop
+      - 'release-**'
 
 jobs:
   update-i18n:
