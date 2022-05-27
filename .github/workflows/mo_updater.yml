@@ -1,0 +1,30 @@
+name: "Update i18n .mo"
+
+on:
+  push:
+    branches-ignore:
+      - develop
+      - 'release-**'
+    paths:
+      - 'i18n/**/mksplugin.po'
+
+jobs:
+  update-i18n-mo:
+    name: "Update i18n .mo"
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - uses: ConorMacBride/install-package@v1
+        with:
+          apt: gettext
+      - uses: actions/checkout@v3
+
+      - name: Ensure LC_MESSAGES folder exists
+        run: find i18n -maxdepth 1 -name '*_*' -exec mkdir -p {}/LC_MESSAGES \;
+
+      - name: Compile .mo files
+        run: find i18n -maxdepth 1 -name '*_*' -exec msgfmt {}/mksplugin.po -o {}/LC_MESSAGES/mksplugin.mo \;
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: .mo updated
