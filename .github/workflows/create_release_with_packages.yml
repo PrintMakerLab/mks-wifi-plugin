@@ -3,24 +3,33 @@ name: "Cura-plugin-package release"
 on:
   push:
     tags:
-      - "*"
+      - "*.*.*"
 
 jobs:
   create-curapackages:
-    name: "Tagged Release"
+    name: "New Release"
     runs-on: "ubuntu-latest"
 
     steps:
       - uses: actions/checkout@v3
         with:
           path: "build"
-      - uses: jeredian/cura-make-plugin-package@main
+
+      - name: Set release version
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF##*/}
+
+      - name: "Build"
+        uses: jeredian/cura-make-plugin-package@main
         with:
           source_folder: "build"
           package_info_path: "build/.github/workflows/package.json"
-      - uses: marvinpinto/action-automatic-releases@latest
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: false
-          files: |
-            *.curapackage
+
+      - name: "Upload release binary"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          cd build
+          files="$(find ../ -type f -name "*.curapackage" -printf "-a %p ")"
+          hub release edit $files -m "" "$RELEASE_VERSION"
