@@ -593,8 +593,10 @@ Cura.MachineAction {
 
         title: catalog.i18nc("@title:window", "Adding a new printer")
 
-        width: 450 * screenScaleFactor
-        height: 150 * screenScaleFactor
+        minimumWidth: 450 * screenScaleFactor
+        minimumHeight: 150 * screenScaleFactor
+        width: minimumWidth
+        height: minimumHeight
 
         signal showDialog(string address)
         onShowDialog: {
