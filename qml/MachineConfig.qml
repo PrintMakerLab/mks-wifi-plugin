@@ -111,14 +111,12 @@ Cura.MachineAction {
                             right: parent.right
                         }
 
-                        Label {
+                        UM.Label {
                             width: Math.round(parent.width * 0.5)
                             height: mksWifiSupport.height
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "WiFi support")
-                            font: UM.Theme.getFont("default")
-                            color: UM.Theme.getColor("text")
 
                             enabled: mksSupport.checked
                         }
@@ -145,14 +143,12 @@ Cura.MachineAction {
                             right: parent.right
                         }
 
-                        Label {
+                        UM.Label {
                             width: Math.round(parent.width * 0.5)
                             height: maxFilenameLenInput.height
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "Maximum file name length (0..255, 30 by default)")
-                            font: UM.Theme.getFont("default")
-                            color: UM.Theme.getColor("text")
 
                             enabled: mksSupport.checked
                         }
@@ -183,14 +179,12 @@ Cura.MachineAction {
                             right: parent.right
                         }
 
-                        Label {
+                        UM.Label {
                             width: Math.round(parent.width * 0.5)
                             height: autoFileRenaming.height
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "Auto file renaming (if name is too long or already exists)")
-                            font: UM.Theme.getFont("default")
-                            color: UM.Theme.getColor("text")
 
                             enabled: mksSupport.checked
                         }
@@ -214,14 +208,12 @@ Cura.MachineAction {
                             right: parent.right
                         }
 
-                        Label {
+                        UM.Label {
                             width: Math.round(parent.width * 0.5)
                             height: printAutostart.height
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "Start printing after file upload")
-                            font: UM.Theme.getFont("default")
-                            color: UM.Theme.getColor("text")
 
                             enabled: mksSupport.checked
                         }
@@ -411,14 +403,12 @@ Cura.MachineAction {
                     width: parent.width
                     columns: 2
 
-                    Label {
+                    UM.Label {
                         width: Math.round(parent.width * 0.5)
                         height: mksScreenshotSupport.height
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Screenshot support")
-                        font: UM.Theme.getFont("default")
-                        color: UM.Theme.getColor("text")
 
                         enabled: mksSupport.checked
                     }
@@ -441,14 +431,12 @@ Cura.MachineAction {
                         enabled: mksSupport.checked
                     }
 
-                    Label {
+                    UM.Label {
                         width: Math.round(parent.width * 0.5)
                         height: screenshotComboBox.height
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Printer model")
-                        font: UM.Theme.getFont("default")
-                        color: UM.Theme.getColor("text")
 
                         enabled: mksScreenshotSupport.checked
                     }
@@ -478,14 +466,12 @@ Cura.MachineAction {
                         enabled: mksScreenshotSupport.checked
                     }
 
-                    Label {
+                    UM.Label {
                         width: Math.round(parent.width * 0.5)
                         height: simageTextInput.height
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Simage")
-                        font: UM.Theme.getFont("default")
-                        color: UM.Theme.getColor("text")
 
                         enabled: mksScreenshotSupport.checked
                     }
@@ -515,14 +501,12 @@ Cura.MachineAction {
                         }
                     }
 
-                    Label {
+                    UM.Label {
                         width: Math.round(parent.width * 0.5)
                         height: gimageTextInput.height
                         verticalAlignment: Text.AlignVCenter
                         wrapMode: Text.WordWrap
                         text: catalog.i18nc("@label", "Gimage")
-                        font: UM.Theme.getFont("default")
-                        color: UM.Theme.getColor("text")
 
                         enabled: mksScreenshotSupport.checked
                     }
@@ -564,11 +548,14 @@ Cura.MachineAction {
         width: parent.width
         spacing: UM.Theme.getSize("default_margin").height
 
-        Label {
+        UM.Label {
             width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width * 2
-            wrapMode: Text.WordWrap
+            height: mksSupport.height
+            verticalAlignment: Text.AlignVCenter
+            wrapMode: Text.WordWrap 
             text: catalog.i18nc("@label", "MKS WiFi Plugin is active for this printer")
         }
+
         UM.CheckBox {
             id: mksSupport
             checked: manager.pluginEnabled()
@@ -606,8 +593,8 @@ Cura.MachineAction {
 
         title: catalog.i18nc("@title:window", "Adding a new printer")
 
-        minimumWidth: 400 * screenScaleFactor
-        minimumHeight: 130 * screenScaleFactor
+        minimumWidth: 450 * screenScaleFactor
+        minimumHeight: 150 * screenScaleFactor
         width: minimumWidth
         height: minimumHeight
 
@@ -626,45 +613,61 @@ Cura.MachineAction {
             manager.setPrinter(prevAddress, addressText)
         }
 
-        Column {
+        Cura.RoundedRectangle {
             anchors.fill: parent
-            spacing: UM.Theme.getSize("default_margin").height
+            cornerSide: Cura.RoundedRectangle.Direction.Down
+            border.color: UM.Theme.getColor("lining")
+            border.width: UM.Theme.getSize("default_lining").width
+            radius: UM.Theme.getSize("default_radius").width
+            color: UM.Theme.getColor("main_background")
 
-            Label {
-                text: catalog.i18nc("@alabel","Enter the IP address or hostname of your printer on the network.")
-                width: parent.width
-                wrapMode: Text.WordWrap
-            }
-
-            TextField {
-                id: addressField
-                width: parent.width
-                maximumLength: 40
-                validator: RegularExpressionValidator
+            Column {
+                anchors
                 {
-                    regularExpression: /[a-zA-Z0-9\.\-\_]*/
+                    top: parent.top
+                    left: parent.left
+                    right: parent.right
+                    bottom: parent.bottom
+                    margins: UM.Theme.getSize("default_margin").width
                 }
-            }
-
-            Row {
-                anchors.right: parent.right
                 spacing: UM.Theme.getSize("default_margin").height
 
-                Cura.SecondaryButton {
-                    text: catalog.i18nc("@action:button","Cancel")
-                    onClicked: {
-                        manualPrinterDialog.reject()
-                        manualPrinterDialog.hide()
+                UM.Label {
+                    text: catalog.i18nc("@alabel","Enter the IP address or hostname of your printer on the network.")
+                    width: parent.width
+                    wrapMode: Text.WordWrap
+                }
+
+                Cura.TextField {
+                    id: addressField
+                    width: parent.width
+                    maximumLength: 40
+                    validator: RegularExpressionValidator
+                    {
+                        regularExpression: /[a-zA-Z0-9\.\-\_]*/
                     }
                 }
 
-                Cura.PrimaryButton {
-                    text: catalog.i18nc("@action:button", "OK")
-                    onClicked: {
-                        manualPrinterDialog.accept()
-                        manualPrinterDialog.hide()
+                Row {
+                    anchors.right: parent.right
+                    spacing: UM.Theme.getSize("default_margin").height
+
+                    Cura.SecondaryButton {
+                        text: catalog.i18nc("@action:button","Cancel")
+                        onClicked: {
+                            manualPrinterDialog.reject()
+                            manualPrinterDialog.hide()
+                        }
                     }
-                    enabled: manualPrinterDialog.addressText.trim() != ""
+
+                    Cura.PrimaryButton {
+                        text: catalog.i18nc("@action:button", "OK")
+                        onClicked: {
+                            manualPrinterDialog.accept()
+                            manualPrinterDialog.hide()
+                        }
+                        enabled: manualPrinterDialog.addressText.trim() != ""
+                    }
                 }
             }
         }
