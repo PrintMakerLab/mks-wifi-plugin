@@ -21,14 +21,53 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def __init__(self):
         super().__init__()
         self.init_translations()
+        self.settings_clean_up = True
         self._current_printer = None
         self._error_message = None
 
-        Application.getInstance().globalContainerStackChanged.connect(self.mks_current_ip_recheck)
+        Application.getInstance().globalContainerStackChanged.connect(self.on_global_container_stack_changed)
 
         Application.getInstance().getOutputDeviceManager().writeStarted.connect(MKSPreview.add_preview)
 
     _translations = {}
+    
+    
+    def on_global_container_stack_changed(self):
+        if self.settings_clean_up:     
+            self.cleanup_old_settings()
+            self.settings_clean_up = False
+        self.mks_current_ip_recheck()
+    
+    def cleanup_old_settings(self):
+        try:
+            Logger.log("d", "Starting clean up old settings.")
+            preferences = Application.getInstance().getPreferences()
+            # Clean up savepath settings 
+            if preferences.getValue("mkswifi/savepath") is not None:
+                Logger.log("d", "Clean up savepath.")
+                preferences.removePreference("mkswifi/savepath")
+                
+            # Clean up old manual_instances settings        
+            if preferences.getValue("mkswifi/manual_instances") is not None:
+                Logger.log("d", "Clean up manual_instances.")
+                preferences.removePreference("mkswifi/manual_instances")
+                
+            # Clean up old autoprint settings
+            if preferences.getValue("mkswifi/autoprint") is not None:
+                Logger.log("d", "Clean up autoprint.")
+                preferences.removePreference("mkswifi/autoprint")
+            
+            active_machine = Application.getInstance().getGlobalContainerStack()
+            if active_machine:
+                meta_data = active_machine.getMetaData()                    
+                # Clean up old mks_network_key settings
+                if "mks_network_key" in meta_data:
+                    Logger.log("d", "Clean up mks_network_key.")
+                    active_machine.setMetaDataEntry("mks_network_key", None)
+                    active_machine.removeMetaDataEntry("mks_network_key")
+            Logger.log("d", "Clean up old settings complited.")
+        except Exception as e:
+            Logger.log("w", "Could not clean up old settings.: "+str(e))
 
     def init_translations(self):
         self._translations = {
