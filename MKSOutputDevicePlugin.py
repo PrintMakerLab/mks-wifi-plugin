@@ -21,7 +21,6 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     def __init__(self):
         super().__init__()
         self.init_translations()
-        self.settings_clean_up = True
         self._current_printer = None
         self._error_message = None
 
@@ -33,9 +32,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     
     
     def on_global_container_stack_changed(self):
-        if self.settings_clean_up:     
-            self.cleanup_old_settings()
-            self.settings_clean_up = False
+        self.cleanup_old_settings()
         self.mks_current_ip_recheck()
     
     def cleanup_old_settings(self):
