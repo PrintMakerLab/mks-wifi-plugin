@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-06-08 16:55+0000\n"
-"PO-Revision-Date: 2022-01-12 22:15+0300\n"
+"PO-Revision-Date: 2022-06-08 20:00+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
@@ -338,13 +338,12 @@ msgstr "Сетевые настройки"
 #: qml/MachineConfig.qml:59
 msgctxt "@title:tab"
 msgid "Preview settings"
-msgstr "Настройка изображения"
+msgstr "Настройки изображения"
 
 #: qml/MachineConfig.qml:60
-#, fuzzy
 msgctxt "@title:tab"
 msgid "Advanced settings"
-msgstr "Настройка изображения"
+msgstr "Дополнительные настройки"
 
 #: qml/MachineConfig.qml:120
 msgctxt "@label"
@@ -406,12 +405,12 @@ msgstr ""
 #: qml/MachineConfig.qml:583
 msgctxt "@label"
 msgid "Start printing after file upload"
-msgstr ""
+msgstr "Начать печать после передачи файла"
 
 #: qml/MachineConfig.qml:611
 msgctxt "@label"
 msgid "Switch to Monitor Tab after file upload"
-msgstr ""
+msgstr "Переключить на вкладку “Монитор” после передачи файла"
 
 #: qml/MachineConfig.qml:644
 msgctxt "@label"
