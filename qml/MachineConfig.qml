@@ -592,7 +592,7 @@ Cura.MachineAction {
 
                         UM.Label {
                             width: Math.round(parent.width * 0.5)
-                            height: monitorTabAutoopen.height
+                            height: monitorTabAutoOpen.height
                             verticalAlignment: Text.AlignVCenter
                             wrapMode: Text.WordWrap
                             text: catalog.i18nc("@label", "Switch to Monitor Tab after file upload")
@@ -600,7 +600,7 @@ Cura.MachineAction {
                             enabled: mksSupport.checked
                         }
                         UM.CheckBox {
-                            id: monitorTabAutoopen
+                            id: monitorTabAutoOpen
                             checked: manager.isMonitorTabAutoOpenEnabled()
 
                             onCheckedChanged: {
