@@ -309,19 +309,6 @@ Cura.MachineAction {
                     spacing: UM.Theme.getSize("default_margin").width
                     width: parent.width
 
-                // Grid {
-                //     id: screenshotUpperBlock
-                //     anchors
-                //     {
-                //         top: parent.top
-                //         left: parent.left
-                //         right: parent.right
-                //         margins: UM.Theme.getSize("default_margin").width
-                //     }
-                //     spacing: UM.Theme.getSize("default_margin").width
-                //     width: parent.width
-                //     columns: 2
-
                     Row {
                         anchors
                         {
