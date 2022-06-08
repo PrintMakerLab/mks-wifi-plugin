@@ -601,10 +601,10 @@ Cura.MachineAction {
                         }
                         UM.CheckBox {
                             id: monitorTabAutoopen
-                            checked: manager.isMonitorTabAutoopenEnabled()
+                            checked: manager.isMonitorTabAutoOpenEnabled()
 
                             onCheckedChanged: {
-                                manager.setMonitorTabAutoopen(monitorTabAutoopen.checked)
+                                manager.setMonitorTabAutoOpen(monitorTabAutoopen.checked)
                             }
 
                             enabled: mksSupport.checked
