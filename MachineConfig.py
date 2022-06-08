@@ -249,6 +249,25 @@ class MachineConfig(MachineAction):
                 global_container_stack.removeMetaDataEntry(Constants.AUTO_PRINT)
 
     @pyqtSlot(result=bool)
+    def isMonitorTabAutoopenEnabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.AUTO_MONITOR_TAB in meta_data:
+                return True
+        return False
+
+    @pyqtSlot(str)
+    def setMonitorTabAutoopen(self, is_auto_open_enabled):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if is_auto_open_enabled == "true":
+                global_container_stack.setMetaDataEntry(Constants.AUTO_MONITOR_TAB, is_auto_open_enabled)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.AUTO_MONITOR_TAB, None)
+                global_container_stack.removeMetaDataEntry(Constants.AUTO_MONITOR_TAB)
+
+    @pyqtSlot(result=bool)
     def supportScreenshot(self):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:

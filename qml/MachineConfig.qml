@@ -57,6 +57,7 @@ Cura.MachineAction {
             clear()
             append({ name: catalog.i18nc("@title:tab", "Network settings") })
             append({ name: catalog.i18nc("@title:tab", "Preview settings") })
+            append({ name: catalog.i18nc("@title:tab", "Advanced settings")})
         }
     }
 
@@ -136,100 +137,6 @@ Cura.MachineAction {
                     }
 
                     Row {
-                        id: maxFilenameLenRow
-                        anchors
-                        {
-                            left: parent.left
-                            right: parent.right
-                        }
-
-                        UM.Label {
-                            width: Math.round(parent.width * 0.5)
-                            height: maxFilenameLenInput.height
-                            verticalAlignment: Text.AlignVCenter
-                            wrapMode: Text.WordWrap
-                            text: catalog.i18nc("@label", "Maximum file name length (0..255, 30 by default)")
-
-                            enabled: mksSupport.checked
-                        }
-                        Cura.TextField {
-                            id: maxFilenameLenInput
-                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
-                            maximumLength: 3
-                            validator: RegularExpressionValidator
-                            {
-                                regularExpression: /^\s*$|^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
-                            }
-
-                            text: manager.getMaxFilenameLen()
-
-                            onEditingFinished: {
-                                manager.setMaxFilenameLen(maxFilenameLenInput.text)
-                            }
-
-                            enabled: mksSupport.checked
-                        }
-                    }
-
-                    Row {
-                        id: autoFileRenamingRow
-                        anchors
-                        {
-                            left: parent.left
-                            right: parent.right
-                        }
-
-                        UM.Label {
-                            width: Math.round(parent.width * 0.5)
-                            height: autoFileRenaming.height
-                            verticalAlignment: Text.AlignVCenter
-                            wrapMode: Text.WordWrap
-                            text: catalog.i18nc("@label", "Auto file renaming (if name is too long or already exists)")
-
-                            enabled: mksSupport.checked
-                        }
-                        UM.CheckBox {
-                            id: autoFileRenaming
-                            checked: manager.isAutoFileRenamingEnabled()
-
-                            onCheckedChanged: {
-                                manager.setAutoFileRenaming(autoFileRenaming.checked)
-                            }
-
-                            enabled: mksSupport.checked
-                        }
-                    }
-
-                    Row {
-                        id: printAutostartRow
-                        anchors
-                        {
-                            left: parent.left
-                            right: parent.right
-                        }
-
-                        UM.Label {
-                            width: Math.round(parent.width * 0.5)
-                            height: printAutostart.height
-                            verticalAlignment: Text.AlignVCenter
-                            wrapMode: Text.WordWrap
-                            text: catalog.i18nc("@label", "Start printing after file upload")
-
-                            enabled: mksSupport.checked
-                        }
-                        UM.CheckBox {
-                            id: printAutostart
-                            checked: manager.isPrintAutostartEnabled()
-
-                            onCheckedChanged: {
-                                manager.setPrintAutostart(printAutostart.checked)
-                            }
-
-                            enabled: mksSupport.checked
-                        }
-                    }
-
-                    Row {
                         id: printerControlRaw
                         width: parent.width
                         spacing: UM.Theme.getSize("default_margin").width
@@ -275,7 +182,7 @@ Cura.MachineAction {
                     Cura.ScrollView {
                         id: objectListContainer
                         width: parent.width
-                        height: networkUpperBlock.height - wifiSupportRow.height - maxFilenameLenRow.height - autoFileRenamingRow.height - printAutostartRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 6
+                        height: networkUpperBlock.height - wifiSupportRow.height - printerControlRaw.height - printerConnectRaw.height - UM.Theme.getSize("default_margin").width * 3
 
                         enabled: mksWifiSupport.checked;
 
@@ -390,7 +297,7 @@ Cura.MachineAction {
             Item {
                 id: screenshotTab
 
-                Grid {
+                Column {
                     id: screenshotUpperBlock
                     anchors
                     {
@@ -401,138 +308,319 @@ Cura.MachineAction {
                     }
                     spacing: UM.Theme.getSize("default_margin").width
                     width: parent.width
-                    columns: 2
 
-                    UM.Label {
-                        width: Math.round(parent.width * 0.5)
-                        height: mksScreenshotSupport.height
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Screenshot support")
+                // Grid {
+                //     id: screenshotUpperBlock
+                //     anchors
+                //     {
+                //         top: parent.top
+                //         left: parent.left
+                //         right: parent.right
+                //         margins: UM.Theme.getSize("default_margin").width
+                //     }
+                //     spacing: UM.Theme.getSize("default_margin").width
+                //     width: parent.width
+                //     columns: 2
 
-                        enabled: mksSupport.checked
-                    }
-                    UM.CheckBox {
-                        id: mksScreenshotSupport
-                        checked: printerSupportScreenshots
-
-                        onCheckedChanged: {
-                            if (!mksScreenshotSupport.checked) {
-                                manager.setSimage("")
-                                manager.setGimage("")
-                                manager.setScreenshotIndex("")
-                                screenshotComboBox.currentIndex = 0
-                            }
-                            simageTextInput.text = manager.getSimage()
-                            gimageTextInput.text = manager.getGimage()
-                            screenshotComboBox.currentIndex = printerScreenshotIndex
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
                         }
 
-                        enabled: mksSupport.checked
-                    }
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: mksScreenshotSupport.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Screenshot support")
 
-                    UM.Label {
-                        width: Math.round(parent.width * 0.5)
-                        height: screenshotComboBox.height
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Printer model")
+                            enabled: mksSupport.checked
+                        }
+                        UM.CheckBox {
+                            id: mksScreenshotSupport
+                            checked: printerSupportScreenshots
 
-                        enabled: mksScreenshotSupport.checked
-                    }
-                    Cura.ComboBox {
-                        id: screenshotComboBox
-                        width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
-                        height: mksSupport.height
-
-                        textRole: "key"
-
-                        model: printerScreenshotSizesList
-
-                        onCurrentIndexChanged:
-                        {
-                            if (mksScreenshotSupport.checked) {
-                                var currentValue = model[screenshotComboBox.currentIndex].key
-                                if (currentValue != catalog.i18nc("@label", "Custom")){
-                                    var settings = manager.getScreenshotSettings(currentValue)
-                                    manager.setSimage(settings.simage)
-                                    manager.setGimage(settings.gimage)
+                            onCheckedChanged: {
+                                if (!mksScreenshotSupport.checked) {
+                                    manager.setSimage("")
+                                    manager.setGimage("")
+                                    manager.setScreenshotIndex("")
+                                    screenshotComboBox.currentIndex = 0
                                 }
                                 simageTextInput.text = manager.getSimage()
                                 gimageTextInput.text = manager.getGimage()
-                                manager.setScreenshotIndex(currentIndex)
+                                screenshotComboBox.currentIndex = printerScreenshotIndex
                             }
+
+                            enabled: mksSupport.checked
                         }
-                        enabled: mksScreenshotSupport.checked
                     }
 
-                    UM.Label {
-                        width: Math.round(parent.width * 0.5)
-                        height: simageTextInput.height
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Simage")
-
-                        enabled: mksScreenshotSupport.checked
-                    }
-                    Cura.TextField {
-                        id: simageTextInput
-                        width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
-                        maximumLength: 5
-                        validator: RegularExpressionValidator {
-                            regularExpression: /[0-9]*/
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
                         }
 
-                        text: manager.getSimage()
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: screenshotComboBox.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Printer model")
 
-                        onEditingFinished: {
-                            if (mksScreenshotSupport.checked) {
-                                manager.setSimage(simageTextInput.text)
-                            }
+                            enabled: mksScreenshotSupport.checked
                         }
+                        Cura.ComboBox {
+                            id: screenshotComboBox
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            height: mksSupport.height
 
-                        enabled: {
-                            if (mksScreenshotSupport.checked) {
-                                if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
-                                    return true
+                            textRole: "key"
+
+                            model: printerScreenshotSizesList
+
+                            onCurrentIndexChanged:
+                            {
+                                if (mksScreenshotSupport.checked) {
+                                    var currentValue = model[screenshotComboBox.currentIndex].key
+                                    if (currentValue != catalog.i18nc("@label", "Custom")){
+                                        var settings = manager.getScreenshotSettings(currentValue)
+                                        manager.setSimage(settings.simage)
+                                        manager.setGimage(settings.gimage)
+                                    }
+                                    simageTextInput.text = manager.getSimage()
+                                    gimageTextInput.text = manager.getGimage()
+                                    manager.setScreenshotIndex(currentIndex)
                                 }
                             }
-                            return false
+                            enabled: mksScreenshotSupport.checked
                         }
                     }
 
-                    UM.Label {
-                        width: Math.round(parent.width * 0.5)
-                        height: gimageTextInput.height
-                        verticalAlignment: Text.AlignVCenter
-                        wrapMode: Text.WordWrap
-                        text: catalog.i18nc("@label", "Gimage")
-
-                        enabled: mksScreenshotSupport.checked
-                    }
-                    Cura.TextField {
-                        id: gimageTextInput
-                        width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
-                        maximumLength: 5
-                        validator: RegularExpressionValidator {
-                            regularExpression: /[0-9]*/
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
                         }
 
-                        text: manager.getGimage()
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: simageTextInput.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Simage")
 
-                        onEditingFinished: {
-                            if (mksScreenshotSupport.checked) {
-                                manager.setGimage(gimageTextInput.text)
+                            enabled: mksScreenshotSupport.checked
+                        }
+                        Cura.TextField {
+                            id: simageTextInput
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 5
+                            validator: RegularExpressionValidator {
+                                regularExpression: /[0-9]*/
                             }
-                        }
 
-                        enabled: {
-                            if (mksScreenshotSupport.checked) {
-                                if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
-                                    return true
+                            text: manager.getSimage()
+
+                            onEditingFinished: {
+                                if (mksScreenshotSupport.checked) {
+                                    manager.setSimage(simageTextInput.text)
                                 }
                             }
-                            return false
+
+                            enabled: {
+                                if (mksScreenshotSupport.checked) {
+                                    if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
+                                        return true
+                                    }
+                                }
+                                return false
+                            }
+                        }
+                    }
+
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: gimageTextInput.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Gimage")
+
+                            enabled: mksScreenshotSupport.checked
+                        }
+                        Cura.TextField {
+                            id: gimageTextInput
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 5
+                            validator: RegularExpressionValidator {
+                                regularExpression: /[0-9]*/
+                            }
+
+                            text: manager.getGimage()
+
+                            onEditingFinished: {
+                                if (mksScreenshotSupport.checked) {
+                                    manager.setGimage(gimageTextInput.text)
+                                }
+                            }
+
+                            enabled: {
+                                if (mksScreenshotSupport.checked) {
+                                    if (screenshotComboBox.currentText == catalog.i18nc("@label", "Custom")) {
+                                        return true
+                                    }
+                                }
+                                return false
+                            }
+                        }
+                    }
+                }
+            }
+
+            Item {
+                id: settingsTab
+
+                Column {
+                    id: settingsUpperBlock
+                    anchors
+                    {
+                        top: parent.top
+                        left: parent.left
+                        right: parent.right
+                        bottom: parent.bottom
+                        margins: UM.Theme.getSize("default_margin").width
+                    }
+                    spacing: UM.Theme.getSize("default_margin").width
+                    width: parent.width
+
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: maxFilenameLenInput.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Maximum file name length (0..255, 30 by default)")
+
+                            enabled: mksSupport.checked
+                        }
+                        Cura.TextField {
+                            id: maxFilenameLenInput
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 3
+                            validator: RegularExpressionValidator
+                            {
+                                regularExpression: /^\s*$|^(?:[0-1]?[0-9]?[0-9]|2?[0-4]?[0-9]|25[0-5])$/
+                            }
+
+                            text: manager.getMaxFilenameLen()
+
+                            onEditingFinished: {
+                                manager.setMaxFilenameLen(maxFilenameLenInput.text)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: autoFileRenaming.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Auto file renaming (if name is too long or already exists)")
+
+                            enabled: mksSupport.checked
+                        }
+                        UM.CheckBox {
+                            id: autoFileRenaming
+                            checked: manager.isAutoFileRenamingEnabled()
+
+                            onCheckedChanged: {
+                                manager.setAutoFileRenaming(autoFileRenaming.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: printAutostart.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Start printing after file upload")
+
+                            enabled: mksSupport.checked
+                        }
+                        UM.CheckBox {
+                            id: printAutostart
+                            checked: manager.isPrintAutostartEnabled()
+
+                            onCheckedChanged: {
+                                manager.setPrintAutostart(printAutostart.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: monitorTabAutoopen.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Switch to Monitor Tab after file upload")
+
+                            enabled: mksSupport.checked
+                        }
+                        UM.CheckBox {
+                            id: monitorTabAutoopen
+                            checked: manager.isMonitorTabAutoopenEnabled()
+
+                            onCheckedChanged: {
+                                manager.setMonitorTabAutoopen(monitorTabAutoopen.checked)
+                            }
+
+                            enabled: mksSupport.checked
                         }
                     }
                 }
