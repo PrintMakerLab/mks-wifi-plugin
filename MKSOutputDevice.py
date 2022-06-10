@@ -652,8 +652,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return False
 
         Logger.log("d", "mks ready for print")
-        # preferences = Application.getInstance().getPreferences()
-        # if preferences.getValue("mkswifi/uploadingfile"):
         if self._progress_message:
             self.show_error_message(self._translations.get("error_2"))
         else:
@@ -746,7 +744,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 self._progress_message.hide()
                 self._error_message = Message(self._translations.get("file_send_success"))
                 self._error_message.show()
-                CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+                meta_data = Application.getInstance().getGlobalContainerStack().getMetaData()
+                if Constants.AUTO_MONITOR_TAB in meta_data:
+                    CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
             elif bytes_total > 0:
                 new_progress = bytes_sent / bytes_total * 100
                 # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get

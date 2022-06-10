@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-26 14:51+0000\n"
+"POT-Creation-Date: 2022-06-08 16:55+0000\n"
 "PO-Revision-Date: 2022-04-02 15:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -28,18 +28,30 @@ msgctxt "@action:button"
 msgid "No"
 msgstr "Nein"
 
+#: MKSOutputDevicePlugin.py:71
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer connected successfully!"
+msgstr "<message>{0}</message> Drucker erfolgreich verbunden!"
+
+#: MKSOutputDevicePlugin.py:72
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer disconnected!"
+msgstr "<message>{0}</message> Drucker nicht verbunden!"
+
 #: MachineConfig.py:24
 msgctxt "@action"
 msgid "MKS WiFi Plugin"
 msgstr "MKS WLAN Modul"
 
-#: MachineConfig.py:265 qml/MachineConfig.qml:468 qml/MachineConfig.qml:510
-#: qml/MachineConfig.qml:547
+#: MachineConfig.py:284 qml/MachineConfig.qml:390 qml/MachineConfig.qml:438
+#: qml/MachineConfig.qml:481
 msgctxt "@label"
 msgid "Custom"
 msgstr "benutzerdefiniert"
 
-#: MKSOutputDevice.py:170 qml/MachineConfig.qml:654
+#: MKSOutputDevice.py:170 qml/MachineConfig.qml:744
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -181,17 +193,30 @@ msgctxt "@label"
 msgid "All"
 msgstr "Alles"
 
-#: MKSOutputDevicePlugin.py:35
-#, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer connected successfully!"
-msgstr "<message>{0}</message> Drucker erfolgreich verbunden!"
+#: qml/MKSConnectBtn.qml:63
+msgctxt "@action:button"
+msgid "Request Access"
+msgstr "Zugriff anfragen"
 
-#: MKSOutputDevicePlugin.py:36
-#, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer disconnected!"
-msgstr "<message>{0}</message> Drucker nicht verbunden!"
+#: qml/MKSConnectBtn.qml:65
+msgctxt "@info:tooltip"
+msgid "Send access request to the printer"
+msgstr "Sende eine Zugriffsanfrage an den Drucker"
+
+#: qml/MKSConnectBtn.qml:73 qml/MachineConfig.qml:251
+msgctxt "@action:button"
+msgid "Connect"
+msgstr "Verbinden"
+
+#: qml/MKSConnectBtn.qml:75
+msgctxt "@info:tooltip"
+msgid "Connect to a printer"
+msgstr "Verbindungsaufbau mit dem Drucker"
+
+#: qml/MKSConnectBtn.qml:85
+msgctxt "@action:button"
+msgid "Close"
+msgstr "Schließen"
 
 #: qml/MonitorItem.qml:112
 msgctxt "@label"
@@ -303,31 +328,6 @@ msgctxt "@tooltip"
 msgid "Unlock 3D printer motors."
 msgstr "3D-Drucker-Motoren freigeben"
 
-#: qml/MKSConnectBtn.qml:63
-msgctxt "@action:button"
-msgid "Request Access"
-msgstr "Zugriff anfragen"
-
-#: qml/MKSConnectBtn.qml:65
-msgctxt "@info:tooltip"
-msgid "Send access request to the printer"
-msgstr "Sende eine Zugriffsanfrage an den Drucker"
-
-#: qml/MKSConnectBtn.qml:73 qml/MachineConfig.qml:352
-msgctxt "@action:button"
-msgid "Connect"
-msgstr "Verbinden"
-
-#: qml/MKSConnectBtn.qml:75
-msgctxt "@info:tooltip"
-msgid "Connect to a printer"
-msgstr "Verbindungsaufbau mit dem Drucker"
-
-#: qml/MKSConnectBtn.qml:85
-msgctxt "@action:button"
-msgid "Close"
-msgstr "Schließen"
-
 #: qml/MachineConfig.qml:58
 msgctxt "@title:tab"
 msgid "Network settings"
@@ -338,84 +338,95 @@ msgctxt "@title:tab"
 msgid "Preview settings"
 msgstr "Einstellungen der Vorschau"
 
-#: qml/MachineConfig.qml:119
+#: qml/MachineConfig.qml:60
+#, fuzzy
+msgctxt "@title:tab"
+msgid "Advanced settings"
+msgstr "Einstellungen der Vorschau"
+
+#: qml/MachineConfig.qml:120
 msgctxt "@label"
 msgid "WiFi support"
 msgstr "WLAN Unterstützung"
 
-#: qml/MachineConfig.qml:153
+#: qml/MachineConfig.qml:147
+msgctxt "@action:button"
+msgid "Add"
+msgstr "Hinzufügen"
+
+#: qml/MachineConfig.qml:158
+msgctxt "@action:button"
+msgid "Edit"
+msgstr "Ändern"
+
+#: qml/MachineConfig.qml:169
+msgctxt "@action:button"
+msgid "Remove"
+msgstr "Entfernen"
+
+#: qml/MachineConfig.qml:277
+msgctxt "@action:button"
+msgid "Disconnect"
+msgstr "Unterbrechen"
+
+#: qml/MachineConfig.qml:337
+msgctxt "@label"
+msgid "Screenshot support"
+msgstr "Bildschirmfoto aktivieren"
+
+#: qml/MachineConfig.qml:373
+msgctxt "@label"
+msgid "Printer model"
+msgstr "Druckermodell"
+
+#: qml/MachineConfig.qml:416
+msgctxt "@label"
+msgid "Simage"
+msgstr "Simage"
+
+#: qml/MachineConfig.qml:459
+msgctxt "@label"
+msgid "Gimage"
+msgstr "Gimage"
+
+#: qml/MachineConfig.qml:520
 msgctxt "@label"
 msgid "Maximum file name length (0..255, 30 by default)"
 msgstr "Maximale Länge des Dateinames (0..255, 30 ist voreingestellt)"
 
-#: qml/MachineConfig.qml:191
+#: qml/MachineConfig.qml:555
 msgctxt "@label"
 msgid "Auto file renaming (if name is too long or already exists)"
 msgstr ""
 "Automatisches Umbenennen und Kürzen des Dateinamens (wenn der Dateiname zu "
 "lang ist oder schon existiert)"
 
-#: qml/MachineConfig.qml:222
+#: qml/MachineConfig.qml:583
 msgctxt "@label"
 msgid "Start printing after file upload"
 msgstr ""
 
-#: qml/MachineConfig.qml:248
-msgctxt "@action:button"
-msgid "Add"
-msgstr "Hinzufügen"
-
-#: qml/MachineConfig.qml:259
-msgctxt "@action:button"
-msgid "Edit"
-msgstr "Ändern"
-
-#: qml/MachineConfig.qml:270
-msgctxt "@action:button"
-msgid "Remove"
-msgstr "Entfernen"
-
-#: qml/MachineConfig.qml:378
-msgctxt "@action:button"
-msgid "Disconnect"
-msgstr "Unterbrechen"
-
-#: qml/MachineConfig.qml:419
+#: qml/MachineConfig.qml:611
 msgctxt "@label"
-msgid "Screenshot support"
-msgstr "Bildschirmfoto aktivieren"
+msgid "Switch to Monitor Tab after file upload"
+msgstr ""
 
-#: qml/MachineConfig.qml:449
-msgctxt "@label"
-msgid "Printer model"
-msgstr "Druckermodell"
-
-#: qml/MachineConfig.qml:486
-msgctxt "@label"
-msgid "Simage"
-msgstr "Simage"
-
-#: qml/MachineConfig.qml:523
-msgctxt "@label"
-msgid "Gimage"
-msgstr "Gimage"
-
-#: qml/MachineConfig.qml:570
+#: qml/MachineConfig.qml:644
 msgctxt "@label"
 msgid "MKS WiFi Plugin is active for this printer"
 msgstr "MKS WLAN Modul aktivieren:"
 
-#: qml/MachineConfig.qml:607
+#: qml/MachineConfig.qml:682
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr "Neuen Drucker hinzufügen"
 
-#: qml/MachineConfig.qml:634
+#: qml/MachineConfig.qml:724
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr "Geben Sie die IP-Adresse oder Hostname Ihres Druckers ein"
 
-#: qml/MachineConfig.qml:662
+#: qml/MachineConfig.qml:752
 msgctxt "@action:button"
 msgid "OK"
 msgstr "OK"
