@@ -129,7 +129,7 @@ class MachineConfig(MachineAction):
                 global_container_stack.removeMetaDataEntry(
                     Constants.CURRENT_IP)
         if self._network_plugin:
-            self._network_plugin.mks_current_ip_recheck()
+            self._network_plugin.mks_current_ip_check()
 
     @pyqtSlot(str)
     def mks_connect_printer(self, address):
@@ -140,7 +140,7 @@ class MachineConfig(MachineAction):
 
         if self._network_plugin:
             # Ensure that the connection states are refreshed.
-            self._network_plugin.mks_current_ip_recheck()
+            self._network_plugin.mks_current_ip_check()
 
     @pyqtSlot(result=bool)
     def pluginEnabled(self):

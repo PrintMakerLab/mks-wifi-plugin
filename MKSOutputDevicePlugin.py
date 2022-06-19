@@ -33,7 +33,7 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
     
     def on_global_container_stack_changed(self):
         self.cleanup_old_settings()
-        self.mks_current_ip_recheck()
+        self.mks_current_ip_check()
     
     def cleanup_old_settings(self):
         try:
@@ -76,20 +76,16 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
 
     def mks_current_ip_check(self):
         Logger.log("d", "mks_current_ip_check called")
+        # closing previous printer
+        if self._current_printer:
+            self.mks_remove_output_device(self._current_printer.getKey())
+        # checking new printer got mks_current_ip
         active_machine = Application.getInstance().getGlobalContainerStack()
         if active_machine:
             meta_data = active_machine.getMetaData()
             if meta_data and Constants.CURRENT_IP in meta_data:
                 address = active_machine.getMetaDataEntry(Constants.CURRENT_IP)
                 self.addPrinter(address)
-
-    def mks_current_ip_recheck(self):
-        Logger.log("d", "mks_current_ip_recheck called")
-        # closing previous printer
-        if self._current_printer:
-            self.mks_remove_output_device(self._current_printer.getKey())
-        # checking new printer got mks_current_ip
-        self.mks_current_ip_check()
 
     def start(self):
         Logger.log("d", "start called")
@@ -211,11 +207,11 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             if connected:
                 self._error_message = Message(connected.format(printer_name))
                 self._error_message.show()
-                self.getOutputDeviceManager().addOutputDevice(self._current_printer)
+            self.getOutputDeviceManager().addOutputDevice(self._current_printer)
         else:
             if self.getOutputDeviceManager().getOutputDevice(key):
                 disconnected = self._translations.get("disconnected")
                 if disconnected:
                     self._error_message = Message(disconnected.format(printer_name))
                     self._error_message.show()
-                    self.getOutputDeviceManager().removeOutputDevice(current_key)
+                self.getOutputDeviceManager().removeOutputDevice(current_key)
