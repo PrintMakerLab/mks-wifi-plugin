@@ -209,8 +209,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._socket = None
         self._socket = QTcpSocket()
         self._socket.connectToHost(self._address, self._port)
-        global_container_stack = Application.getInstance(
-        ).getGlobalContainerStack()
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
 
         print_over_action_button = self._translations.get("print_over_action_button")
         if print_over_action_button:
@@ -225,6 +224,20 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._socket.readyRead.connect(self.on_read)
         self.setConnectionState(ConnectionState.Connecting)
         self._update_timer.start()
+
+    def disconnect(self):
+        Logger.log("d", "MKS socket disconnecting from %s:%s" % (str(self._address), str(self._port)))
+        if self._socket is not None:
+            self._socket.readyRead.disconnect(self.on_read)
+            self._socket.close()
+            # self._socket.abort()
+        if self._progress_message:
+            self._progress_message.hide()
+            self._progress_message = None
+        if self._error_message:
+            self._error_message.hide()
+        self._update_timer.stop()
+        self.setConnectionState(ConnectionState.Closed)
 
     def getProperties(self):
         return self._properties
@@ -583,20 +596,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 for each_command in cmd:
                     self._command_queue.put(each_command + "\r\n")
 
-    def disconnect(self):
-        # Logger.log("d", "disconnect--------------")
-        if self._socket is not None:
-            self._socket.readyRead.disconnect(self.on_read)
-            self._socket.close()
-            # self._socket.abort()
-        if self._progress_message:
-            self._progress_message.hide()
-            self._progress_message = None
-        if self._error_message:
-            self._error_message.hide()
-        self._update_timer.stop()
-        self.setConnectionState(ConnectionState.Closed)
-
     @pyqtProperty(int, notify = connectionStateChanged)
     def connectionState(self) -> "ConnectionState":
         return self._connection_state
@@ -604,7 +603,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
     @pyqtProperty(bool)
     def isConnected(self) -> bool:
         state = (self._connection_state == ConnectionState.Connected or self._connection_state == ConnectionState.Busy)
-        # Logger.log("d", "isConnected state = %d connectionState = %d" % (state, self._connection_state))
         return state
 
     def setConnectionState(self, connection_state: "ConnectionState") -> None:
@@ -796,7 +794,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             ["G91", "G0 X%s Y%s Z%s F%s" % (x, y, z, speed), "G90"])
 
     def _update(self):
-        # Logger.log("d", "timer_update MKS wifi reconnecting")
         if self.isSocketInConnectedState():
             self.write_socket_data()
         else:
