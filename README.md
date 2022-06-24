@@ -18,15 +18,21 @@ Using the plugin with Cura, you can:
 Marketplace:
   - Plugin is available through the Cura Marketplace as the MKS Wifi Plugin.
 
-Manually:
+Manually with .curapackage:
+  - Download .curapackage file of the selected [release](https://github.com/Jeredian/mks-wifi-plugin/releases);
+  - Open Cura on the Prepare tab;
+  - Drag and drop .curapackage on this tab.
+
+Manually with sources:
   - Download or clone this repository;
   - Open Cura configuration folder. It can be found via Help -> Show Configuration Folder inside Cura;
   - Copy folder into [Cura configuration folder]/plugins/ ;
   - Restart Cura.
   
 Notes:
-  - Latest version of MKS WiFi plugin is only available for Cura 4.7 or higher version;
-  - For Cura versions  4.6 or 4.5 please manually install version [1.2.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.2.2).
+  - Latest version of MKS WiFi plugin is only available for Cura 5.0 or higher version;
+  - For Cura versions 4.7-4.13.1 please manually install version [1.3.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.3.2);
+  - For Cura versions 4.5-4.6 please manually install version [1.2.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.2.2).
 
 ## Troubleshooting ##
 
@@ -36,7 +42,7 @@ Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_r
 
 ## Translation ##
 
-To create new translation, or improve existing one, please check [translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Translation).
+To create new translation, or improve existing one, please check [automatic translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Automatic-Translation) or [manual translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Manual-Translation).
 
 ## Funding ##
  The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
