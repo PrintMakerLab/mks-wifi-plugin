@@ -42,7 +42,7 @@ Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_r
 
 ## Translation ##
 
-To create new translation, or improve existing one, please check [translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Translation).
+To create new translation, or improve existing one, please check [automatic translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Automatic-Translation) or [manual translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Manual-Translation).
 
 ## Funding ##
  The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
