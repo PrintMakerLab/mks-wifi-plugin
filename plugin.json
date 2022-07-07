@@ -6,7 +6,8 @@
     "description": "Connect to MKS Robin WiFi/MKS TFT WiFi in Cura",
     "api": "8",
     "supported_sdk_versions": [
-        "8"
+        "8.0.0",
+        "8.1.0"
     ],
     "i18n-catalog": "mksplugin"
 }
