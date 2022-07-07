@@ -11,13 +11,13 @@ categories:
   - title: 'Breaking'
     label: 'type: breaking'
   - title: 'New'
-    labes: 
+    labels: 
       - 'type: feature-major'
       - 'type: feature-minor'
   - title: 'Bug Fixes'
     label: 'type: bug'
   - title: 'Maintenance'
-    labes: 
+    labels: 
       - 'type: translation'
       - 'type: maintenance'
   - title: 'Documentation'
