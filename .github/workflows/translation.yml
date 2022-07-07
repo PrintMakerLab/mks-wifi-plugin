@@ -12,8 +12,6 @@ jobs:
      runs-on: "ubuntu-latest"
      
      steps:
-      - uses: actions/checkout@v3
-      
       - name: "Translation"
         id: translation
         uses: Elkin-Vasily/cura-plugin-translation@v1
