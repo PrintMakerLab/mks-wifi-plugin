@@ -113,9 +113,9 @@ class MKSOutputDevicePlugin(QObject, OutputDevicePlugin):
             Logger.log("w", "Current printer not found")
         else:
             Logger.log("d", "addPrinter, connecting [%s]..." % self._current_printer.getKey())
-        self._current_printer.connect()
-        self._current_printer.connectionStateChanged.connect(
-            self._onPrinterConnectionStateChanged)
+            self._current_printer.connect()
+            self._current_printer.connectionStateChanged.connect(
+                self._onPrinterConnectionStateChanged)
 
     def mks_remove_output_device(self, key):
         Logger.log("d", "mks_remove_output_device %s" % key)
