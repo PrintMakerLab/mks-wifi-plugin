@@ -24,7 +24,7 @@ jobs:
         name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
-          branch: translation-patch
+          branch: ${{github.ref_name}}-translation
           delete-branch: true
           title: '[CI] Translation update'
           body: 'Translation was automatically updated'
