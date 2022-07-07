@@ -3,7 +3,6 @@ name: "Auto translation with the action"
 on:
   push:
     branches-ignore:
-      - 'develop'
       - 'release-**'
       
 jobs:
