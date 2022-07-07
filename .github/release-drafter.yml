@@ -11,15 +11,21 @@ categories:
   - title: 'Breaking'
     label: 'type: breaking'
   - title: 'New'
-    label: 'type: feature'
+    labes: 
+      - 'type: feature-major'
+      - 'type: feature-minor'
   - title: 'Bug Fixes'
     label: 'type: bug'
   - title: 'Maintenance'
-    label: 'type: maintenance'
+    labes: 
+      - 'type: translation'
+      - 'type: maintenance'
   - title: 'Documentation'
     label: 'type: docs'
   - title: 'Dependency Updates'
     label: 'type: dependencies'
+  - title: 'Community'
+    label: 'type: community'
   - title: 'Other changes'
 
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
@@ -30,14 +36,17 @@ version-resolver:
       - 'type: breaking'
   minor:
     labels:
-      - 'type: feature'
+      - 'type: feature-major'
   patch:
     labels:
+      - 'type: feature-minor'
       - 'type: bug'
       - 'type: community'
       - 'type: dependencies'
       - 'type: docs'
       - 'type: maintenance'
+      - 'type: translation'
+  default: patch
 
 exclude-labels:
   - 'skip-changelog'
