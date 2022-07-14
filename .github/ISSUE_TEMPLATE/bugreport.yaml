@@ -1,6 +1,6 @@
 name: Bug Report
 description: Create a report to help us fix issues.
-labels: "bug"
+labels: "type: bug"
 body:
 - type: markdown
   attributes:
@@ -14,14 +14,14 @@ body:
   attributes:
     label: Plugin Version
     description: The version of MKS WiFi Plugin this issue occurs with.
-    placeholder: 1.2.4
+    placeholder: 1.4.0
   validations:
     required: true
 - type: input
   attributes:
     label: Cura Version
     description: The version of Cura this issue occurs with.
-    placeholder: 4.11.0
+    placeholder: 5.0
   validations:
     required: true
 - type: input
@@ -35,7 +35,7 @@ body:
   attributes:
     label: Printer
     description: Which printer was selected in Cura?
-    placeholder: Ultimaker S5    
+    placeholder: Flying Beer Ghost 5    
   validations:
     required: true
 - type: textarea
@@ -76,7 +76,6 @@ body:
     label: Checklist of files to include
     options:
       - label: Log file
-      - label: Project file
 - type: textarea
   attributes:
     label: Additional information & file uploads  
