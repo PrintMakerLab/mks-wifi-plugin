@@ -14,28 +14,28 @@ body:
   attributes:
     label: Plugin Version
     description: The version of MKS WiFi Plugin this issue occurs with.
-    placeholder: 1.4.0
+    placeholder: "1.4.0"
   validations:
     required: true
 - type: input
   attributes:
     label: Cura Version
     description: The version of Cura this issue occurs with.
-    placeholder: 5.0
+    placeholder: "5.0"
   validations:
     required: true
 - type: input
   attributes:
     label: Platform
     description: Information about the operating system the issue occurs on. Include at least the operating system and maybe GPU.
-    placeholder: Windows 10
+    placeholder: "Windows 10"
   validations:
     required: true
 - type: input
   attributes:
     label: Printer
     description: Which printer was selected in Cura?
-    placeholder: Flying Beer Ghost 5    
+    placeholder: "Flying Beer Ghost 5"
   validations:
     required: true
 - type: textarea
