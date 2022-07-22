@@ -106,7 +106,7 @@ def add_preview(self):
         gcode_list[0] += "; Postprocessed by [MKS WiFi plugin](https://github.com/Jeredian/mks-wifi-plugin)\n"
         gcode_list[0] += "; simage=%d\n" % simage
         gcode_list[0] += "; gimage=%d\n" % gimage
-        gcode_list[0] += screenshot_string
+        gcode_list[0] = screenshot_string + gcode_list[0]
         gcode_dict[plate_id] = gcode_list
         dict_changed = True
 
