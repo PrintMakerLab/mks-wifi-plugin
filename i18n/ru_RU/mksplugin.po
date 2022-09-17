@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2022-09-17 10:43+0000\n"
-"PO-Revision-Date: 2022-06-08 20:00+0300\n"
+"PO-Revision-Date: 2022-09-17 13:48+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Russian <gnu@d07.ru>\n"
 "Language: ru\n"
@@ -135,15 +135,14 @@ msgid "File cannot be transferred during printing."
 msgstr "Файл не может быть передан во время печати."
 
 #: MKSOutputDevice.py:187
-#, fuzzy
 msgctxt "@info:status"
 msgid "Send file to printer failed. Check printer SD card."
-msgstr "Отправка файла на принтер завершилась неудачей."
+msgstr "Не удалось отправить файл на принтер. Проверьте SD-карту принтера."
 
 #: MKSOutputDevice.py:188
 msgctxt "@info:status"
 msgid "Now is printing. Send file to printer failed."
-msgstr "Идет печать. Отправка файла на принтер завершилась неудачей."
+msgstr "Идет печать. Не удалось отправить файл на принтер."
 
 #: MKSOutputDevice.py:189
 msgctxt "@info:status"
@@ -161,7 +160,6 @@ msgid "TFT Connect succeed"
 msgstr "Соединение с TFT успешно"
 
 #: MKSOutputDevice.py:192
-#, fuzzy
 msgctxt "@info:status"
 msgid "Error: Command can not send"
 msgstr "Ошибка: Не удалось отправить команду"
