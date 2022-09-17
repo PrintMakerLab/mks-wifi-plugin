@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-06-08 16:55+0000\n"
+"POT-Creation-Date: 2022-09-17 10:43+0000\n"
 "PO-Revision-Date: 2022-04-02 15:34+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,16 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.0.1\n"
-
-#: MKSDialog.py:41
-msgctxt "@action:button"
-msgid "Yes"
-msgstr "Ja"
-
-#: MKSDialog.py:42
-msgctxt "@action:button"
-msgid "No"
-msgstr "Nein"
 
 #: MKSOutputDevicePlugin.py:71
 #, python-brace-format
@@ -40,18 +30,17 @@ msgctxt "@info:status Don't translate the XML tags <message>!"
 msgid "<message>{0}</message> printer disconnected!"
 msgstr "<message>{0}</message> Drucker nicht verbunden!"
 
-#: MachineConfig.py:24
-msgctxt "@action"
-msgid "MKS WiFi Plugin"
-msgstr "MKS WLAN Modul"
+#: MKSDialog.py:41
+msgctxt "@action:button"
+msgid "Yes"
+msgstr "Ja"
 
-#: MachineConfig.py:284 qml/MachineConfig.qml:390 qml/MachineConfig.qml:438
-#: qml/MachineConfig.qml:481
-msgctxt "@label"
-msgid "Custom"
-msgstr "benutzerdefiniert"
+#: MKSDialog.py:42
+msgctxt "@action:button"
+msgid "No"
+msgstr "Nein"
 
-#: MKSOutputDevice.py:170 qml/MachineConfig.qml:744
+#: MKSOutputDevice.py:170 qml/MachineConfig.qml:731
 msgctxt "@action:button"
 msgid "Cancel"
 msgstr "Abbrechen"
@@ -142,8 +131,9 @@ msgid "File cannot be transferred during printing."
 msgstr "Datei kann während des Druckens nicht gesendet werden."
 
 #: MKSOutputDevice.py:187
+#, fuzzy
 msgctxt "@info:status"
-msgid "Send file to printer failed."
+msgid "Send file to printer failed. Check printer SD card."
 msgstr "Dateitransfer zum Drucker gescheitert."
 
 #: MKSOutputDevice.py:188
@@ -168,8 +158,9 @@ msgid "TFT Connect succeed"
 msgstr "TFT-Verbindung erfolgreich"
 
 #: MKSOutputDevice.py:192
+#, fuzzy
 msgctxt "@info:status"
-msgid "Error: command can not send"
+msgid "Error: Command can not send"
 msgstr "Fehler: Befehl konnte nicht gesendet werden"
 
 #: MKSOutputDevice.py:193
@@ -193,30 +184,16 @@ msgctxt "@label"
 msgid "All"
 msgstr "Alles"
 
-#: qml/MKSConnectBtn.qml:63
-msgctxt "@action:button"
-msgid "Request Access"
-msgstr "Zugriff anfragen"
+#: MachineConfig.py:24
+msgctxt "@action"
+msgid "MKS WiFi Plugin"
+msgstr "MKS WLAN Modul"
 
-#: qml/MKSConnectBtn.qml:65
-msgctxt "@info:tooltip"
-msgid "Send access request to the printer"
-msgstr "Sende eine Zugriffsanfrage an den Drucker"
-
-#: qml/MKSConnectBtn.qml:73 qml/MachineConfig.qml:251
-msgctxt "@action:button"
-msgid "Connect"
-msgstr "Verbinden"
-
-#: qml/MKSConnectBtn.qml:75
-msgctxt "@info:tooltip"
-msgid "Connect to a printer"
-msgstr "Verbindungsaufbau mit dem Drucker"
-
-#: qml/MKSConnectBtn.qml:85
-msgctxt "@action:button"
-msgid "Close"
-msgstr "Schließen"
+#: MachineConfig.py:284 qml/MachineConfig.qml:377 qml/MachineConfig.qml:425
+#: qml/MachineConfig.qml:468
+msgctxt "@label"
+msgid "Custom"
+msgstr "benutzerdefiniert"
 
 #: qml/MonitorItem.qml:112
 msgctxt "@label"
@@ -364,69 +341,94 @@ msgctxt "@action:button"
 msgid "Remove"
 msgstr "Entfernen"
 
+#: qml/MachineConfig.qml:251 qml/MKSConnectBtn.qml:73
+msgctxt "@action:button"
+msgid "Connect"
+msgstr "Verbinden"
+
 #: qml/MachineConfig.qml:277
 msgctxt "@action:button"
 msgid "Disconnect"
 msgstr "Unterbrechen"
 
-#: qml/MachineConfig.qml:337
+#: qml/MachineConfig.qml:324
 msgctxt "@label"
 msgid "Screenshot support"
 msgstr "Bildschirmfoto aktivieren"
 
-#: qml/MachineConfig.qml:373
+#: qml/MachineConfig.qml:360
 msgctxt "@label"
 msgid "Printer model"
 msgstr "Druckermodell"
 
-#: qml/MachineConfig.qml:416
+#: qml/MachineConfig.qml:403
 msgctxt "@label"
 msgid "Simage"
 msgstr "Simage"
 
-#: qml/MachineConfig.qml:459
+#: qml/MachineConfig.qml:446
 msgctxt "@label"
 msgid "Gimage"
 msgstr "Gimage"
 
-#: qml/MachineConfig.qml:520
+#: qml/MachineConfig.qml:507
 msgctxt "@label"
 msgid "Maximum file name length (0..255, 30 by default)"
 msgstr "Maximale Länge des Dateinames (0..255, 30 ist voreingestellt)"
 
-#: qml/MachineConfig.qml:555
+#: qml/MachineConfig.qml:542
 msgctxt "@label"
 msgid "Auto file renaming (if name is too long or already exists)"
 msgstr ""
 "Automatisches Umbenennen und Kürzen des Dateinamens (wenn der Dateiname zu "
 "lang ist oder schon existiert)"
 
-#: qml/MachineConfig.qml:583
+#: qml/MachineConfig.qml:570
 msgctxt "@label"
 msgid "Start printing after file upload"
 msgstr ""
 
-#: qml/MachineConfig.qml:611
+#: qml/MachineConfig.qml:598
 msgctxt "@label"
 msgid "Switch to Monitor Tab after file upload"
 msgstr ""
 
-#: qml/MachineConfig.qml:644
+#: qml/MachineConfig.qml:631
 msgctxt "@label"
 msgid "MKS WiFi Plugin is active for this printer"
 msgstr "MKS WLAN Modul aktivieren:"
 
-#: qml/MachineConfig.qml:682
+#: qml/MachineConfig.qml:669
 msgctxt "@title:window"
 msgid "Adding a new printer"
 msgstr "Neuen Drucker hinzufügen"
 
-#: qml/MachineConfig.qml:724
+#: qml/MachineConfig.qml:711
 msgctxt "@alabel"
 msgid "Enter the IP address or hostname of your printer on the network."
 msgstr "Geben Sie die IP-Adresse oder Hostname Ihres Druckers ein"
 
-#: qml/MachineConfig.qml:752
+#: qml/MachineConfig.qml:739
 msgctxt "@action:button"
 msgid "OK"
 msgstr "OK"
+
+#: qml/MKSConnectBtn.qml:63
+msgctxt "@action:button"
+msgid "Request Access"
+msgstr "Zugriff anfragen"
+
+#: qml/MKSConnectBtn.qml:65
+msgctxt "@info:tooltip"
+msgid "Send access request to the printer"
+msgstr "Sende eine Zugriffsanfrage an den Drucker"
+
+#: qml/MKSConnectBtn.qml:75
+msgctxt "@info:tooltip"
+msgid "Connect to a printer"
+msgstr "Verbindungsaufbau mit dem Drucker"
+
+#: qml/MKSConnectBtn.qml:85
+msgctxt "@action:button"
+msgid "Close"
+msgstr "Schließen"
