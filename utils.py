@@ -38,6 +38,7 @@ def truncate(str, max_len):
         return str
 
 def contains_chinese(filename):
+    Logger.log("d", "Check filename %s for containing chinese letters." % filename)
     return False
 
 def contains_cyrillic(filename, alphabet=set('абвгдеёжзийклмнопрстуфхцчшщъыьэюя')):
