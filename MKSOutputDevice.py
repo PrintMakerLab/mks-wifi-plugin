@@ -443,14 +443,18 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         if file_already_exists or filename_too_long:
             if self.is_auto_file_renaming_enabled():
-                filename = utils.generate_new_filename(self.sdFiles, filename, max_filename_len)
+                filename = self.check_valid_filename(utils.generate_new_filename(self.sdFiles, filename, max_filename_len))
             elif file_already_exists:
                 filename = self.check_valid_filename(self.show_exists_dialog(filename))
-            elif filename_too_long:
+            else: #filename_too_long
                 filename = self.check_valid_filename(self.show_to_long_dialog(filename))
 
-        if self.is_contains_chinese(filename):
+        if utils.contains_chinese(filename):
             filename = self.check_valid_filename(self.show_contains_chinese_dialog(filename))
+
+        if utils.contains_cyrillic(filename):
+            filename = self.check_valid_filename(utils.transliterate(filename))
+
         return filename
 
     def check_valid_filepath(self, filepath):
@@ -494,9 +498,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._exception_message = Message(
             self._translations.get("file_cant_transfer"))
         self._exception_message.show()
-
-    def is_contains_chinese(self, strs):
-        return False
     
     def isSocketInConnectedState(self) -> bool:
         return self._socket is not None and self._socket.state() == QTcpSocket.SocketState.ConnectedState # QAbstractSocket::ConnectedState
