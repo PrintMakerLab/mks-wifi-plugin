@@ -353,12 +353,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     @pyqtSlot(str)
     def deleteSDFiles(self, filename):
-        self._sendCommand("M30 1:/" + filename)
+        self._sendCommand("M30 " + filename)
         self._sendCommand("M20")
 
     @pyqtSlot(str)
     def printSDFiles(self, filename):
-        self._sendCommand("M23 1:/" + filename)
+        self._sendCommand("M23 " + filename)
         self._sendCommand("M24")
 
     @pyqtSlot()
