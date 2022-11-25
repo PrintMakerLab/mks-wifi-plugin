@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-17 10:43+0000\n"
+"POT-Creation-Date: 2022-11-25 23:32+0000\n"
 "PO-Revision-Date: 2022-07-02 09:24+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -17,28 +17,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Poedit 3.1\n"
-
-#: MKSOutputDevicePlugin.py:71
-#, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer connected successfully!"
-msgstr "<message>{0}</message> impresora conectada con éxito!"
-
-#: MKSOutputDevicePlugin.py:72
-#, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer disconnected!"
-msgstr "<message>{0}</message> impresora desconectada!"
-
-#: MKSDialog.py:41
-msgctxt "@action:button"
-msgid "Yes"
-msgstr "Sí"
-
-#: MKSDialog.py:42
-msgctxt "@action:button"
-msgid "No"
-msgstr "No"
 
 #: MKSOutputDevice.py:170 qml/MachineConfig.qml:731
 msgctxt "@action:button"
@@ -186,126 +164,38 @@ msgctxt "@label"
 msgid "All"
 msgstr "Todo"
 
+#: MKSOutputDevicePlugin.py:71
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer connected successfully!"
+msgstr "<message>{0}</message> impresora conectada con éxito!"
+
+#: MKSOutputDevicePlugin.py:72
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer disconnected!"
+msgstr "<message>{0}</message> impresora desconectada!"
+
 #: MachineConfig.py:24
 msgctxt "@action"
 msgid "MKS WiFi Plugin"
 msgstr ""
 
 #: MachineConfig.py:284 qml/MachineConfig.qml:377 qml/MachineConfig.qml:425
-#: qml/MachineConfig.qml:468
+#: qml/MachineConfig.qml:468 qml/MonitorItem.qml:286 qml/MonitorItem.qml:303
 msgctxt "@label"
 msgid "Custom"
 msgstr "Personalizado"
 
-#: qml/MonitorItem.qml:112
-msgctxt "@label"
-msgid "E0"
-msgstr "E0"
-
-#: qml/MonitorItem.qml:144
-msgctxt "@label"
-msgid "E1"
-msgstr "E1"
-
-#: qml/MonitorItem.qml:220
-msgctxt "@label"
-msgid "Resume"
-msgstr "Reanudar"
-
-#: qml/MonitorItem.qml:222
-msgctxt "@label"
-msgid "Pause"
-msgstr "Paudar"
-
-#: qml/MonitorItem.qml:234
-msgctxt "@label"
-msgid "Abort Print"
-msgstr "Interrumpir la impresión"
-
-#: qml/MonitorItem.qml:246
+#: MKSDialog.py:41
 msgctxt "@action:button"
-msgid "More"
-msgstr "Más"
+msgid "Yes"
+msgstr "Sí"
 
-#: qml/MonitorItem.qml:261
-msgctxt "@title:window"
-msgid "Open file(s)"
-msgstr "Abrir archivo(s)"
-
-#: qml/MonitorItem.qml:317
+#: MKSDialog.py:42
 msgctxt "@action:button"
-msgid "Delete"
-msgstr "Borrar"
-
-#: qml/MonitorItem.qml:329
-msgctxt "@action:button"
-msgid "Print"
-msgstr "Imprimir"
-
-#: qml/MonitorItem.qml:346
-msgctxt "@title:window"
-msgid "More"
-msgstr "Más"
-
-#: qml/MonitorItem.qml:365
-msgctxt "@action:button"
-msgid "SD Files"
-msgstr "Archivos en SD"
-
-#: qml/MonitorItem.qml:369
-msgctxt "@tooltip"
-msgid "Browse SD card in 3D printer."
-msgstr "Explorar tarjeta SD en la impresora 3D"
-
-#: qml/MonitorItem.qml:379
-msgctxt "@action:button"
-msgid "Send Print Job"
-msgstr "Enviar trabajo de impresión"
-
-#: qml/MonitorItem.qml:383
-msgctxt "@tooltip"
-msgid "Select and send G-Code file to 3D printer."
-msgstr "Seleccionar y enviar archivo en código G a la impresora 3D."
-
-#: qml/MonitorItem.qml:392
-msgctxt "@action:button"
-msgid "Fan On"
-msgstr "Ventilador encendido"
-
-#: qml/MonitorItem.qml:396
-msgctxt "@tooltip"
-msgid "Turn fan on."
-msgstr "Poner en marcha el ventilador"
-
-#: qml/MonitorItem.qml:404
-msgctxt "@action:button"
-msgid "Fan Off"
-msgstr "Ventilador apagado"
-
-#: qml/MonitorItem.qml:408
-msgctxt "@tooltip"
-msgid "Turn fan off."
-msgstr "Parar el ventilador"
-
-#: qml/MonitorItem.qml:418
-msgctxt "@action:button"
-msgid "Cool Down"
-msgstr "Enfriar"
-
-#: qml/MonitorItem.qml:422
-msgctxt "@tooltip"
-msgid "Cool down heated bed and exptuder."
-msgstr "Enfriar la plataforma caliente y el extrusor"
-
-#: qml/MonitorItem.qml:432
-msgctxt "@action:button"
-msgid "Unlock Motors"
-msgstr "Desbloquear motores"
-
-#: qml/MonitorItem.qml:436
-msgctxt "@tooltip"
-msgid "Unlock 3D printer motors."
-msgstr "Desbloquea los motores de la impresora 3D"
+msgid "No"
+msgstr "No"
 
 #: qml/MachineConfig.qml:58
 msgctxt "@title:tab"
@@ -432,3 +322,123 @@ msgstr "Conectar con una impresora"
 msgctxt "@action:button"
 msgid "Close"
 msgstr "Cerrar"
+
+#: qml/MonitorItem.qml:112
+msgctxt "@label"
+msgid "E0"
+msgstr "E0"
+
+#: qml/MonitorItem.qml:144
+msgctxt "@label"
+msgid "E1"
+msgstr "E1"
+
+#: qml/MonitorItem.qml:220
+msgctxt "@label"
+msgid "Resume"
+msgstr "Reanudar"
+
+#: qml/MonitorItem.qml:222
+msgctxt "@label"
+msgid "Pause"
+msgstr "Paudar"
+
+#: qml/MonitorItem.qml:234
+msgctxt "@label"
+msgid "Abort Print"
+msgstr "Interrumpir la impresión"
+
+#: qml/MonitorItem.qml:246
+msgctxt "@action:button"
+msgid "More"
+msgstr "Más"
+
+#: qml/MonitorItem.qml:261
+msgctxt "@title:window"
+msgid "Open file(s)"
+msgstr "Abrir archivo(s)"
+
+#: qml/MonitorItem.qml:273
+msgctxt "@label"
+msgid "Drive prefix:"
+msgstr ""
+
+#: qml/MonitorItem.qml:284
+msgctxt "@label"
+msgid "None"
+msgstr ""
+
+#: qml/MonitorItem.qml:362
+msgctxt "@action:button"
+msgid "Delete"
+msgstr "Borrar"
+
+#: qml/MonitorItem.qml:374
+msgctxt "@action:button"
+msgid "Print"
+msgstr "Imprimir"
+
+#: qml/MonitorItem.qml:391
+msgctxt "@title:window"
+msgid "More"
+msgstr "Más"
+
+#: qml/MonitorItem.qml:410
+msgctxt "@action:button"
+msgid "SD Files"
+msgstr "Archivos en SD"
+
+#: qml/MonitorItem.qml:414
+msgctxt "@tooltip"
+msgid "Browse SD card in 3D printer."
+msgstr "Explorar tarjeta SD en la impresora 3D"
+
+#: qml/MonitorItem.qml:424
+msgctxt "@action:button"
+msgid "Send Print Job"
+msgstr "Enviar trabajo de impresión"
+
+#: qml/MonitorItem.qml:428
+msgctxt "@tooltip"
+msgid "Select and send G-Code file to 3D printer."
+msgstr "Seleccionar y enviar archivo en código G a la impresora 3D."
+
+#: qml/MonitorItem.qml:437
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr "Ventilador encendido"
+
+#: qml/MonitorItem.qml:441
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr "Poner en marcha el ventilador"
+
+#: qml/MonitorItem.qml:449
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr "Ventilador apagado"
+
+#: qml/MonitorItem.qml:453
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr "Parar el ventilador"
+
+#: qml/MonitorItem.qml:463
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr "Enfriar"
+
+#: qml/MonitorItem.qml:467
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr "Enfriar la plataforma caliente y el extrusor"
+
+#: qml/MonitorItem.qml:477
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr "Desbloquear motores"
+
+#: qml/MonitorItem.qml:481
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr "Desbloquea los motores de la impresora 3D"
