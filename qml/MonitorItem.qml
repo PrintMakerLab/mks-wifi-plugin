@@ -263,10 +263,55 @@ Component
             Column {
                 spacing: UM.Theme.getSize("default_margin").height
 
+                Row {
+                    spacing: UM.Theme.getSize("default_margin").height
+
+                    UM.Label {
+                        height: drivePrefixTextInput.height
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.WordWrap
+                        text: catalog.i18nc("@label", "Drive prefix:")
+                    }
+
+                    Cura.ComboBox {
+                        id: drivePrefixComboBox
+                        width: 100
+                        height: drivePrefixTextInput.height
+
+                        textRole: "text"
+
+                        model: [
+                            { text: catalog.i18nc("@label", "None"), value: "" },
+                            { text: "1:/", value: "1:/" },
+                            { text: catalog.i18nc("@label", "Custom"), value: ""}
+                        ]
+
+                        onCurrentIndexChanged: {
+                            var currnetDrivePrefix = model[drivePrefixComboBox.currentIndex].value
+                            drivePrefixTextInput.text = currnetDrivePrefix
+                        }
+                    }
+
+                    Cura.TextField {
+                        id: drivePrefixTextInput
+                        width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+
+                        onEditingFinished: {
+                        }
+
+                        enabled: {
+                            if (drivePrefixComboBox.currentText == catalog.i18nc("@label", "Custom")) {
+                                return true
+                            }
+                            return false
+                        }
+                    }
+                }
+
                 Cura.ScrollView {
                     id: objectListContainer
                     width: sdDialog.width-UM.Theme.getSize("default_margin").height*1.5
-                    height: sdDialog.height-btnPrint.height*2
+                    height: sdDialog.height - btnPrint.height*2 - drivePrefixTextInput.height*2
 
                     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                     ScrollBar.vertical.policy: ScrollBar.AsNeeded
@@ -320,7 +365,7 @@ Component
                         {
                             if(listview.currentIndex != -1)
                             {
-                                Cura.MachineManager.printerOutputDevices[0].deleteSDFiles(listview.model[listview.currentIndex])
+                                Cura.MachineManager.printerOutputDevices[0].deleteSDFiles(drivePrefixTextInput.text, "", listview.model[listview.currentIndex])
                             }
                         }
                     }
@@ -333,7 +378,7 @@ Component
                             if(listview.currentIndex != -1)
                             {
                                 sdDialog.hide()
-                                Cura.MachineManager.printerOutputDevices[0].printSDFiles(listview.model[listview.currentIndex])
+                                Cura.MachineManager.printerOutputDevices[0].printSDFiles(drivePrefixTextInput.text, "", listview.model[listview.currentIndex])
                             }
                         }
                     }
