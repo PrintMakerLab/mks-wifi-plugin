@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: MKS WiFi Plugin\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-09-17 10:43+0000\n"
+"POT-Creation-Date: 2022-11-25 23:32+0000\n"
 "PO-Revision-Date: 2021-02-07 17:48+0300\n"
 "Last-Translator: Elkin Vasily <elkin.vasily@gmail.com>\n"
 "Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
@@ -20,28 +20,6 @@ msgstr ""
 "X-Language: zh\n"
 "X-Source-Language: en\n"
 "X-Generator: Poedit 2.4.2\n"
-
-#: MKSOutputDevicePlugin.py:71
-#, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer connected successfully!"
-msgstr "<message>{0}</message> 打印机连接成功！"
-
-#: MKSOutputDevicePlugin.py:72
-#, fuzzy, python-brace-format
-msgctxt "@info:status Don't translate the XML tags <message>!"
-msgid "<message>{0}</message> printer disconnected!"
-msgstr "<message>{0}</message> 打印机连接成功！"
-
-#: MKSDialog.py:41
-msgctxt "@action:button"
-msgid "Yes"
-msgstr "是的"
-
-#: MKSDialog.py:42
-msgctxt "@action:button"
-msgid "No"
-msgstr "不是"
 
 #: MKSOutputDevice.py:170 qml/MachineConfig.qml:731
 msgctxt "@action:button"
@@ -185,6 +163,18 @@ msgctxt "@label"
 msgid "All"
 msgstr ""
 
+#: MKSOutputDevicePlugin.py:71
+#, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer connected successfully!"
+msgstr "<message>{0}</message> 打印机连接成功！"
+
+#: MKSOutputDevicePlugin.py:72
+#, fuzzy, python-brace-format
+msgctxt "@info:status Don't translate the XML tags <message>!"
+msgid "<message>{0}</message> printer disconnected!"
+msgstr "<message>{0}</message> 打印机连接成功！"
+
 #: MachineConfig.py:24
 #, fuzzy
 msgctxt "@action"
@@ -192,123 +182,20 @@ msgid "MKS WiFi Plugin"
 msgstr "MKS WiFi连接"
 
 #: MachineConfig.py:284 qml/MachineConfig.qml:377 qml/MachineConfig.qml:425
-#: qml/MachineConfig.qml:468
+#: qml/MachineConfig.qml:468 qml/MonitorItem.qml:286 qml/MonitorItem.qml:303
 msgctxt "@label"
 msgid "Custom"
 msgstr "自定义"
 
-#: qml/MonitorItem.qml:112
-msgctxt "@label"
-msgid "E0"
-msgstr "E0"
-
-#: qml/MonitorItem.qml:144
-msgctxt "@label"
-msgid "E1"
-msgstr "E1"
-
-#: qml/MonitorItem.qml:220
-#, fuzzy
-msgctxt "@label"
-msgid "Resume"
-msgstr "恢复"
-
-#: qml/MonitorItem.qml:222
-#, fuzzy
-msgctxt "@label"
-msgid "Pause"
-msgstr "暂停"
-
-#: qml/MonitorItem.qml:234
-#, fuzzy
-msgctxt "@label"
-msgid "Abort Print"
-msgstr "终止打印"
-
-#: qml/MonitorItem.qml:246
+#: MKSDialog.py:41
 msgctxt "@action:button"
-msgid "More"
-msgstr "更多"
+msgid "Yes"
+msgstr "是的"
 
-#: qml/MonitorItem.qml:261
-msgctxt "@title:window"
-msgid "Open file(s)"
-msgstr "打开文件"
-
-#: qml/MonitorItem.qml:317
+#: MKSDialog.py:42
 msgctxt "@action:button"
-msgid "Delete"
-msgstr "删除"
-
-#: qml/MonitorItem.qml:329
-msgctxt "@action:button"
-msgid "Print"
-msgstr "打印"
-
-#: qml/MonitorItem.qml:346
-msgctxt "@title:window"
-msgid "More"
-msgstr "更多"
-
-#: qml/MonitorItem.qml:365
-msgctxt "@action:button"
-msgid "SD Files"
-msgstr "SD卡文件"
-
-#: qml/MonitorItem.qml:369
-msgctxt "@tooltip"
-msgid "Browse SD card in 3D printer."
-msgstr "浏览3D打印机SD卡上的文件。"
-
-#: qml/MonitorItem.qml:379
-msgctxt "@action:button"
-msgid "Send Print Job"
-msgstr "发送打印文件"
-
-#: qml/MonitorItem.qml:383
-msgctxt "@tooltip"
-msgid "Select and send G-Code file to 3D printer."
-msgstr "选择并发送Gcode文件到3D打印机。"
-
-#: qml/MonitorItem.qml:392
-msgctxt "@action:button"
-msgid "Fan On"
-msgstr "打开风扇"
-
-#: qml/MonitorItem.qml:396
-msgctxt "@tooltip"
-msgid "Turn fan on."
-msgstr "打开风扇。"
-
-#: qml/MonitorItem.qml:404
-msgctxt "@action:button"
-msgid "Fan Off"
-msgstr "关闭风扇"
-
-#: qml/MonitorItem.qml:408
-msgctxt "@tooltip"
-msgid "Turn fan off."
-msgstr "关闭风扇。"
-
-#: qml/MonitorItem.qml:418
-msgctxt "@action:button"
-msgid "Cool Down"
-msgstr "冷却"
-
-#: qml/MonitorItem.qml:422
-msgctxt "@tooltip"
-msgid "Cool down heated bed and exptuder."
-msgstr "冷却热床和加热头。"
-
-#: qml/MonitorItem.qml:432
-msgctxt "@action:button"
-msgid "Unlock Motors"
-msgstr "解锁电机"
-
-#: qml/MonitorItem.qml:436
-msgctxt "@tooltip"
-msgid "Unlock 3D printer motors."
-msgstr "解锁3D打印机电机。"
+msgid "No"
+msgstr "不是"
 
 #: qml/MachineConfig.qml:58
 #, fuzzy
@@ -438,6 +325,129 @@ msgstr "连接到打印机"
 msgctxt "@action:button"
 msgid "Close"
 msgstr "关闭"
+
+#: qml/MonitorItem.qml:112
+msgctxt "@label"
+msgid "E0"
+msgstr "E0"
+
+#: qml/MonitorItem.qml:144
+msgctxt "@label"
+msgid "E1"
+msgstr "E1"
+
+#: qml/MonitorItem.qml:220
+#, fuzzy
+msgctxt "@label"
+msgid "Resume"
+msgstr "恢复"
+
+#: qml/MonitorItem.qml:222
+#, fuzzy
+msgctxt "@label"
+msgid "Pause"
+msgstr "暂停"
+
+#: qml/MonitorItem.qml:234
+#, fuzzy
+msgctxt "@label"
+msgid "Abort Print"
+msgstr "终止打印"
+
+#: qml/MonitorItem.qml:246
+msgctxt "@action:button"
+msgid "More"
+msgstr "更多"
+
+#: qml/MonitorItem.qml:261
+msgctxt "@title:window"
+msgid "Open file(s)"
+msgstr "打开文件"
+
+#: qml/MonitorItem.qml:273
+msgctxt "@label"
+msgid "Drive prefix:"
+msgstr ""
+
+#: qml/MonitorItem.qml:284
+msgctxt "@label"
+msgid "None"
+msgstr "无"
+
+#: qml/MonitorItem.qml:362
+msgctxt "@action:button"
+msgid "Delete"
+msgstr "删除"
+
+#: qml/MonitorItem.qml:374
+msgctxt "@action:button"
+msgid "Print"
+msgstr "打印"
+
+#: qml/MonitorItem.qml:391
+msgctxt "@title:window"
+msgid "More"
+msgstr "更多"
+
+#: qml/MonitorItem.qml:410
+msgctxt "@action:button"
+msgid "SD Files"
+msgstr "SD卡文件"
+
+#: qml/MonitorItem.qml:414
+msgctxt "@tooltip"
+msgid "Browse SD card in 3D printer."
+msgstr "浏览3D打印机SD卡上的文件。"
+
+#: qml/MonitorItem.qml:424
+msgctxt "@action:button"
+msgid "Send Print Job"
+msgstr "发送打印文件"
+
+#: qml/MonitorItem.qml:428
+msgctxt "@tooltip"
+msgid "Select and send G-Code file to 3D printer."
+msgstr "选择并发送Gcode文件到3D打印机。"
+
+#: qml/MonitorItem.qml:437
+msgctxt "@action:button"
+msgid "Fan On"
+msgstr "打开风扇"
+
+#: qml/MonitorItem.qml:441
+msgctxt "@tooltip"
+msgid "Turn fan on."
+msgstr "打开风扇。"
+
+#: qml/MonitorItem.qml:449
+msgctxt "@action:button"
+msgid "Fan Off"
+msgstr "关闭风扇"
+
+#: qml/MonitorItem.qml:453
+msgctxt "@tooltip"
+msgid "Turn fan off."
+msgstr "关闭风扇。"
+
+#: qml/MonitorItem.qml:463
+msgctxt "@action:button"
+msgid "Cool Down"
+msgstr "冷却"
+
+#: qml/MonitorItem.qml:467
+msgctxt "@tooltip"
+msgid "Cool down heated bed and exptuder."
+msgstr "冷却热床和加热头。"
+
+#: qml/MonitorItem.qml:477
+msgctxt "@action:button"
+msgid "Unlock Motors"
+msgstr "解锁电机"
+
+#: qml/MonitorItem.qml:481
+msgctxt "@tooltip"
+msgid "Unlock 3D printer motors."
+msgstr "解锁3D打印机电机。"
 
 #~ msgctxt "@action:button"
 #~ msgid "Save as TFT file"
@@ -599,7 +609,3 @@ msgstr "关闭"
 #~ msgctxt "@label"
 #~ msgid "The printer at this address has not yet responded."
 #~ msgstr "此地址的打印机还没回应。"
-
-#~ msgctxt "@label"
-#~ msgid "None"
-#~ msgstr "无"
