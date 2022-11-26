@@ -351,14 +351,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         else:
             return False
 
-    @pyqtSlot(str)
-    def deleteSDFiles(self, filename):
-        self._sendCommand("M30 " + filename)
+    @pyqtSlot(str,str,str)
+    def deleteSDFiles(self, drive_prefix, current_path, filename):
+        self._sendCommand("M30 " + drive_prefix + current_path + filename)
         self._sendCommand("M20")
 
-    @pyqtSlot(str)
-    def printSDFiles(self, filename):
-        self._sendCommand("M23 " + filename)
+    @pyqtSlot(str,str,str)
+    def printSDFiles(self, drive_prefix, current_path, filename):
+        self._sendCommand("M23 " + drive_prefix + current_path + filename)
         self._sendCommand("M24")
 
     @pyqtSlot()
