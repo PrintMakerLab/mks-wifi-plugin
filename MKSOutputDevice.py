@@ -76,8 +76,12 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
         self.init_translations()
 
-        self._address = address
-        self._port = 8080
+        if len(address.split(':')) > 1:
+            self._address = address.split(':')[0]
+            self._port = int(address.split(':')[1])
+        else:
+            self._address = address
+            self._port = 8080
         self._key = instance_id
         self._properties = properties
 

@@ -716,10 +716,10 @@ Cura.MachineAction {
                 Cura.TextField {
                     id: addressField
                     width: parent.width
-                    maximumLength: 40
+                    maximumLength: 256
                     validator: RegularExpressionValidator
                     {
-                        regularExpression: /[a-zA-Z0-9\.\-\_]*/
+                        regularExpression: /[a-zA-Z0-9\.\-\_\:]*/
                     }
                 }
 
