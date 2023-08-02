@@ -4,7 +4,6 @@
 import QtQuick 6.0
 import UM 1.6 as UM
 import Cura 1.7 as Cura
-import MKSPlugin 1.0 as MKSPlugin
 
 import QtQuick.Controls 6.0
 import QtQuick.Layouts 6.0
