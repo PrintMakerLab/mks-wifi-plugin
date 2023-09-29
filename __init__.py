@@ -4,7 +4,6 @@ import os, json
 
 from . import MKSOutputDevicePlugin
 from . import MachineConfig
-from PyQt6.QtQml import qmlRegisterType
 from UM.i18n import i18nCatalog
 from UM.Version import Version
 from UM.Application import Application
@@ -16,10 +15,10 @@ catalog = i18nCatalog("cura")
 def getMetaData():
     return {}
 
+
 #   \param app The application that the plug-in needs to register with.
 def register(app):
     if match_version():
-        qmlRegisterType(MKSOutputDevicePlugin.MKSOutputDevicePlugin, "MKSPlugin", 1, 0, "MKSOutputDevicePlugin")
         return {
             "output_device": MKSOutputDevicePlugin.MKSOutputDevicePlugin(),
             "machine_action": MachineConfig.MachineConfig()
