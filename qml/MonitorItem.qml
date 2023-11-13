@@ -235,7 +235,7 @@ Component
 
                 Cura.SecondaryButton {
                     id: moreButton
-                    
+
                     anchors.top: percentageLabelSpacer.bottom
                     anchors.topMargin: UM.Theme.getSize("progressbar").height +  Math.round(UM.Theme.getSize("thick_margin").height / 4) + UM.Theme.getSize("thick_margin").height
                     anchors.right: parent.right
@@ -261,6 +261,8 @@ Component
 
             Column {
                 spacing: UM.Theme.getSize("default_margin").height
+
+                anchors.fill: parent
 
                 Row {
                     spacing: UM.Theme.getSize("default_margin").height
@@ -307,10 +309,21 @@ Component
                     }
                 }
 
+                Row {
+                    spacing: UM.Theme.getSize("default_margin").height
+
+                    UM.Label {
+                        height: drivePrefixTextInput.height
+                        verticalAlignment: Text.AlignVCenter
+                        wrapMode: Text.WordWrap
+                        text: catalog.i18nc("@label", "If the Print/Delete buttons aren't working, adjust the Drive prefix above. \nChoose 'None' or '1:/' based on your printer's firmware (e.g., 'None' for Marlin, '1:/' for FlyingBear Ghost).")
+                    }
+                }
+
                 Cura.ScrollView {
                     id: objectListContainer
                     width: sdDialog.width-UM.Theme.getSize("default_margin").height*1.5
-                    height: sdDialog.height - btnPrint.height*2 - drivePrefixTextInput.height*2
+                    height: sdDialog.height - btnPrint.height*2 - drivePrefixTextInput.height*2 -drivePrefixTextInput.height*2
 
                     ScrollBar.horizontal.policy: ScrollBar.AlwaysOff
                     ScrollBar.vertical.policy: ScrollBar.AsNeeded
