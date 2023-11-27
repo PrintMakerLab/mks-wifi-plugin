@@ -1,14 +1,22 @@
 # MKS WiFi plugin #
 
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=alert_status)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=bugs)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
-[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=code_smells)](https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin)
+<div align = center>
 
-[![Badge Size]][#]   
-[![Badge License]][License]   
+[![Badge License]][License] 
 [![Badge Contributors]][Contributors]
 [![Badge Downloads]](https://github.com/PrintMakerLab/mks-wifi-plugin/releases/latest)
+
+[![Button Report]][Report]
+[![Button Question]][Question]
+[![Button Localize]][Localize]
+
+[![Badge Quality Gate Status]][Quality Gate]
+[![Badge Maintainability Rating]][Maintainability]
+[![Badge Bugs]][Bugs]
+[![Badge Code Smells]][Code Smells]
+
+</div>
+<br>
 
 ## Description ##
 
@@ -53,3 +61,35 @@ To create new translation, or improve existing one, please check [automatic tran
 
 ## Funding ##
  The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/paulhelgeson "https://www.paypal.me/paulhelgeson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
+
+
+<!----------------------------------------------------------------------------->
+
+[Quality Gate]: https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin
+[Maintainability]: https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin
+[Bugs]: https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin
+[Code Smells]: https://sonarcloud.io/dashboard?id=Jeredian_mks-wifi-plugin
+[Contributors]: https://github.com/PrintMakerLab/mks-wifi-plugin/graphs/contributors
+[Localize]: https://github.com/PrintMakerLab/mks-wifi-plugin/wiki/Automatic-Translation
+[License]: LICENSE
+[Report]: https://github.com/PrintMakerLab/mks-wifi-plugin/issues/new/choose
+[Question]: https://t.me/mks_wifi_plugin_reception
+
+<!---------------------------------[ Badges ]---------------------------------->
+
+[Badge Contributors]: https://img.shields.io/github/contributors/PrintMakerLab/mks-wifi-plugin?style=for-the-badge&logoColor=white&labelColor=db5e8a&color=ab4a6c&logo=GitHub
+[Badge License]: https://img.shields.io/badge/License-AGPL_3-blue.svg?style=for-the-badge&labelColor=458cb5&logoColor=white&logo=GNU
+[Badge Downloads]: https://img.shields.io/github/downloads-pre/PrintMakerLab/mks-wifi-plugin/latest/total?style=for-the-badge
+
+
+<!---------------------------------[ Sonarqube Badges ]---------------------------------->
+[Badge Quality Gate Status]: https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=alert_status
+[Badge Maintainability Rating]: https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=sqale_rating
+[Badge Bugs]: https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=bugs
+[Badge Code Smells]: https://sonarcloud.io/api/project_badges/measure?project=Jeredian_mks-wifi-plugin&metric=code_smells
+
+<!---------------------------------[ Buttons ]--------------------------------->
+
+[Button Localize]: https://img.shields.io/badge/Help_Localize-68BC71?style=for-the-badge&logoColor=white&logo=GoogleTranslate
+[Button Report]: https://img.shields.io/badge/Report_Issues-a1283D?style=for-the-badge&logoColor=white&logo=Cliqz
+[Button Question]: https://img.shields.io/badge/Ask_question-26A5E4?style=for-the-badge&logoColor=white&logo=telegram
