@@ -19,7 +19,7 @@ Marketplace:
   - Plugin is available through the Cura Marketplace as the MKS Wifi Plugin.
 
 Manually with .curapackage:
-  - Download .curapackage file of the selected [release](https://github.com/Jeredian/mks-wifi-plugin/releases);
+  - Download .curapackage file of the selected [release](https://github.com/PrintMakerLab/mks-wifi-plugin/releases);
   - Open Cura on the Prepare tab;
   - Drag and drop .curapackage on this tab.
 
@@ -31,18 +31,18 @@ Manually with sources:
   
 Notes:
   - Latest version of MKS WiFi plugin is only available for Cura 5.0 or higher version;
-  - For Cura versions 4.7-4.13.1 please manually install version [1.3.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.3.2);
-  - For Cura versions 4.5-4.6 please manually install version [1.2.2](https://github.com/Jeredian/mks-wifi-plugin/releases/tag/1.2.2).
+  - For Cura versions 4.7-4.13.1 please manually install version [1.3.2](https://github.com/PrintMakerLab/mks-wifi-plugin/releases/tag/1.3.2);
+  - For Cura versions 4.5-4.6 please manually install version [1.2.2](https://github.com/PrintMakerLab/mks-wifi-plugin/releases/tag/1.2.2).
 
 ## Troubleshooting ##
 
-Please [create a new GitHub issue](https://github.com/Jeredian/mks-wifi-plugin/issues/new/choose) and provide all details according to the template.
+Please [create a new GitHub issue](https://github.com/PrintMakerLab/mks-wifi-plugin/issues/new/choose) and provide all details according to the template.
 
 Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_reception).
 
 ## Translation ##
 
-To create new translation, or improve existing one, please check [automatic translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Automatic-Translation) or [manual translation guide](https://github.com/Jeredian/mks-wifi-plugin/wiki/Manual-Translation).
+To create new translation, or improve existing one, please check [automatic translation guide](https://github.com/PrintMakerLab/mks-wifi-plugin/wiki/Automatic-Translation) or [manual translation guide](https://github.com/PrintMakerLab/mks-wifi-plugin/wiki/Manual-Translation).
 
 ## Funding ##
- The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/PaulHelgesson "https://www.paypal.me/PaulHelgesson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
+ The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/paulhelgeson "https://www.paypal.me/paulhelgeson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
