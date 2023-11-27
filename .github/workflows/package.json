@@ -3,7 +3,8 @@
     "author": {
         "author_id": "jeredian",
         "display_name": "Jeredian",
-        "email": "djerefian@gmail.com",
+        "name": "Pavel Poliakov",
+        "email": "djeredian@gmail.com",
         "website": "https://github.com/Jeredian"
     },
     "description": "Connect to MKS Robin WiFi/MKS TFT WiFi in Cura",
