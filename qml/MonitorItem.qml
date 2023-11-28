@@ -25,13 +25,6 @@ Component
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
         UM.I18nCatalog { id: cura_catalog; name: "cura"}
 
-        // Item
-        // {
-        //     id: horizontalCenterItem
-        //     anchors.left: parent.left
-        //     anchors.right: base.left
-        // }
-
         Rectangle {
             color: UM.Theme.getColor("main_background")
 
@@ -110,14 +103,14 @@ Component
                             UM.Label {
                                 text: catalog.i18nc("@label", "E0")
                                 color: UM.Theme.getColor("setting_control_text")
-                                width: height
+                                width: UM.Theme.getSize("setting_control").height
                                 height: UM.Theme.getSize("setting_control").height
                                 horizontalAlignment: Text.AlignHCenter
                             }
 
                             Cura.SecondaryButton {
                                 iconSource: UM.Theme.getIcon("ChevronSingleUp");
-                                leftPadding: (width - iconSize) / 2
+                                leftPadding: (_buttonSize - iconSize) / 2
                                 width: _buttonSize
                                 height: _buttonSize
 
@@ -125,7 +118,7 @@ Component
                             }
                             Cura.SecondaryButton {
                                 iconSource: UM.Theme.getIcon("ChevronSingleDown");
-                                leftPadding: (width - iconSize) / 2
+                                leftPadding: (_buttonSize - iconSize) / 2
                                 width: _buttonSize
                                 height: _buttonSize
 
