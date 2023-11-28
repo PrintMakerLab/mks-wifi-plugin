@@ -33,5 +33,4 @@ jobs:
           cd build
           files="$(find ../ -type f -name "*.curapackage" -printf "-a %p ")"
           gh release edit $files -m "" "$RELEASE_VERSION"
-
-      
+          
