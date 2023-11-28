@@ -31,6 +31,7 @@ jobs:
           RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
         run: |
           cd build
-          files="$(find ../ -type f -name "*.curapackage" -printf "-a %p ")"
-          gh release edit $files -m "" "$RELEASE_VERSION"
+          for f in $(find ../ -type f -name "*.curapackage"); do
+            gh release upload $RELEASE_VERSION $f --clobber
+          done
           
