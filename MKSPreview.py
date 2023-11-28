@@ -103,7 +103,7 @@ def add_preview(self):
 
         # adding to header
         gcode_list[0] += processed_marker
-        gcode_list[0] += "; Postprocessed by [MKS WiFi plugin](https://github.com/Jeredian/mks-wifi-plugin)\n"
+        gcode_list[0] += "; Postprocessed by [MKS WiFi plugin](https://github.com/PrintMakerLab/mks-wifi-plugin)\n"
         gcode_list[0] += "; simage=%d\n" % simage
         gcode_list[0] += "; gimage=%d\n" % gimage
         gcode_list[0] = screenshot_string + gcode_list[0]

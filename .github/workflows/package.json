@@ -3,7 +3,8 @@
     "author": {
         "author_id": "jeredian",
         "display_name": "Jeredian",
-        "email": "djerefian@gmail.com",
+        "name": "Pavel Poliakov",
+        "email": "djeredian@gmail.com",
         "website": "https://github.com/Jeredian"
     },
     "description": "Connect to MKS Robin WiFi/MKS TFT WiFi in Cura",
@@ -13,5 +14,5 @@
     "package_version": "0.0.0",
     "sdk_version": 0,
     "sdk_version_semver": "0.0.0",
-    "website": "https://github.com/Jeredian/mks-wifi-plugin"
+    "website": "https://github.com/PrintMakerLab/mks-wifi-plugin"
 }

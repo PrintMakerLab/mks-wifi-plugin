@@ -13,7 +13,7 @@ jobs:
      steps:
       - name: "Translation"
         id: translation
-        uses: Elkin-Vasily/cura-plugin-translation@v1
+        uses: PrintMakerLab/cura-plugin-translation@v2
         with:
           translation_folder: 'i18n'
           translation_name: 'mksplugin'
