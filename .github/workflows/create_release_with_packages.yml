@@ -32,4 +32,6 @@ jobs:
         run: |
           cd build
           files="$(find ../ -type f -name "*.curapackage" -printf "-a %p ")"
-          hub release edit $files -m "" "$RELEASE_VERSION"
+          gh release edit $files -m "" "$RELEASE_VERSION"
+
+      
