@@ -25,13 +25,6 @@ Component
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
         UM.I18nCatalog { id: cura_catalog; name: "cura"}
 
-        // Item
-        // {
-        //     id: horizontalCenterItem
-        //     anchors.left: parent.left
-        //     anchors.right: base.left
-        // }
-
         Rectangle {
             color: UM.Theme.getColor("main_background")
 
