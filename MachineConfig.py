@@ -290,9 +290,10 @@ class MachineConfig(MachineAction):
     @pyqtSlot(str)
     def setPreviewEncodeSettings(self, is_preview_encoded):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
-        if global_container_stack:
+        if global_container_stack:    
+            Logger.log("d", "Is preview encoded: "+ str(is_preview_encoded))
             if is_preview_encoded == "true":
-                global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, is_preview_encoded)
+                global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, is_preview_encoded)   
             else:
                 global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, None)
                 global_container_stack.removeMetaDataEntry(Constants.IS_PREVIEW_ENCODED)
@@ -311,7 +312,7 @@ class MachineConfig(MachineAction):
     @pyqtSlot(str, result="QVariant")
     def getScreenshotSettings(self, label):
         Logger.log("d", "Get screenshot settings for: "+ label)
-        result = {"simage": "", "gimage": ''}
+        result = {"simage": "", "gimage": '', "encoded": False}
         options = sorted(self.screenshot_info, key=lambda k: k['index'])
         for option in options:
             value = option["label"]
