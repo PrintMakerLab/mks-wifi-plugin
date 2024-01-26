@@ -1,7 +1,10 @@
 [
     { "index": 1, "label": "Default", "simage": "100", "gimage": "200" },
-    { "index": 2, "label": "FLSUN QQ-S", "simage": "", "gimage": "" },
-    { "index": 3, "label": "Flying Bear Ghost 4S/5", "simage": "50", "gimage": "200" },
-    { "index": 4, "label": "Two Trees Sapphire", "simage": "100", "gimage": "200" },
-    { "index": 5, "label": "Wanhao D12", "simage": "100", "gimage": "200" }
+    { "index": 2, "label": "Artillery Sidewinder X3", "simage": "85", "gimage": "230", "mimage": "170" },
+    { "index": 3, "label": "Elegoo Neptune2 | NeptureX", "simage": "100", "gimage": "200" },
+    { "index": 4, "label": "Elegoo Neptune3+", "simage": "160", "gimage": "200" },
+    { "index": 5, "label": "FLSUN QQ-S", "simage": "", "gimage": "" },
+    { "index": 6, "label": "Flying Bear Ghost 4S/5", "simage": "50", "gimage": "200" },
+    { "index": 7, "label": "Two Trees Sapphire", "simage": "100", "gimage": "200" },
+    { "index": 8, "label": "Wanhao D12", "simage": "100", "gimage": "200" }
 ]
