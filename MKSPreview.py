@@ -1,9 +1,12 @@
 # Copyright (c) 2021
 # MKS Plugin is released under the terms of the AGPLv3 or higher.
+from array import array
 from UM.Application import Application
 from cura.Snapshot import Snapshot
 from PyQt6 import QtCore
 from UM.Logger import Logger
+from encoders.ColPicEncoder import ColPic_EncodeStr
+
 
 from . import Constants
 
@@ -18,19 +21,21 @@ def add_leading_zeros(rgb):
         str_hex = '000' + str_hex[0:1]
     return str_hex
 
-def add_screenshot_str(img, width, height, img_type):
-    result = ""
-    b_image = img.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
-    img_size = b_image.size()
-    result += img_type
+def convertToRgb(image, height_pixel, width_pixel):
+    pixel_color = image.pixelColor(width_pixel, height_pixel)
+    r = pixel_color.red() >> 3
+    g = pixel_color.green() >> 2
+    b = pixel_color.blue() >> 3
+    rgb = (r << 11) | (g << 5) | b
+    return rgb
+
+
+def defaultEncode(scaled_image, img_type, img_size):
+    result = img_type
     datasize = 0
     for i in range(img_size.height()):
         for j in range(img_size.width()):
-            pixel_color = b_image.pixelColor(j, i)
-            r = pixel_color.red() >> 3
-            g = pixel_color.green() >> 2
-            b = pixel_color.blue() >> 3
-            rgb = (r << 11) | (g << 5) | b
+            rgb = convertToRgb(scaled_image, i, j)
             str_hex = add_leading_zeros(rgb)
             if str_hex[2:4] != '':
                 result += str_hex[2:4]
@@ -40,15 +45,72 @@ def add_screenshot_str(img, width, height, img_type):
                 datasize += 2
             if datasize >= 50:
                 datasize = 0
-        # if i != img_size.height() - 1:
         result += '\rM10086 ;'
         if i == img_size.height() - 1:
             result += "\r"
     return result
 
+def customEncode(scaled_image, img_type, img_size):
+    result = ""
+    color16 = array('H')
+    for i in range(img_size.height()):
+        for j in range(img_size.width()):    
+            rgb = convertToRgb(scaled_image, i, j)
+            color16.append(rgb)
+    max_size = img_size.height()*img_size.width()*10
+    output_data = bytearray(max_size)
+    resultInt = ColPic_EncodeStr(
+        color16, 
+        img_size.height(), 
+        img_size.width(), 
+        output_data, 
+        max_size, 
+        1024
+    )
+    # legacy code, don't try to understand
+    # in short - add img_type and new lines where its needed
+    data_without_zeros = str(output_data).replace('\\x00', '')
+    data = data_without_zeros[2:len(data_without_zeros) - 2]
+    each_line_max = 1024 - 8 - 1
+    max_lines = int(len(data)/each_line_max)
+    length_to_append = each_line_max - 3 - int(len(data)%each_line_max)+10
+    j = 0
+    for i in range(len(output_data)):
+        if (output_data[i] != 0):
+            if j == max_lines*each_line_max:
+                result += '\r;' + img_type + chr(output_data[i])
+            elif j == 0:
+                result += img_type + chr(output_data[i])
+            elif j%each_line_max == 0:
+                result += '\r' + img_type + chr(output_data[i])
+            else:
+                result += chr(output_data[i])
+            j += 1
+    result += '\r;'
+    # add zeros to the end
+    for m in range(length_to_append):
+        result += '0'
+    return result
+
+
+def add_screenshot_str(img, width, height, img_type, encoded):
+    result = ""
+    scaled_image = img.scaled(width, height, QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+    img_size = scaled_image.size()
+    try:
+        if encoded:
+            result = customEncode(scaled_image, img_type, img_size)
+        else:
+            result = defaultEncode(scaled_image, img_type, img_size)
+    except Exception as e:
+        Logger.log("d", "Unable to encode screenshot: " + str(e))
+    return result
+
 def take_screenshot():
-    cut_image = Snapshot.snapshot(width = 900, height = 900)
-    return cut_image
+    # param width: width of the aspect ratio default 300
+    # param height: height of the aspect ratio default 300
+    # return: None when there is no model on the build plate otherwise it will return an image
+    return Snapshot.snapshot(width = 900, height = 900)
 
 def add_preview(self):
     application = Application.getInstance()
