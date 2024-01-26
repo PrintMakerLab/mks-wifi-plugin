@@ -139,15 +139,18 @@ def add_preview(self):
     if image:
         meta_data = global_container_stack.getMetaData()
         Logger.log("d", "Get current preview settings.")
+        encoded = False
+        if Constants.IS_PREVIEW_ENCODED in meta_data:
+            encoded = True
         if Constants.SIMAGE in meta_data:
             simage = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
             Logger.log("d", "mks_simage value: " + str(simage))
-            screenshot_string += add_screenshot_str(image, simage, simage, ";simage:")
+            screenshot_string += add_screenshot_str(image, simage, simage, ";simage:",encoded)
         if Constants.GIMAGE in meta_data:
             gimage = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
             Logger.log("d", "mks_gimage value: " + str(gimage))
             # ;; - needed for correct colors. do not remove them.
-            screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:")
+            screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:",encoded)
         screenshot_string += "\r"
     else:
         Logger.log("d", "Skipping adding screenshot")

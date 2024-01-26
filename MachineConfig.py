@@ -177,6 +177,8 @@ class MachineConfig(MachineAction):
             global_container_stack.removeMetaDataEntry(Constants.SIMAGE)
             global_container_stack.setMetaDataEntry(Constants.GIMAGE, None)
             global_container_stack.removeMetaDataEntry(Constants.GIMAGE)
+            global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, None)
+            global_container_stack.removeMetaDataEntry(Constants.IS_PREVIEW_ENCODED)
             global_container_stack.setMetaDataEntry(Constants.CURRENT_IP, None)
             global_container_stack.removeMetaDataEntry(Constants.CURRENT_IP)
             global_container_stack.setMetaDataEntry(Constants.IP_LIST, None)
@@ -276,6 +278,25 @@ class MachineConfig(MachineAction):
                 return True
         return False
 
+    @pyqtSlot(result=bool)
+    def isPreviewEncoded(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.IS_PREVIEW_ENCODED in meta_data:
+                return True
+        return False
+    
+    @pyqtSlot(str)
+    def setPreviewEncodeSettings(self, is_preview_encoded):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if is_preview_encoded == "true":
+                global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, is_preview_encoded)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.IS_PREVIEW_ENCODED, None)
+                global_container_stack.removeMetaDataEntry(Constants.IS_PREVIEW_ENCODED)
+
     @pyqtSlot(result="QVariantList")
     def getScreenshotOptions(self):
         Logger.log("d", "Trying to get screenshot options")
@@ -297,6 +318,7 @@ class MachineConfig(MachineAction):
             if value == label:
                 result["simage"] = option["simage"]
                 result["gimage"] = option["gimage"]
+                result["encoded"] = option["encoded"]
         return result
 
     @pyqtSlot(str)
