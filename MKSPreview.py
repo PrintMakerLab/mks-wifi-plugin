@@ -5,10 +5,10 @@ from UM.Application import Application
 from cura.Snapshot import Snapshot
 from PyQt6 import QtCore
 from UM.Logger import Logger
-from encoders.ColPicEncoder import ColPic_EncodeStr
 
 
 from . import Constants
+from .encoders import ColPicEncoder
 
 def add_leading_zeros(rgb):
     str_hex = "%x" % rgb
@@ -59,7 +59,7 @@ def customEncode(scaled_image, img_type, img_size):
             color16.append(rgb)
     max_size = img_size.height()*img_size.width()*10
     output_data = bytearray(max_size)
-    resultInt = ColPic_EncodeStr(
+    resultInt = ColPicEncoder.ColPic_EncodeStr(
         color16, 
         img_size.height(), 
         img_size.width(), 
