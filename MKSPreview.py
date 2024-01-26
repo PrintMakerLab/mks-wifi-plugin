@@ -30,7 +30,7 @@ def convertToRgb(image, height_pixel, width_pixel):
     return rgb
 
 
-def defaultEncode(scaled_image, img_type, img_size):
+def default_encode(scaled_image, img_type, img_size):
     result = img_type
     datasize = 0
     for i in range(img_size.height()):
@@ -50,7 +50,7 @@ def defaultEncode(scaled_image, img_type, img_size):
             result += "\r"
     return result
 
-def customEncode(scaled_image, img_type, img_size):
+def custom_encode(scaled_image, img_type, img_size):
     result = ""
     color16 = array('H')
     for i in range(img_size.height()):
@@ -99,9 +99,9 @@ def add_screenshot_str(img, width, height, img_type, encoded):
     img_size = scaled_image.size()
     try:
         if encoded:
-            result = customEncode(scaled_image, img_type, img_size)
+            result = custom_encode(scaled_image, img_type, img_size)
         else:
-            result = defaultEncode(scaled_image, img_type, img_size)
+            result = default_encode(scaled_image, img_type, img_size)
     except Exception as e:
         Logger.log("d", "Unable to encode screenshot: " + str(e))
     return result
@@ -111,6 +111,25 @@ def take_screenshot():
     # param height: height of the aspect ratio default 300
     # return: None when there is no model on the build plate otherwise it will return an image
     return Snapshot.snapshot(width = 900, height = 900)
+
+def generate_preview(global_container_stack, image):
+    screenshot_string = ""
+    meta_data = global_container_stack.getMetaData()
+    Logger.log("d", "Get current preview settings.")
+    encoded = False
+    if Constants.IS_PREVIEW_ENCODED in meta_data:
+        encoded = True
+    if Constants.SIMAGE in meta_data:
+        simage = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
+        Logger.log("d", "mks_simage value: " + str(simage))
+        screenshot_string += add_screenshot_str(image, simage, simage, ";simage:",encoded)
+    if Constants.GIMAGE in meta_data:
+        gimage = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
+        Logger.log("d", "mks_gimage value: " + str(gimage))
+            # ;; - needed for correct colors. do not remove them.
+        screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:",encoded)
+    screenshot_string += "\r"
+    return simage,gimage,screenshot_string
 
 def add_preview(self):
     application = Application.getInstance()
@@ -137,21 +156,7 @@ def add_preview(self):
     gimage = 0
 
     if image:
-        meta_data = global_container_stack.getMetaData()
-        Logger.log("d", "Get current preview settings.")
-        encoded = False
-        if Constants.IS_PREVIEW_ENCODED in meta_data:
-            encoded = True
-        if Constants.SIMAGE in meta_data:
-            simage = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
-            Logger.log("d", "mks_simage value: " + str(simage))
-            screenshot_string += add_screenshot_str(image, simage, simage, ";simage:",encoded)
-        if Constants.GIMAGE in meta_data:
-            gimage = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
-            Logger.log("d", "mks_gimage value: " + str(gimage))
-            # ;; - needed for correct colors. do not remove them.
-            screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:",encoded)
-        screenshot_string += "\r"
+        simage, gimage, screenshot_string = generate_preview(global_container_stack, image)
     else:
         Logger.log("d", "Skipping adding screenshot")
         return
@@ -177,3 +182,4 @@ def add_preview(self):
 
     if dict_changed:
         setattr(scene, "gcode_dict", gcode_dict)
+
