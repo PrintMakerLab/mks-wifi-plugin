@@ -21,7 +21,7 @@ def add_leading_zeros(rgb):
         str_hex = '000' + str_hex[0:1]
     return str_hex
 
-def convertToRgb(image, height_pixel, width_pixel):
+def convert_to_rgb(image, height_pixel, width_pixel):
     pixel_color = image.pixelColor(width_pixel, height_pixel)
     r = pixel_color.red() >> 3
     g = pixel_color.green() >> 2
@@ -35,7 +35,7 @@ def default_encode(scaled_image, img_type, img_size):
     datasize = 0
     for i in range(img_size.height()):
         for j in range(img_size.width()):
-            rgb = convertToRgb(scaled_image, i, j)
+            rgb = convert_to_rgb(scaled_image, i, j)
             str_hex = add_leading_zeros(rgb)
             if str_hex[2:4] != '':
                 result += str_hex[2:4]
@@ -55,7 +55,7 @@ def custom_encode(scaled_image, img_type, img_size):
     color16 = array('H')
     for i in range(img_size.height()):
         for j in range(img_size.width()):    
-            rgb = convertToRgb(scaled_image, i, j)
+            rgb = convert_to_rgb(scaled_image, i, j)
             color16.append(rgb)
     max_size = img_size.height()*img_size.width()*10
     output_data = bytearray(max_size)
