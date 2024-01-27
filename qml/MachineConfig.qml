@@ -378,6 +378,7 @@ Cura.MachineAction {
                                         var settings = manager.getScreenshotSettings(currentValue)
                                         manager.setSimage(settings.simage)
                                         manager.setGimage(settings.gimage)
+                                        manager.setPreviewEncodeSettings(settings.encoded)
                                     }
                                     simageTextInput.text = manager.getSimage()
                                     gimageTextInput.text = manager.getGimage()

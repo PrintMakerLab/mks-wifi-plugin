@@ -12,6 +12,7 @@ AUTO_MONITOR_TAB = "mks_monitor_tab_auto_open"
 SCREENSHOT_INDEX = "mks_screenshot_index"
 SIMAGE = "mks_simage"
 GIMAGE = "mks_gimage"
+IS_PREVIEW_ENCODED = "mks_is_preview_encoded"
 
 # Errors
 EXCEPTION_MESSAGE = "An exception occurred in network connection: %s"
