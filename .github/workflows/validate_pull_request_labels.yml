@@ -1,0 +1,23 @@
+name: "Pull Request Labels Validation"
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - labeled
+      - unlabeled
+jobs:
+  check_pull_request_labels:
+    name: "Check labels"
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: docker://agilepathway/pull-request-label-checker:latest
+        with:
+          prefix_mode: true
+          one_of: "pull request:"
+          none_of: "issue:"
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
