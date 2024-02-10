@@ -1,6 +1,6 @@
 name: Bug Report
 description: Create a report to help us fix issues.
-labels: "type: bug"
+labels: ["issue: bug", "status: pending"]
 body:
 - type: markdown
   attributes:
