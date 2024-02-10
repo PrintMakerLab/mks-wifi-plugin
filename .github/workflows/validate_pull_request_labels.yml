@@ -37,4 +37,4 @@ jobs:
           count: 0
           labels: "issue: [DEV],issue: bug,issue: dependencies,issue: documentation,issue: enhancement,issue: feature-major,issue: feature-minor,issue: maintenance,issue: question"
           add_comment: true
-          message: "This PR is being prevented from merging because you have added one of our blocking labels: {{ provided }}. You'll need to remove it before this PR can be merged."
+          message: "This PR is being prevented from merging because you have added one of the 'issue:' labels. You'll need to remove it before this PR can be merged."
