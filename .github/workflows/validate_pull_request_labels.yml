@@ -9,15 +9,49 @@ on:
       - unlabeled
 jobs:
   check_pull_request_labels:
-    name: "Check labels"
+    name: "Check pull request labels"
     runs-on: ubuntu-latest
     permissions:
       issues: write
       pull-requests: write
     steps:
-      - uses: docker://agilepathway/pull-request-label-checker:latest
+      - uses: mheap/github-action-required-labels@v5
         with:
-          prefix_mode: true
-          one_of: "pull request:"
-          none_of: "issue:"
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          mode: exactly
+          count: 1
+          labels:
+            - "pull request: breaking"
+            - "pull request: bug"
+            - "pull request: community"
+            - "pull request: dependencies"
+            - "pull request: documentation"
+            - "pull request: feature-major"
+            - "pull request: feature-minor"
+            - "pull request: maintenance"
+            - "pull request: skip-changelog"
+            - "pull request: translation"
+            - "dependencies"
+          add_comment: true
+    check_issue_labels:
+    name: "Check issue labels"
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - uses: mheap/github-action-required-labels@v5
+        with:
+          mode: exactly
+          count: 0
+          labels:
+            - "issue: [DEV]"
+            - "issue: bug"
+            - "issue: dependencies"
+            - "issue: documentation"
+            - "issue: enhancement"
+            - "issue: feature-major"
+            - "issue: feature-minor"
+            - "issue: maintenance"
+            - "issue: question"
+          add_comment: true
+          message: "This PR is being prevented from merging because you have added one of our blocking labels: {{ provided }}. You'll need to remove it before this PR can be merged."
