@@ -21,7 +21,7 @@ jobs:
         with:
           mode: exactly
           count: 1
-          labels: "
+          labels: |
             pull request: breaking
             pull request: bug
             pull request: community
@@ -32,8 +32,9 @@ jobs:
             pull request: maintenance
             pull request: skip-changelog
             pull request: translation
-            dependencies"
+            dependencies
           add_comment: true
+          message: "This PR is being prevented from merging because you haven't added one of the 'pull request:' labels. You'll need to add one of them before this PR can be merged.
   check_issue_labels:
     name: "Check issue labels"
     runs-on: ubuntu-latest
@@ -45,7 +46,7 @@ jobs:
         with:
           mode: exactly
           count: 0
-          labels: "
+          labels: |
             issue: [DEV]
             issue: bug
             issue: dependencies
@@ -54,6 +55,6 @@ jobs:
             issue: feature-major
             issue: feature-minor
             issue: maintenance
-            issue: question"
+            issue: question
           add_comment: true
           message: "This PR is being prevented from merging because you have added one of our blocking labels: {{ provided }}. You'll need to remove it before this PR can be merged."
