@@ -9,23 +9,26 @@ template: |
 
 categories:
   - title: 'Breaking'
-    label: 'type: breaking'
+    label: 'pull request: breaking'
   - title: 'New'
     labels: 
-      - 'type: feature-major'
-      - 'type: feature-minor'
+      - 'pull request: feature-major'
+      - 'pull request: feature-minor'
   - title: 'Bug Fixes'
-    label: 'type: bug'
+    label: 'pull request: bug'
   - title: 'Maintenance'
     labels: 
-      - 'type: translation'
-      - 'type: maintenance'
+      - 'pull request: translation'
+      - 'pull request: maintenance'
   - title: 'Documentation'
-    label: 'type: docs'
+    label: 'pull request: documentation'
   - title: 'Dependency Updates'
-    label: 'type: dependencies'
+    labels: 
+      - 'pull request: dependencies'
+    # Default label used by Dependabot
+      - 'dependencies'
   - title: 'Community'
-    label: 'type: community'
+    label: 'pull request: community'
   - title: 'Other changes'
 
 change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
@@ -33,20 +36,22 @@ change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 version-resolver:
   major:
     labels:
-      - 'type: breaking'
+      - 'pull request: breaking'
   minor:
     labels:
-      - 'type: feature-major'
+      - 'pull request: feature-major'
   patch:
     labels:
-      - 'type: feature-minor'
-      - 'type: bug'
-      - 'type: community'
-      - 'type: dependencies'
-      - 'type: docs'
-      - 'type: maintenance'
-      - 'type: translation'
+      - 'pull request: community'
+      - 'pull request: feature-minor'
+      - 'pull request: bug'
+      - 'pull request: maintenance'
+      - 'pull request: documentation'
+      - 'pull request: translation'
+      - 'pull request: dependencies'
+    # Default label used by Dependabot
+      - 'dependencies'
   default: patch
 
 exclude-labels:
-  - 'skip-changelog'
+  - 'pull request: skip-changelog'
