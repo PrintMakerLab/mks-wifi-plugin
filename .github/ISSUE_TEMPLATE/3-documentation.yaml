@@ -1,4 +1,4 @@
-name: 'Documentation'
+name: "📚 Documentation"
 labels: ["issue: documentation", "status: pending"]
 description: 'Let us know if any documentation is missing or could be improved'
 
@@ -18,3 +18,13 @@ body:
     attributes:
       label: Are you interested in contributing to the documentation?
       description: Indicate if this is something you would like to work on, and how we can best support you in doing so. More details [on contributing](https://github.com/PrintMakerLab/.github/blob/main/CONTRIBUTING.md)
+
+
+<!--📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛
+
+Oh, hi there! 😄
+
+To expedite issue processing, please search open and closed issues before submitting a new one.
+Please read our Rules of Conduct at this repository's `.github/CODE_OF_CONDUCT.md`
+
+📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛-->
