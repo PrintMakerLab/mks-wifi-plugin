@@ -1,6 +1,6 @@
 name: Question
 description: Ask a question related to this project.
-labels: "question"
+labels: ["issue: question", "status: pending"]
 body:
 - type: markdown
   attributes:
