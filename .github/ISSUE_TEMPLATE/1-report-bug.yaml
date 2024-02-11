@@ -1,4 +1,4 @@
-name: Bug Report
+name: "🐞 Bug Report"
 description: Create a report to help us fix issues.
 labels: ["issue: bug", "status: pending"]
 body:
