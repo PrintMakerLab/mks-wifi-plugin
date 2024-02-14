@@ -1,3 +1,4 @@
+---
 name: "❓ Question"
 description: Ask a question related to this project.
 labels: ["issue: question", "status: pending"]
@@ -18,6 +19,7 @@ body:
   validations:
     required: true
 
+---
 
 <!--📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛📛
 
