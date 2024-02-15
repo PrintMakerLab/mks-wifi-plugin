@@ -28,5 +28,5 @@ jobs:
           title: '[CI] Translation update'
           body: 'Translation was automatically updated'
           commit-message: '[CI] Translation update'
-          labels: 'type: translation'
+          labels: 'pull request: translation'
           team-reviewers: owners
