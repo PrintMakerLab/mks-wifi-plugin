@@ -55,9 +55,20 @@ Please [create a new GitHub issue](https://github.com/PrintMakerLab/mks-wifi-plu
 
 Or you can ask a question in our [Telegram group](https://t.me/mks_wifi_plugin_reception).
 
+## Contributing
+
+Draft repository is a community project. We invite your participation through issues
+and pull requests! You can peruse the [contributing guidelines][Contributing].
+
 ## Translation ##
 
 To create new translation, or improve existing one, please check [automatic translation guide](https://github.com/PrintMakerLab/mks-wifi-plugin/wiki/Automatic-Translation) or [manual translation guide](https://github.com/PrintMakerLab/mks-wifi-plugin/wiki/Manual-Translation).
+
+## Developer Certificate of Origin (DCO) 
+
+Please checkout the Developer Certificate of Origin (DCO) and sign-off all you commits before sending pull requests. For any code changes to be accepted, the DCO must be signed.
+
+To sign-off commits see this[this guide][HOWTO].
 
 ## Funding ##
  The development of this plugin can be sponsored via [Paypal](https://www.paypal.me/paulhelgeson "https://www.paypal.me/paulhelgeson") or [Yoomoney](https://yoomoney.ru/to/410012506859451)
@@ -74,6 +85,8 @@ To create new translation, or improve existing one, please check [automatic tran
 [License]: LICENSE
 [Report]: https://github.com/PrintMakerLab/mks-wifi-plugin/issues/new/choose
 [Question]: https://t.me/mks_wifi_plugin_reception
+[Contributing]: https://github.com/PrintMakerLab/.github/blob/main/CONTRIBUTING.md
+[HOWTO]: https://github.com/PrintMakerLab/.github/blob/main//how_to_sign-off_commits.md
 
 <!---------------------------------[ Badges ]---------------------------------->
 
