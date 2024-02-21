@@ -114,6 +114,8 @@ def take_screenshot():
 
 def generate_preview(global_container_stack, image):
     screenshot_string = ""
+    simage = 0
+    gimage = 0
     meta_data = global_container_stack.getMetaData()
     Logger.log("d", "Get current preview settings.")
     encoded = False
