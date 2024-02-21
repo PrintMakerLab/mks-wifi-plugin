@@ -21,12 +21,6 @@ Cura.MachineAction {
 
     property var printerSupportScreenshots: manager.supportScreenshot()
     property var printerScreenshotSizesList: manager.getScreenshotOptions()
-    property var printerScreenshotIndex: {
-        var sIndex = manager.getScreenshotIndex()
-
-        screenshotComboBox.currentIndex = sIndex
-        return sIndex
-    }
 
     function connectPrinter() {
         if(base.selectedPrinter) {
@@ -334,11 +328,10 @@ Cura.MachineAction {
                                     manager.setSimage("")
                                     manager.setGimage("")
                                     manager.setScreenshotIndex("")
-                                    screenshotComboBox.currentIndex = 0
                                 }
                                 simageTextInput.text = manager.getSimage()
                                 gimageTextInput.text = manager.getGimage()
-                                screenshotComboBox.currentIndex = printerScreenshotIndex
+                                screenshotComboBox.currentIndex = manager.getScreenshotIndex()
                             }
 
                             enabled: mksSupport.checked
