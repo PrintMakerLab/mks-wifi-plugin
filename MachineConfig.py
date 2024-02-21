@@ -274,7 +274,7 @@ class MachineConfig(MachineAction):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
             meta_data = global_container_stack.getMetaData()
-            if Constants.SIMAGE in meta_data or Constants.GIMAGE in meta_data:
+            if Constants.SCREENSHOT_INDEX in meta_data or Constants.SIMAGE in meta_data or Constants.GIMAGE in meta_data:
                 return True
         return False
 
