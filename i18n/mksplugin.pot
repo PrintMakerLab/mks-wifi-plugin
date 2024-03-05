@@ -275,6 +275,23 @@ msgctxt "@label"
 msgid "Switch to Monitor Tab after file upload"
 msgstr ""
 
+#camera view (experimental), begining#
+#: qml/MachineConfig.qml:620
+msgctxt "@label"
+msgid "Camera view (experimental feature)"
+msgstr ""
+
+#: qml/MachineConfig.qml:646
+msgctxt "@label"
+msgid "Camera URL (MJPG-streamer stream URL)"
+msgstr ""
+
+#: qml/MachineConfig.qml:676
+msgctxt "@label"
+msgid "Camera video zoom (1.0 by default)"
+msgstr ""
+#camera view (experimental), end#
+
 #: qml/MachineConfig.qml:631
 msgctxt "@label"
 msgid "MKS WiFi Plugin is active for this printer"

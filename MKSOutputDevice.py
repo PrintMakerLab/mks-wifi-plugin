@@ -245,6 +245,35 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def getProperties(self):
         return self._properties
+    
+    #camera view (experimental), begining#
+    @pyqtProperty(bool)
+    def isCameraView(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.IS_CAMERA_VIEW in meta_data:
+                return True
+        return False
+    
+    @pyqtProperty(str)
+    def cameraUrl(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_URL in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.CAMERA_URL)
+        return ""
+    
+    @pyqtProperty(float)
+    def cameraVideoZoom(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_VIDEO_ZOOM in meta_data:
+                return float(global_container_stack.getMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM))
+        return 1.0
+    #camera view (experimental), end#
 
     @pyqtSlot(str, result=str)
     def getProperty(self, key):

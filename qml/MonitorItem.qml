@@ -25,6 +25,76 @@ Component
         UM.I18nCatalog { id: catalog; name:"mksplugin" }
         UM.I18nCatalog { id: cura_catalog; name: "cura"}
 
+        //camera view (experimental), begining
+        Rectangle {
+            Cura.NetworkMJPGImage {
+                id: cameraImage
+                
+                visible: OutputDevice.isCameraView
+                source: OutputDevice.cameraUrl //MJPG-streamer video stream URL
+                property real videoZoom: OutputDevice.cameraVideoZoom
+
+                property real videoWidth: Math.floor(imageWidth * videoZoom)
+                property real videoHeight: Math.floor(imageHeight * videoZoom)
+                property real modVideoWidth: Math.floor(videoWidth * (parent.height / videoHeight))
+                property real modVideoHeight: Math.floor(videoHeight * (parent.width / videoWidth))
+
+                width: {
+                    if (videoWidth < parent.width) {
+                        if (videoHeight < parent.height) {
+                            return videoWidth
+                        } else {
+                            return modVideoWidth
+                        }
+                    } else {
+                        if (modVideoWidth < parent.width) {
+                            return modVideoWidth
+                        } else {
+                            return parent.width
+                        }
+                    }
+                }
+                height: {
+                    if (videoHeight < parent.height) {
+                        if (videoWidth < parent.width) {
+                            return videoHeight
+                        } else {
+                            return modVideoHeight
+                        }
+                    } else {
+                        if (modVideoHeight < parent.height) {
+                            return modVideoHeight
+                        } else {
+                            return parent.height
+                        }
+                    }
+                }
+
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.verticalCenter: parent.verticalCenter
+
+                Component.onCompleted: {
+                    if (visible) {
+                        start();
+                    }
+                }
+                onVisibleChanged: {
+                    if (visible) {
+                        start();
+                    } else {
+                        stop();
+                    }
+                }
+            }
+
+            color: UM.Theme.getColor("detail_background")
+            anchors.left: parent.left
+            width: parent.width - (Math.floor(parent.width * 0.35) - ((Math.floor(parent.width * 0.35) % 2) ? 0 : 1))
+            anchors.top: parent.top
+            anchors.bottom: parent.bottom
+        }
+        //camera view (experimental), end
+
         Rectangle {
             color: UM.Theme.getColor("main_background")
 
