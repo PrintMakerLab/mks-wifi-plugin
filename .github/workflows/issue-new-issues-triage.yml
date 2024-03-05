@@ -1,0 +1,66 @@
+name: "Issue / New issue triage"
+on:
+  issues:
+    types: [labeled, opened]
+
+permissions:
+  issues: write
+
+jobs:
+  add-comment-to-enhancement:
+    name: "On enhancement"
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.label.name, format('issue{0} enhancement', ':')) && contains(github.event.label.name, format('status{0} pending', ':')) }}
+    steps:
+      - name: Log github event
+        env:
+          $GITHUB_CONTEXT_LABELS: ${{ toJson(github.event.label) }}
+        run: echo "$GITHUB_CONTEXT_LABELS"
+      - name: Add comment
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for submitting a feature request. Your proposal is open and will soon be reviewed by the Print Maker Lab team.<br><br>If your proposal is accepted and the Print Maker Lab team has bandwidth they will take on the issue, or else request you or other volunteers from the community to work on this issue.'
+            })
+  add-comment-to-bug:
+    name: "On bug report"
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.label.name, format('issue{0} bug', ':')) && contains(github.event.label.name, format('status{0} pending', ':')) }}
+    steps:
+      - name: Log github event
+        env:
+          $GITHUB_CONTEXT_LABELS: ${{ toJson(github.event.label) }}
+        run: echo "$GITHUB_CONTEXT_LABELS"
+      - name: Add comment
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for submitting a bug report. Your message will be reviewed shortly by the Print Maker Lab team.<br><br>If your request is reproducible and the Print Maker Lab team has the bandwidth, they will look into it, or ask you or other community volunteers to work on it.'
+            })
+  add-comment-to-question:
+    name: "On question"
+    runs-on: ubuntu-latest
+    if: ${{ contains(github.event.label.name, format('issue{0} question', ':')) && contains(github.event.label.name, format('status{0} pending', ':')) }}
+    steps:
+      - name: Log github event
+        env:
+          $GITHUB_CONTEXT_LABELS: ${{ toJson(github.event.label) }}
+        run: echo "$GITHUB_CONTEXT_LABELS"
+      - name: Add comment
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: 'Thank you for submitting your question. Your question will be reviewed shortly by the Print Maker Lab team.'
+            })

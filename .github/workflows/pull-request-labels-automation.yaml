@@ -1,0 +1,51 @@
+name: "Pull request / Labels "
+
+on:
+  pull_request_target:
+    types:
+      - opened
+      - reopened
+      - edited
+      - synchronize
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    if: github.event.pull_request.labels[0] == null
+    name: "Assign labels"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate token
+        uses: tibdex/github-app-token@v2.1.0
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+          
+      - name: "Apply label"
+        uses: bcoe/conventional-release-labels@v1.3.1
+        with:          
+          token: ${{ steps.generate_token.outputs.token }}
+          # Labels assigned based on pr name prefix
+          type_labels: >
+            {
+              "feat": "pull request: feature-minor",
+              "fix": "pull request: bug",
+              "build": "pull request: maintenance",
+              "ci": "pull request: maintenance",
+              "refactor": "pull request: maintenance",
+              "test": "pull request: maintenance",
+              "style": "pull request: maintenance",
+              "translation": "pull request: translation",
+              "docs": "pull request: documentation",
+              "revert": "pull request: skip-changelog"
+            }
+          # Do not ignore any labels (default ignores chore:)
+          ignored_types: '[]'
