@@ -1,0 +1,35 @@
+name: Project Automation / Issue
+on:
+  issues:
+    types: [opened, reopened, labeled]
+  workflow_call:
+    secrets:
+      ADD_TO_PROJECT_PAT:
+        required: true
+
+env:
+  KANBAN_PROJECT_URL: https://github.com/orgs/PrintMakerLab/projects/3
+  TRACKER_PROJECT_URL: https://github.com/orgs/PrintMakerLab/projects/4
+  LABEL_BUG: 'issue: bug'
+  LABEL_SECURITY: 'issue: security'
+  LABEL_BACKLOG: 'status: backlog'
+
+jobs:
+  add-to-kanban-project:
+    name: Add security, bug and team selected issues to the Kanban project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.5.0
+        with:
+          labeled: ${{ env.LABEL_BUG }}, ${{ env.LABEL_BACKLOG }}, ${{ env.LABEL_SECURITY }}
+          project-url: ${{ env.KANBAN_PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}
+
+  add-to-tracker-project:
+    name: Add all issues to the Issue tracker project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/add-to-project@v0.5.0
+        with:
+          project-url: ${{ env.TRACKER_PROJECT_URL }}
+          github-token: ${{ secrets.ADD_TO_PROJECT_PAT }}

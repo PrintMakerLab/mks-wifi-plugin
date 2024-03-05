@@ -1,0 +1,69 @@
+name: "Documentation / Changelog"
+
+on:
+  release:
+    types: 
+      - released
+
+jobs:
+  update:
+    name: Update Changelog
+    runs-on: ubuntu-latest
+
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the 
+      # updated CHANGELOG back to the repository.
+      # https://github.blog/changelog/2023-02-02-github-actions-updating-the-default-github_token-permissions-to-read-only/
+      contents: write
+
+    steps:
+      - name: Generate token
+        uses: tibdex/github-app-token@v2.1.0
+        id: generate_token
+        with:
+          app_id: ${{ secrets.APP_ID }}
+          private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          # Fetch entire history of repository to ensure release date can be
+          # extracted from commit of the given tag.
+          fetch-depth: 0
+          # Checkout target branch of this release. Ensures that the CHANGELOG
+          # is not out of date.
+          ref: ${{ github.event.release.target_commitish }}
+          token: ${{ steps.generate_token.outputs.token }}
+
+      - name: Extract release date from git tag
+        id: release_date
+        run: |
+          echo "date=$(git log -1 --date=short --format=%ad '${{ github.event.release.tag_name }}')" >> $GITHUB_OUTPUT;
+
+      - name: Update Changelog
+        uses: stefanzweifel/changelog-updater-action@v1.10.0
+        with:          
+        # Pass extracted release date, release notes and version to the Action.
+          release-date: ${{ steps.release_date.outputs.date }}
+          release-notes: ${{ github.event.release.body }}
+          latest-version: ${{ github.event.release.name }}
+          parse-github-usernames: true
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6.0.0
+        with:
+          token: ${{ steps.generate_token.outputs.token }}
+          branch: 'docs/update-changelog-${{ github.event.release.name }}'
+          branch-suffix: short-commit-hash
+          delete-branch: true
+          draft: false
+          committer: 'Print Maker Lab [bot] <831143+printmakerlab-bot[bot]@users.noreply.github.com>'
+          author: 'Print Maker Lab [bot]'
+          commit-message: 'docs(changelog): update changelog'
+          signoff: true
+          title: 'docs(changelog): update changelog'
+          body: |
+            Automated changelog PR for release: `${{ github.event.release.name }}`
+          labels: |
+            pull request: documentation
+            pull request: skip-changelog
