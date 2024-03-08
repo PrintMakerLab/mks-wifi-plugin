@@ -653,7 +653,8 @@ Cura.MachineAction {
                             maximumLength: 1024
                             validator: RegularExpressionValidator
                             {
-                                regularExpression: /^((?:http:\/\/)|(?:https:\/\/))\S{0,}$/
+                                //Epty string or URL begining with http:// or https://
+                                regularExpression: /^$|(^((?:http:\/\/)|(?:https:\/\/))\S{0,}$)/
                             }
 
                             text: manager.getCameraUrl()

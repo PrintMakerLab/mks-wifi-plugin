@@ -93,13 +93,13 @@ class MachineConfig(MachineAction):
             meta_data = global_container_stack.getMetaData()
             if Constants.CAMERA_URL in meta_data:
                 return global_container_stack.getMetaDataEntry(Constants.CAMERA_URL)
-        return "http://"
+        return "" 
     
     @pyqtSlot(str)
     def setCameraUrl(self, camera_url):
         global_container_stack = Application.getInstance().getGlobalContainerStack()
         if global_container_stack:
-            if camera_url != "http://":
+            if camera_url != "":
                 global_container_stack.setMetaDataEntry(Constants.CAMERA_URL, camera_url)
             else:
                 global_container_stack.setMetaDataEntry(Constants.CAMERA_URL, None)

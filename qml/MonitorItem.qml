@@ -75,11 +75,13 @@ Component
 
                 Component.onCompleted: {
                     if (visible) {
+                        if(source === "") return; //check if camera URL is empty
                         start();
                     }
                 }
                 onVisibleChanged: {
                     if (visible) {
+                        if(source === "") return; //check if camera URL is empty
                         start();
                     } else {
                         stop();
