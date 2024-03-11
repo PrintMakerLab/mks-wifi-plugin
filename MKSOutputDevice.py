@@ -254,7 +254,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     #Execute when metaData change
     def _onMetaDataChanged(self):
-        # Logger.log("i", "On property changed.Ok...")
         self.cameraSettingsChanged.emit()
 
     @pyqtProperty(bool, notify=cameraSettingsChanged)
@@ -273,7 +272,6 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             meta_data = global_container_stack.getMetaData()
             if Constants.CAMERA_URL in meta_data:
                 camera_url = global_container_stack.getMetaDataEntry(Constants.CAMERA_URL)
-                # Logger.log("i", camera_url)
                 if camera_url:
                     return QUrl(camera_url) 
         return QUrl("")

@@ -653,7 +653,7 @@ Cura.MachineAction {
                             maximumLength: 1024
                             validator: RegularExpressionValidator
                             {
-                                //Epty string or URL begining with http:// or https://
+                                //Empty string or URL begins with http:// or https://
                                 regularExpression: /^$|(^((?:http:\/\/)|(?:https:\/\/))\S{0,}$)/
                             }
 
