@@ -66,6 +66,65 @@ class MachineConfig(MachineAction):
     printersChanged = pyqtSignal()
     printersTryToConnect = pyqtSignal()
 
+    #camera view (experimental), begining#
+    @pyqtSlot(result=bool)
+    def isCameraViewEnabled(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.IS_CAMERA_VIEW in meta_data:
+                return True
+        return False
+    
+    @pyqtSlot(str)
+    def setCameraViewEnable(self, is_camera_view_enabled):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if is_camera_view_enabled == "true":
+                global_container_stack.setMetaDataEntry(Constants.IS_CAMERA_VIEW, is_camera_view_enabled)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.IS_CAMERA_VIEW, None)
+                global_container_stack.removeMetaDataEntry(Constants.IS_CAMERA_VIEW)
+
+    @pyqtSlot(result=str)
+    def getCameraUrl(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_URL in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.CAMERA_URL)
+        return "" 
+    
+    @pyqtSlot(str)
+    def setCameraUrl(self, camera_url):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if camera_url != "":
+                global_container_stack.setMetaDataEntry(Constants.CAMERA_URL, camera_url)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.CAMERA_URL, None)
+                global_container_stack.removeMetaDataEntry(Constants.CAMERA_URL)
+
+    @pyqtSlot(result=str)
+    def getCameraVideoZoom(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_VIDEO_ZOOM in meta_data:
+                return global_container_stack.getMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM)
+        return "1.0"
+    
+    @pyqtSlot(str)
+    def setCameraVideoZoom(self, camera_video_zoom):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            if camera_video_zoom != "1.0":
+                global_container_stack.setMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM, camera_video_zoom)
+            else:
+                global_container_stack.setMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM, None)
+                global_container_stack.removeMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM)
+    #camera view (experimental), end#
+
     @pyqtProperty(str, constant=True)
     def pluginVersion(self) -> str:
         return self._plugin_version

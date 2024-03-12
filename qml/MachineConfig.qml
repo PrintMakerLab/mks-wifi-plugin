@@ -604,6 +604,102 @@ Cura.MachineAction {
                             enabled: mksSupport.checked
                         }
                     }
+
+                    //camera view (experimental), begining
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: monitorTabAutoOpen.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Camera view (experimental feature)")
+
+                            enabled: mksSupport.checked
+                        }
+                        UM.CheckBox {
+                            id: isCameraView
+                            checked: manager.isCameraViewEnabled()
+
+                            onCheckedChanged: {
+                                manager.setCameraViewEnable(isCameraView.checked)
+                            }
+
+                            enabled: mksSupport.checked
+                        }
+                    }
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: monitorTabAutoOpen.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Camera URL (MJPG-streamer stream URL)")
+
+                            enabled: isCameraView.checked
+                        }
+                        Cura.TextField {
+                            id: cameraUrl
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 1024
+                            validator: RegularExpressionValidator
+                            {
+                                //Empty string or URL begins with http:// or https://
+                                regularExpression: /^$|(^((?:http:\/\/)|(?:https:\/\/))\S{0,}$)/
+                            }
+
+                            text: manager.getCameraUrl()
+
+                            onEditingFinished: {
+                                manager.setCameraUrl(cameraUrl.text)
+                            }
+
+                            enabled: isCameraView.checked
+                        }
+                    }
+                    Row {
+                        anchors
+                        {
+                            left: parent.left
+                            right: parent.right
+                        }
+                        UM.Label {
+                            width: Math.round(parent.width * 0.5)
+                            height: monitorTabAutoOpen.height
+                            verticalAlignment: Text.AlignVCenter
+                            wrapMode: Text.WordWrap
+                            text: catalog.i18nc("@label", "Camera video zoom (1.0 by default)")
+
+                            enabled: isCameraView.checked
+                        }
+                        Cura.TextField {
+                            id: cameraVideoZoom
+                            width: Math.round(parent.width * 0.5) - UM.Theme.getSize("default_margin").width
+                            maximumLength: 3
+                            validator: RegularExpressionValidator
+                            {
+                                regularExpression: /^(?:[0-9]).(?:[0-9])$/
+                            }
+
+                            text: manager.getCameraVideoZoom()
+
+                            onEditingFinished: {
+                                manager.setCameraVideoZoom(cameraVideoZoom.text)
+                            }
+
+                            enabled: isCameraView.checked
+                        }
+                    }
+                    //camera view (experimental), end
                 }
             }
         }

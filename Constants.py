@@ -14,5 +14,10 @@ SIMAGE = "mks_simage"
 GIMAGE = "mks_gimage"
 IS_PREVIEW_ENCODED = "mks_is_preview_encoded"
 
+#camera view parameters (experimental)
+IS_CAMERA_VIEW = "mks_is_camera_view"
+CAMERA_URL = "mks_camera_url"
+CAMERA_VIDEO_ZOOM = "mks_camera_video_zoom"
+
 # Errors
 EXCEPTION_MESSAGE = "An exception occurred in network connection: %s"

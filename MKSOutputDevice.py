@@ -18,7 +18,7 @@ from cura.Machines.ContainerTree import ContainerTree
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from PyQt6.QtNetwork import QNetworkRequest, QTcpSocket
-from PyQt6.QtCore import QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
+from PyQt6.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
 import re  # For escaping characters in the settings.
@@ -166,6 +166,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         # Application.getInstance().getOutputDeviceManager().outputDevicesChanged.connect(self._onOutputDevicesChanged)
         CuraApplication.getInstance().getCuraSceneController(
         ).activeBuildPlateChanged.connect(self.CreateMKSController)
+        #Camera view (experimental)
+        # Connect to mataDataChanged event
+        self._active_machine.metaDataChanged.connect(self._onMetaDataChanged)
 
     _translations = {}
 
@@ -245,6 +248,45 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def getProperties(self):
         return self._properties
+    
+    #camera view (experimental), begining#
+    cameraSettingsChanged = pyqtSignal()
+
+    #Execute when metaData change
+    def _onMetaDataChanged(self):
+        self.cameraSettingsChanged.emit()
+
+    @pyqtProperty(bool, notify=cameraSettingsChanged)
+    def isCameraView(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.IS_CAMERA_VIEW in meta_data:
+                return True
+        return False
+    
+    @pyqtProperty(QUrl, notify=cameraSettingsChanged)
+    def cameraUrl(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_URL in meta_data:
+                camera_url = global_container_stack.getMetaDataEntry(Constants.CAMERA_URL)
+                if camera_url:
+                    return QUrl(camera_url) 
+        return QUrl("")
+    
+    @pyqtProperty(float, notify=cameraSettingsChanged)
+    def cameraVideoZoom(self):
+        global_container_stack = Application.getInstance().getGlobalContainerStack()
+        if global_container_stack:
+            meta_data = global_container_stack.getMetaData()
+            if Constants.CAMERA_VIDEO_ZOOM in meta_data:
+                camera_video_zoom = global_container_stack.getMetaDataEntry(Constants.CAMERA_VIDEO_ZOOM)
+                if camera_video_zoom: # Cura will crush if not check is the value not None
+                    return float(camera_video_zoom)
+        return float(1.0)
+    #camera view (experimental), end#
 
     @pyqtSlot(str, result=str)
     def getProperty(self, key):
