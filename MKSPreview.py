@@ -110,26 +110,68 @@ def take_screenshot():
     # param width: width of the aspect ratio default 300
     # param height: height of the aspect ratio default 300
     # return: None when there is no model on the build plate otherwise it will return an image
-    return Snapshot.snapshot(width = 900, height = 900)
+    #
+    # On Cura 5.13 Snapshot.snapshot() frequently returns None due to an
+    # OpenGL / QQuickView timing issue ("Failed to crop the snapshot even
+    # after 10 attempts!"). Fall back to Snapshot.isometricSnapshot(), which
+    # uses its own offscreen Camera + PreviewPass + QtRenderer and does not
+    # depend on viewport render state. As a final safety net try the backend
+    # snapshot cached at slice time.
+    img = None
+    try:
+        img = Snapshot.snapshot(width=900, height=900)
+    except Exception as e:
+        Logger.log("w", "MKSPreview: Snapshot.snapshot failed: " + str(e))
+    if img is None and hasattr(Snapshot, "isometricSnapshot"):
+        try:
+            img = Snapshot.isometricSnapshot(width=900, height=900)
+            if img is not None:
+                Logger.log("d", "MKSPreview: using Snapshot.isometricSnapshot fallback")
+        except Exception as e:
+            Logger.log("w", "MKSPreview: Snapshot.isometricSnapshot failed: " + str(e))
+    if img is None:
+        try:
+            backend = Application.getInstance().getBackend()
+            if backend is not None and hasattr(backend, "getLatestSnapshot"):
+                img = backend.getLatestSnapshot()
+                if img is not None:
+                    Logger.log("d", "MKSPreview: using CuraEngineBackend.getLatestSnapshot fallback")
+        except Exception as e:
+            Logger.log("w", "MKSPreview: backend snapshot fallback failed: " + str(e))
+    if img is None:
+        Logger.log("w", "MKSPreview: no snapshot available; preview will be skipped")
+    return img
 
 def generate_preview(global_container_stack, image):
     screenshot_string = ""
-    simage = 0
-    gimage = 0
+    # Default sizes for profiles that do not declare mks_simage / mks_gimage
+    # (common in community profiles for Chitu 480x320 LCDs).
+    simage = 100
+    gimage = 200
     meta_data = global_container_stack.getMetaData()
     Logger.log("d", "Get current preview settings.")
     encoded = False
     if Constants.IS_PREVIEW_ENCODED in meta_data:
         encoded = True
     if Constants.SIMAGE in meta_data:
-        simage = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
-        Logger.log("d", "mks_simage value: " + str(simage))
-        screenshot_string += add_screenshot_str(image, simage, simage, ";simage:",encoded)
+        try:
+            _s = int(global_container_stack.getMetaDataEntry(Constants.SIMAGE))
+            if _s > 0:
+                simage = _s
+        except (ValueError, TypeError):
+            pass
+    Logger.log("d", "mks_simage value: " + str(simage))
+    screenshot_string += add_screenshot_str(image, simage, simage, ";simage:",encoded)
     if Constants.GIMAGE in meta_data:
-        gimage = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
-        Logger.log("d", "mks_gimage value: " + str(gimage))
-            # ;; - needed for correct colors. do not remove them.
-        screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:",encoded)
+        try:
+            _g = int(global_container_stack.getMetaDataEntry(Constants.GIMAGE))
+            if _g > 0:
+                gimage = _g
+        except (ValueError, TypeError):
+            pass
+    Logger.log("d", "mks_gimage value: " + str(gimage))
+        # ;; - needed for correct colors. do not remove them.
+    screenshot_string += add_screenshot_str(image, gimage, gimage, ";;gimage:",encoded)
     screenshot_string += "\r"
     return simage,gimage,screenshot_string
 
