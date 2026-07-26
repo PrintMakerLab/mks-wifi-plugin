@@ -29,7 +29,7 @@ import time
 import sys
 
 from UM.Resources import Resources
-from . import Constants, MKSDialog
+from . import Constants, MKSDialog, MKSPreview
 from . import utils
 
 Resources.addSearchPath(
@@ -670,6 +670,13 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                      file_handler=None,
                      **kwargs):
         self.writeStarted.emit(self)
+        # OutputDeviceManager.writeStarted does not fire on the WiFi upload
+        # path (only the local writer does), so call add_preview directly to
+        # guarantee ;simage / ;;gimage headers are injected before upload.
+        try:
+            MKSPreview.add_preview(self)
+        except Exception as e:
+            Logger.log("w", "MKSPreview.add_preview failed on WiFi path: " + str(e))
         self._update_timer.stop()
         self._isSending = True
         active_build_plate = Application.getInstance().getMultiBuildPlateModel(
