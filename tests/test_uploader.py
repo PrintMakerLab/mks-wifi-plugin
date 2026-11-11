@@ -140,3 +140,26 @@ def test_upload_connection_refused():
     uploader.start()
     assert done.wait(5)
     assert result["result"] == UploadResult.FAILED
+
+
+def test_cancel_while_module_stalls_is_immediate():
+    # The module accepts the connection but stops reading: send() blocks.
+    # cancel() must interrupt it right away instead of waiting for the socket timeout.
+    srv = socket.socket()
+    srv.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, 4096)
+    srv.bind(("127.0.0.1", 0))
+    srv.listen(1)
+    threading.Thread(target=lambda: (srv.accept(), time.sleep(30)), daemon=True).start()
+    done = threading.Event()
+    result = {}
+    uploader = MKSUploader("127.0.0.1", "x.gcode", b"x" * 20_000_000,
+                           dispatch=lambda func, *args: func(*args),
+                           on_finished=lambda res, *_: (result.setdefault("result", res), done.set()),
+                           port=srv.getsockname()[1])
+    uploader.start()
+    time.sleep(1.0)
+    started = time.monotonic()
+    uploader.cancel()
+    assert done.wait(5)
+    assert time.monotonic() - started < 2
+    assert result["result"] == UploadResult.CANCELLED
