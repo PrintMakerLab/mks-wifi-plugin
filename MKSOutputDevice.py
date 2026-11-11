@@ -551,6 +551,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
 
     def sendfile(self, file_name, file_str):
         if self._uploader is not None:
+            # Callers already set _isSending, stopped the timer and may have shown a
+            # progress message; undo that, the running upload keeps its own state.
+            Logger.log("w", "MKS upload requested while another upload is running")
+            self._isSending = False
+            self._update_timer.start()
+            if self._progress_message is not None:
+                self._progress_message.hide()
+                self._progress_message = None
             self.show_error_message(self._translations.get("error_2"))
             return
         data = file_str if isinstance(file_str, (bytes, bytearray)) else file_str.encode("utf-8")
@@ -815,8 +823,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             if Constants.AUTO_MONITOR_TAB in meta_data:
                 CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
             self._sendCommand("M20")
-            if self.is_print_auto_start_enabled():
+            # Only start printing a file the module has confirmed ({"err":0}).
+            if result == UploadResult.OK and self.is_print_auto_start_enabled():
                 self._printFile()
+            elif self.is_print_auto_start_enabled():
+                Logger.log("w", "MKS upload not confirmed, auto start skipped")
         else:
             Logger.log("e", "MKS upload failed (%s, HTTP %s): %s" % (result, http_status, detail))
             self.show_error_message(self._translations.get("file_send_failed"))
@@ -1084,8 +1095,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self.printersChanged.emit()
 
     def _onOptionStateChanged(self, optstate):
+        # Same storage as MachineConfig.setPrintAutostart: the key only exists when
+        # enabled (is_print_auto_start_enabled checks for presence, so "False" was "on").
         active_machine = Application.getInstance().getGlobalContainerStack()
-        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, str(optstate))
+        if optstate:
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+        else:
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, None)
+            active_machine.removeMetaDataEntry(Constants.AUTO_PRINT)
 
     def _cancelSendGcode(self, message_id, action_id):
         self._update_timer.start()
