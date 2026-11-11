@@ -6,7 +6,6 @@ from UM.Logger import Logger
 from UM.Signal import signalemitter
 from UM.Message import Message
 from UM.Settings.InstanceContainer import InstanceContainer
-from UM.TaskManagement.HttpRequestManager import HttpRequestManager
 
 from cura.PrinterOutput.PrinterOutputDevice import ConnectionState
 from cura.CuraApplication import CuraApplication
@@ -17,7 +16,7 @@ from cura.PrinterOutput.GenericOutputController import GenericOutputController
 from cura.Machines.ContainerTree import ContainerTree
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
-from PyQt6.QtNetwork import QNetworkRequest, QTcpSocket
+from PyQt6.QtNetwork import QTcpSocket
 from PyQt6.QtCore import QUrl, QTimer, pyqtSignal, pyqtProperty, pyqtSlot, QCoreApplication, QByteArray
 from queue import Queue
 
@@ -31,6 +30,7 @@ import sys
 from UM.Resources import Resources
 from . import Constants, MKSDialog
 from . import utils
+from .MKSUploader import MKSUploader, UploadResult
 
 Resources.addSearchPath(
     os.path.join(os.path.abspath(
@@ -137,7 +137,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._stream_buffer = b""
         self._stream_buffer_start_index = -1
 
-        self._request_data = None
+        self._uploader = None
+        self._upload_generation = 0  # ignores late callbacks of cancelled uploads
 
         self._last_file_name = None
         self._last_file_path = None
@@ -194,6 +195,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             "file_send_failed": catalog.i18nc("@info:status", "Send file to printer failed. Check printer SD card."),
             "file_send_failed2": catalog.i18nc("@info:status", "Now is printing. Send file to printer failed."),
             "file_send_success": catalog.i18nc("@info:status", "Print job was successfully sent to the printer."),
+            "file_send_unconfirmed": catalog.i18nc("@info:status", "File was sent completely, but the printer did not confirm the upload. Please check the file list on the printer."),
             "gcode_prepare": catalog.i18nc("@warning:status", "Please prepare G-code before exporting."),
             "connected": catalog.i18nc("@info:status", "TFT Connect succeed"),
             "error_1": catalog.i18nc("@info:status", "Error: Command can not send"),
@@ -549,18 +551,36 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         return self._socket is not None and self._socket.state() == QTcpSocket.SocketState.ConnectedState # QAbstractSocket::ConnectedState
 
     def sendfile(self, file_name, file_str):
-        data = QByteArray()
-        data.append(file_str.encode())
-
-        manager = HttpRequestManager.getInstance()
-        self._request_data = manager.post(
-            url = "http://%s/upload?X-Filename=%s" % (self._address, file_name),
-            headers_dict = {"Content-Type": "application/octet-stream", "Connection": "keep-alive"},
-            data = data,
-            callback = self._onRequestFinished,
-            error_callback = self._onUploadError,
-            upload_progress_callback = self._onUploadProgress
+        if self._uploader is not None:
+            # Callers already set _isSending, stopped the timer and may have shown a
+            # progress message; undo that, the running upload keeps its own state.
+            Logger.log("w", "MKS upload requested while another upload is running")
+            self._isSending = False
+            self._update_timer.start()
+            if self._progress_message is not None:
+                self._progress_message.hide()
+                self._progress_message = None
+            self.show_error_message(self._translations.get("error_2"))
+            return
+        data = file_str if isinstance(file_str, (bytes, bytearray)) else file_str.encode("utf-8")
+        safe_name = MKSUploader.sanitize_filename(file_name)
+        if safe_name != file_name:
+            Logger.log("i", "MKS upload: file name '%s' sanitized to '%s'" % (file_name, safe_name))
+            file_name = safe_name
+        # M23 (auto start) must use the name that actually ends up on the SD card
+        self._last_file_name = file_name
+        self._upload_generation += 1
+        generation = self._upload_generation
+        self._uploader = MKSUploader(
+            host=self._address,
+            filename=file_name,
+            data=data,
+            dispatch=self._application.callLater,
+            on_progress=lambda sent, total: self._onUploadProgress(sent, total, generation),
+            on_finished=lambda result, status, detail: self._onUploadFinished(result, status, detail, generation),
+            logger=Logger.log,
         )
+        self._uploader.start()
 
     def got_ioerror(self, error):
         Logger.log("e", Constants.EXCEPTION_MESSAGE % str(error))
@@ -591,12 +611,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._update_timer.stop()
             self._isSending = True
             self._preheat_timer.stop()
-            single_string_file_data = ""
+            single_string_file_data = b""
             try:
-                f = open(self._uploadpath,
-                         "r",
-                         encoding=sys.getfilesystemencoding())
-                single_string_file_data = f.read()
+                with open(self._uploadpath, "rb") as f:
+                    single_string_file_data = f.read()
                 file_name = filename[filename.rfind("/") + 1:]
                 self._last_file_name = filename[filename.rfind("/") + 1:]
                 self._progress_message = Message(self._translations.get("uploading_file"), 0, False, -1, self._translations.get(
@@ -739,7 +757,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._startPrint(filename)
 
     def _messageBoxCallback(self, button):
-        if button == QMessageBox.Yes:
+        if button == QMessageBox.StandardButton.Yes:
             self.startPrint()
         else:
             CuraApplication.getInstance().getController().setActiveStage(
@@ -761,14 +779,14 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 "d", "mks file name: " + file_name + " original file name: " + Application.getInstance().
                 getPrintInformation().jobName.strip())
             
-            single_string_file_data = ""
-
+            parts = []
             last_process_events = time.time()
             for line in self._gcode:
-                single_string_file_data += line
+                parts.append(line)
                 if time.time() > last_process_events + 0.05:
                     QCoreApplication.processEvents()
                     last_process_events = time.time()
+            single_string_file_data = "".join(parts)
 
             self.sendfile(file_name, single_string_file_data)
             
@@ -782,39 +800,46 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("M23 " + self._last_file_name)
         self._sendCommand("M24")
 
-    def _onUploadProgress(self, bytes_sent: int, bytes_total: int):
-        Logger.log("d", "Bytes sent %s/%s" % (str(bytes_sent), str(bytes_total)))        
-        if self._progress_message is not None:
-            if bytes_sent == bytes_total and bytes_sent > 0:
-                self._progress_message.hide()
-                self._error_message = Message(self._translations.get("file_send_success"))
-                self._error_message.show()
-                meta_data = Application.getInstance().getGlobalContainerStack().getMetaData()
-                if Constants.AUTO_MONITOR_TAB in meta_data:
-                    CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
-            elif bytes_total > 0:
-                new_progress = bytes_sent / bytes_total * 100
-                # Treat upload progress as response. Uploading can take more than 10 seconds, so if we don't, we can get
-                # timeout responses if this happens.
-                self._last_response_time = time.time()
-                if new_progress > self._progress_message.getProgress():
-                    # Ensure that the message is visible.
-                    self._progress_message.show()
-                    self._progress_message.setProgress(new_progress)
-            else:
-                self._progress_message.setProgress(0)
-                self._progress_message.hide()
-                self._progress_message = None
-        else:
-            Logger.log("w", "Progress message not found") 
+    def _onUploadProgress(self, bytes_sent: int, bytes_total: int, generation: int = None):
+        if generation is not None and generation != self._upload_generation:
+            return  # belongs to a cancelled upload
+        if self._progress_message is None or bytes_total <= 0:
+            return
+        new_progress = bytes_sent / bytes_total * 100
+        # Treat upload progress as response, uploads can take longer than the timeout.
+        self._last_response_time = time.time()
+        if new_progress > self._progress_message.getProgress():
+            self._progress_message.show()
+            self._progress_message.setProgress(new_progress)
 
-    def _onUploadError(self, reply, sslerror):
-        Logger.log("d", "Upload Error")
+    def _onUploadFinished(self, result, http_status, detail, generation=None):
+        if generation is not None and generation != self._upload_generation:
+            Logger.log("d", "MKS upload: ignoring result of a cancelled upload (%s)" % result)
+            return
+        self._uploader = None
+        self._isSending = False
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
-        self._error_message = Message(self._translations.get("file_send_failed"))
-        self._error_message.show()
+
+        if result == UploadResult.CANCELLED:
+            Logger.log("i", "MKS upload cancelled")
+        elif result in (UploadResult.OK, UploadResult.OK_NO_RESPONSE):
+            key = "file_send_success" if result == UploadResult.OK else "file_send_unconfirmed"
+            self.show_error_message(self._translations.get(key))
+            meta_data = Application.getInstance().getGlobalContainerStack().getMetaData()
+            if Constants.AUTO_MONITOR_TAB in meta_data:
+                CuraApplication.getInstance().getController().setActiveStage("MonitorStage")
+            self._sendCommand("M20")
+            # Only start printing a file the module has confirmed ({"err":0}).
+            if result == UploadResult.OK and self.is_print_auto_start_enabled():
+                self._printFile()
+            elif self.is_print_auto_start_enabled():
+                Logger.log("w", "MKS upload not confirmed, auto start skipped")
+        else:
+            Logger.log("e", "MKS upload failed (%s, HTTP %s): %s" % (result, http_status, detail))
+            self.show_error_message(self._translations.get("file_send_failed"))
+
         self._update_timer.start()
 
     def _setHeadPosition(self, x, y, z, speed):
@@ -858,11 +883,11 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         while self._command_queue.qsize() > 0:
             _queue_data = self._command_queue.get()
             if "M23" in _queue_data:
-                self._socket.writeData(
+                self._socket.write(
                     _queue_data.encode(sys.getfilesystemencoding()))
                 continue
             if "M24" in _queue_data:
-                self._socket.writeData(
+                self._socket.write(
                     _queue_data.encode(sys.getfilesystemencoding()))
                 continue
             if self.isBusy() and "M20" in _queue_data:
@@ -870,7 +895,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             _send_data += _queue_data
         if self.isSocketInConnectedState():
             Logger.log("d", "_send_data: %s" % _send_data.replace("\r", " ").replace("\n", " ")) 
-            self._socket.writeData(_send_data.encode(sys.getfilesystemencoding()))
+            self._socket.write(_send_data.encode(sys.getfilesystemencoding()))
         self._socket.flush()
 
     def _setJobState(self, job_state):
@@ -1009,7 +1034,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return True
         if self._sdFileList:
             filename = info.replace("\n", "").replace("\r", "")
-            if filename.lower().endswith("gcode") or filename.lower().endswith("gco") or filename.lower.endswith("g"):
+            if filename.lower().endswith("gcode") or filename.lower().endswith("gco") or filename.lower().endswith(".g"):
                 self.sdFiles.append(filename)
             return True
         return False
@@ -1060,7 +1085,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
                 Logger.log("d", "mks recv: " + s)
                 self.read_line(s)
         except Exception as e:
-            print(e)
+            Logger.logException("w", "MKS: error while parsing printer response: %s" % str(e))
 
     def _updateTargetBedTemperature(self, temperature):
         if self._target_bed_temperature == temperature:
@@ -1077,27 +1102,26 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._printers = [printer]
         self.printersChanged.emit()
 
-    def _onRequestFinished(self, reply):
-        http_status_code = reply.attribute(
-            QNetworkRequest.Attribute.HttpStatusCodeAttribute)
-        self._isSending = True
-        self._update_timer.start()
-        self._sendCommand("M20")
-        if self.is_print_auto_start_enabled():
-            self._printFile()
-        if not http_status_code:
-            return
-
     def _onOptionStateChanged(self, optstate):
+        # Same storage as MachineConfig.setPrintAutostart: the key only exists when
+        # enabled (is_print_auto_start_enabled checks for presence, so "False" was "on").
         active_machine = Application.getInstance().getGlobalContainerStack()
-        active_machine.setMetaDataEntry(Constants.AUTO_PRINT, str(optstate))
+        if optstate:
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, "true")
+        else:
+            active_machine.setMetaDataEntry(Constants.AUTO_PRINT, None)
+            active_machine.removeMetaDataEntry(Constants.AUTO_PRINT)
 
     def _cancelSendGcode(self, message_id, action_id):
         self._update_timer.start()
         self._isSending = False
         self._isPrinting = False
-        manager = HttpRequestManager.getInstance()
-        manager.abortRequest(self._request_data)
+        if self._uploader is not None:
+            self._uploader.cancel()
+            # Release immediately so a new upload can start right away; the
+            # cancelled worker's late callbacks are ignored via the generation.
+            self._uploader = None
+            self._upload_generation += 1
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None
@@ -1119,7 +1143,8 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             return
         definitions = self._global_container_stack.definition.findDefinitions(
             key="cooling")
-        Logger.log("d", definitions[0].label)
+        if definitions:
+            Logger.log("d", definitions[0].label)
 
     def _createFlattenedContainerInstance(self, instance_container1,
                                           instance_container2):
