@@ -138,6 +138,7 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._stream_buffer_start_index = -1
 
         self._uploader = None
+        self._upload_generation = 0  # ignores late callbacks of cancelled uploads
 
         self._last_file_name = None
         self._last_file_path = None
@@ -568,13 +569,15 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             file_name = safe_name
         # M23 (auto start) must use the name that actually ends up on the SD card
         self._last_file_name = file_name
+        self._upload_generation += 1
+        generation = self._upload_generation
         self._uploader = MKSUploader(
             host=self._address,
             filename=file_name,
             data=data,
             dispatch=self._application.callLater,
-            on_progress=self._onUploadProgress,
-            on_finished=self._onUploadFinished,
+            on_progress=lambda sent, total: self._onUploadProgress(sent, total, generation),
+            on_finished=lambda result, status, detail: self._onUploadFinished(result, status, detail, generation),
             logger=Logger.log,
         )
         self._uploader.start()
@@ -797,7 +800,9 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._sendCommand("M23 " + self._last_file_name)
         self._sendCommand("M24")
 
-    def _onUploadProgress(self, bytes_sent: int, bytes_total: int):
+    def _onUploadProgress(self, bytes_sent: int, bytes_total: int, generation: int = None):
+        if generation is not None and generation != self._upload_generation:
+            return  # belongs to a cancelled upload
         if self._progress_message is None or bytes_total <= 0:
             return
         new_progress = bytes_sent / bytes_total * 100
@@ -807,7 +812,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
             self._progress_message.show()
             self._progress_message.setProgress(new_progress)
 
-    def _onUploadFinished(self, result, http_status, detail):
+    def _onUploadFinished(self, result, http_status, detail, generation=None):
+        if generation is not None and generation != self._upload_generation:
+            Logger.log("d", "MKS upload: ignoring result of a cancelled upload (%s)" % result)
+            return
         self._uploader = None
         self._isSending = False
         if self._progress_message is not None:
@@ -1110,6 +1118,10 @@ class MKSOutputDevice(NetworkedPrinterOutputDevice):
         self._isPrinting = False
         if self._uploader is not None:
             self._uploader.cancel()
+            # Release immediately so a new upload can start right away; the
+            # cancelled worker's late callbacks are ignored via the generation.
+            self._uploader = None
+            self._upload_generation += 1
         if self._progress_message is not None:
             self._progress_message.hide()
             self._progress_message = None

@@ -91,6 +91,14 @@ class MKSUploader:
         self._cancel.set()
         conn = self._conn
         if conn is not None:
+            # shutdown() wakes up a send()/recv() blocked in the worker thread
+            # immediately; close() alone does not (it waited for the 10 s timeout).
+            sock = getattr(conn, "sock", None)
+            if sock is not None:
+                try:
+                    sock.shutdown(socket.SHUT_RDWR)
+                except OSError:
+                    pass
             try:
                 conn.close()
             except Exception:
